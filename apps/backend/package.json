@@ -1,17 +1,21 @@
 {
-  "name": "newpoke",
+  "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "backend:run": "ts-node app/app.ts | pino-pretty"
+    "start": "ts-node app/app.ts",
+    "backend:run": "ts-node app/app.ts | pino-pretty",
+    "pm2:start": "pm2 start npm --name 'backend' -- start"
   },
   "dependencies": {
     "@prisma/client": "^4.6.1",
+    "@types/node-cron": "^3.0.6",
     "@types/uuid": "^9.0.0",
     "bson": "^4.7.0",
     "dotenv": "^16.0.3",
     "mongodb": "^4.12.1",
+    "node-cron": "^3.0.2",
     "pino": "^8.7.0",
     "spotify-web-api-node": "^5.0.2",
     "typescript": "^4.9.3",

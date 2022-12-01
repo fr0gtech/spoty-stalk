@@ -5,11 +5,18 @@ import Spotify from "../public/spotify.svg";
 import Share from "../public/share.svg";
 import useSWR from "swr";
 import { fetcher } from "../pages";
-import { formatDistance } from "date-fns";
+import { formatDistance, formatDistanceToNow } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 function Navbar(props: any) {
+
   const { data: lastscan, error: ls_error } = useSWR(`/api/scans`, fetcher, {
     refreshInterval: 60000,
   });
+
+  const lastScanState = lastscan ? formatDistanceToNow(new Date(lastscan.data.createdAt), {
+    addSuffix: true, includeSeconds: true
+  }) : "loading"
+
   return (
     <nav className="flex py-3 items-center sm:gap-3 justify-between border-b-1 border-neutral-700">
       <div className="flex sm:gap-3 items-center relative">
@@ -54,12 +61,10 @@ function Navbar(props: any) {
         <PlaylistComp className="!hidden sm:!block" openInApp={props.openInApp} />
 
       </div>
-      {lastscan && lastscan !== null && (
+      {lastScanState && lastScanState !== null && (
           <div className="text-xs">
-            last scan{" "}
-            {formatDistance(new Date(lastscan.data.createdAt), new Date(), {
-              addSuffix: true,
-            })}
+            {`last scan 
+            ${lastScanState}`}
           </div>
         )}
       <div className="flex gap-3 items-center">

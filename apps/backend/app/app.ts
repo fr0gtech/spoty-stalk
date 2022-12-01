@@ -6,6 +6,8 @@ import { getToken } from "./spoty";
 import { getSongsFromPlaylist, saveSong } from "./song";
 import { saveArtist } from "./artist";
 import { scanInfo } from "./helpers";
+import cron from 'node-cron'
+
 dotenv.config({ path: "../../.env" });
 
 export const logger = pino();
@@ -50,4 +52,9 @@ const init = async () => {
   });
   await scanInfo(playlists)
 };
-init();
+
+cron.schedule('* * * * *', () => {
+  init()
+});
+
+init()
