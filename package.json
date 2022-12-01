@@ -10,7 +10,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "pull": "git pull && yarn && yarn build && pm2 delete spotystalk | yarn pm2:start",
+    "pm2:start": "cd apps/web && pm2 start npm --name 'spotystalk' -- start"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
