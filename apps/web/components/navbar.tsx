@@ -54,7 +54,7 @@ function Navbar(props: any) {
         <PlaylistComp className="!hidden sm:!block" openInApp={props.openInApp} />
 
       </div>
-      {lastscan && (
+      {lastscan && lastscan !== null && (
           <div className="text-xs">
             last scan{" "}
             {formatDistance(new Date(lastscan.data.createdAt), new Date(), {

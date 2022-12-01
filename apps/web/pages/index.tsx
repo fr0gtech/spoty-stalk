@@ -161,15 +161,15 @@ export default function Web() {
                               </div>
                               <div className="!z-10 flex items-center gap-1">
                                 <div className="opacity-50 mix-blend-difference grow ml-8 text-white text-xs text-left">
-                                  added{" "}
-                                  {formatDistance(
+                                  {`added 
+                                  ${formatDistance(
                                     new Date(song.addedAt),
                                     new Date(),
                                     {
                                       addSuffix: true,
                                     }
                                   )}
-                                  {" "}to{" "}
+                                   to `}
                                   <Link
                                     className="!text-white underline"
                                     href={openInApp
