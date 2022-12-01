@@ -5,6 +5,7 @@ import { changedPlaylists, getAllPlaylists, savePlaylist } from "./playlist";
 import { getToken } from "./spoty";
 import { getSongsFromPlaylist, saveSong } from "./song";
 import { saveArtist } from "./artist";
+import { scanInfo } from "./helpers";
 dotenv.config({ path: "../../.env" });
 
 export const logger = pino();
@@ -47,5 +48,6 @@ const init = async () => {
       })
     );
   });
+  await scanInfo(playlists)
 };
 init();

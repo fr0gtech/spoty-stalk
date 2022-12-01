@@ -11,6 +11,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Scan{
+  id          Int    @id @default(autoincrement())
+  updated   Playlist[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 model Playlist {
   id          Int    @id @default(autoincrement())
   sid         String @unique
@@ -19,7 +25,7 @@ model Playlist {
   externalUrl String
   description String
   tracks      Int
-
+  updated     Scan[]
   songs          Song[]
   lastSnapShotId String
 

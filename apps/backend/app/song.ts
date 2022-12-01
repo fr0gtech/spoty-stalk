@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { logger, spotifyApi } from "./app";
 import { prisma } from "database";
 import { exit } from "process";
-import { v4 as uuidv4 } from 'uuid';
 export const getSongsFromPlaylist = async (playlist: any) => {
   let data: any = [];
   let total = playlist.tracks.total;
