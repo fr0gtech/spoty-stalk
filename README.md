@@ -1,7 +1,15 @@
 # spoty-stalk
 
 ![Screenshot 2022-11-30 at 20-00-14 Screenshot](https://user-images.githubusercontent.com/119510346/204888118-d3502171-8b73-40d8-b168-f9aca5bf40ad.png)
-A monorepo containing a frontend and backend for spoty-stalk. This is app is pretty simple and put together quickly.
+A monorepo containing a frontend and backend for spoty-stalk. This app is pretty simple and put together quickly.
+
+## Features
+- [x] hide discover weekly songs
+- [x] show top5 most added artist
+- [x] listen to preview
+- [x] last scan indicator
+- [ ] removed and duplication handling
+- much more can be done submit a pull request 
 
 ## How this works
 
