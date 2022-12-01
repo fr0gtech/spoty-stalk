@@ -3,21 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { useInView } from "react-intersection-observer";
 import axios from "axios";
-import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import {
   Button,
   Icon,
-  ProgressBar,
-  Spinner,
-  Switch,
   Tag,
 } from "@blueprintjs/core";
-import Image from "next/image";
 import { format, formatDistance, isBefore } from "date-fns";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
-import ReactAudioPlayer from "react-audio-player";
-import Github from "../public/github.svg";
 import Spotify from "../public/spotify.svg";
 import Share from "../public/share.svg";
 
@@ -25,7 +18,6 @@ import LoadingComp from "../components/loading";
 import React from "react";
 import Preview from "../components/preview";
 import Navbar from "../components/navbar";
-import Top10 from "../components/top10";
 import Head from "next/head";
 import FooterComp from "../components/footer";
 
@@ -36,7 +28,7 @@ export default function Web() {
   const [lastVisit, setLastVisit] = useState<any>();
   const [now, setNow] = useState<any>();
   const { ref, inView } = useInView();
-
+  const [hideDiscoverWeekly, setHideDiscoverWeekly] = useState<any>(true)
   const [pageIndex, setPageIndex] = useState(0);
   const { data: topartists, error: pl_error } = useSWR(
     `/api/artists`,
@@ -97,7 +89,7 @@ export default function Web() {
       <link rel="icon" href="/favicon.ico" />
     </Head><div className="min-h-screen w-full bg-neutral-900 bp4-dark">
         <div className="container mx-auto p-1">
-          <Navbar isFetching={isFetching} openInApp={openInApp} setOpenInApp={setOpenInApp} />
+          <Navbar isFetching={isFetching} openInApp={openInApp} setOpenInApp={setOpenInApp} hideDiscoverWeekly={hideDiscoverWeekly} setHideDiscoverWeekly={setHideDiscoverWeekly}  />
           <div className="mt-2">
             <div className="flex gap-3 flex-wrap text-white overflow-scroll h-[calc(100vh-120px)]">
               {data &&
@@ -105,9 +97,11 @@ export default function Web() {
                   return (
                     <React.Fragment key={page.nextCursor}>
                       {page.data.map((song: any, index: any) => {
+                        // TODO: we should upload playlist owner and check who's playlist it is
+                        if (song.playlists[0].name.includes('Discover Weekly') && hideDiscoverWeekly) return
                         return (
                           <div
-                            key={index}
+                            key={song.name}
                             className=" bg-slate-900 shadow-md rounded h-[56px] flex flex-col relative grow overflow-hidden"
                           >
                             <div className="!z-10 w-full p-2 bg-opacity-90 items-center gap-2 rounded bg-neutral-800">
@@ -116,8 +110,7 @@ export default function Web() {
                                   new Date(lastVisit),
                                   new Date(song.addedAt)
                                 ) && <Tag intent="success">NEW</Tag>}
-
-
+                               
                                 <Preview song={song} />
 
                                 <h4 className="text-white mix-blend-difference text-[15px] leading-relaxed truncate max-w-sm font-semibold">
@@ -151,6 +144,8 @@ export default function Web() {
                                     );
                                   })}
                                 </div>
+                                {song.playlists[0].name.includes('Discover Weekly')
+                                 && <Tag intent="warning" minimal title="These songs are added by spotify"><Icon icon="function"/></Tag>}
                               </div>
                               <div className="!z-10 flex items-center gap-1">
                                 <div className="opacity-50 mix-blend-difference grow ml-8 text-white text-xs text-left">
@@ -190,13 +185,6 @@ export default function Web() {
                                       height={12}
                                       width={12} />
                                   )}
-                                  {/* <Icon
-                            size={12}
-                            title="open in spotify"
-                            color="#ffffff"
-                            className="mix-blend-difference opacity-50"
-                            icon={"link"}
-                          /> */}
                                 </Link>
                               </div>
                             </div>

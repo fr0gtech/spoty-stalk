@@ -1,9 +1,8 @@
-import { Tag, Button, Spinner, Switch } from "@blueprintjs/core"
+import { Tag, Button, Spinner, Switch, Icon } from "@blueprintjs/core"
 import { Popover2, Tooltip2 } from "@blueprintjs/popover2"
-import Link from "next/link"
 import PlaylistComp from "./playlist"
-import Github from "../public/github.svg";
-
+import Spotify from "../public/spotify.svg";
+import Share from "../public/share.svg";
 function Navbar(props: any) {
     return (
         <nav className="flex py-3 items-center sm:gap-3 justify-between border-b-1 border-neutral-700">
@@ -38,7 +37,7 @@ function Navbar(props: any) {
             </div>
             <PlaylistComp className="!hidden sm:!block" openInApp={props.openInApp} />
             <div className="flex gap-1 items-center">
-                <div className="flex items-baseline mr-4">
+                <div className="flex items-baseline gap-3">
                     <Tooltip2
                         content={
                             props.openInApp
@@ -49,7 +48,34 @@ function Navbar(props: any) {
                         <Switch
                             value={props.openInApp}
                             onChange={() => props.setOpenInApp(!props.openInApp)}
-                            labelElement={<span className="m-0 p-0">Open in app</span>}
+                            labelElement={<span>
+                                {props.openInApp ? (<Spotify
+                                fill={"#1DB954"}
+                                className={"mix-blend-difference opacity-50 inline-block"}
+                                height={16}
+                                width={16} />
+                            ) : (
+                              <Share
+                                fill={"#ffffff"}
+                                className={"mix-blend-difference opacity-50 inline-block"}
+                                height={14}
+                                width={14}
+                                />
+                            )}
+                            </span>}
+                            
+                        ></Switch>
+                    </Tooltip2>
+                    <Tooltip2 content={
+                        "Hide discover weekly playlist"
+                    }>
+
+                    <Switch
+
+                            value={props.hideDiscoverWeekly}
+                            defaultChecked={props.hideDiscoverWeekly}
+                            onChange={() => props.setHideDiscoverWeekly(!props.hideDiscoverWeekly)}
+                            labelElement={<span className="m-0 p-0"><Icon icon="eye-off"/></span>}
                             className="!m-0 p-0"
                         ></Switch>
                     </Tooltip2>
