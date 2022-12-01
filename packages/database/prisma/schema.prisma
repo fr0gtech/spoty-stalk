@@ -43,7 +43,7 @@ model Song {
   sid         String   @unique
   addedAt     DateTime
   name        String
-  externalUrl String
+  externalUrl String?
   images      Json
 
   previewUrl String?

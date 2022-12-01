@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { logger, spotifyApi } from "./app";
 import { prisma } from "database";
 import { exit } from "process";
-
+import { v4 as uuidv4 } from 'uuid';
 export const getSongsFromPlaylist = async (playlist: any) => {
   let data: any = [];
   let total = playlist.tracks.total;
@@ -21,6 +21,8 @@ export const getSongsFromPlaylist = async (playlist: any) => {
 };
 
 export const saveSong = async (song: any, artists: any, playlist: any) => {
+  // leaks and removed or whatever songs can get here with out and id, we do not handle this for now.
+  if (!song.track.id) return 
   const ar = artists
     .map((e: any) => {
       if (e) {
