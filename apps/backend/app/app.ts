@@ -34,23 +34,19 @@ const init = async () => {
   // compare with playlists we have
   const playlists = await changedPlaylists(userPlaylists);
   // only update changed playlists from above
-  playlists.forEach(async (playlist: SpotifyApi.PlaylistObjectSimplified) => {
+  const p = playlists.map(async (playlist: SpotifyApi.PlaylistObjectSimplified) => {
     // get songs from playlist
     const songs = await getSongsFromPlaylist(playlist);
     // save playlist
     await savePlaylist(playlist);
     // for each song save it and add artists
-    await Promise.all(
       songs.map(async (song: any, i: any) => {
-        setTimeout(async () => {
           await saveArtist(song).then(async (artists) => {
             await saveSong(song, artists, playlist);
           });
-        }, 10 * i); // dumb throttle
       })
-    );
   });
-  await scanInfo(playlists)
+  scanInfo()
 };
 
 cron.schedule('* * * * *', () => {

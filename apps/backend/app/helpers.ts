@@ -7,12 +7,8 @@ export const differenceBy = (arr1: any, arr2: any, iteratee: any) => {
   }
   return arr1.filter((c: any) => !arr2.map(iteratee).includes(iteratee(c)));
 };
-export const scanInfo =async (playlists:any) => {
+export const scanInfo = async () => {
   await prisma.scan.create({
-    data:{
-      updated:{
-        connect: playlists.map((e:any)=>{return {sid: e.id}})  
-      }
-    }
+    data:{}
   })
 }
