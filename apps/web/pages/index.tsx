@@ -115,14 +115,11 @@ export default function Web() {
                         return (
                           <div
                             key={song.name}
-                            className=" bg-slate-900 shadow-md rounded h-[56px] flex flex-col relative grow overflow-hidden"
+                            className=" bg-slate-900 shadow-md rounded h-[56px] flex flex-col relative grow"
                           >
                             <div className="!z-10 w-full p-2 bg-opacity-90 items-center gap-2 rounded bg-neutral-800">
                               <div className="flex gap-2 justify-start items-center">
-                                {isBefore(
-                                  new Date(lastVisit),
-                                  new Date(song.addedAt)
-                                ) && <Tag intent="success">NEW</Tag>}
+                               
                                 <Preview song={song} />
 
                                 <h4 className="text-white mix-blend-difference text-[15px] leading-relaxed truncate max-w-sm font-semibold">
@@ -160,7 +157,12 @@ export default function Web() {
                                   && <Tag intent="warning" minimal title="These songs are added by spotify"><Icon icon="function" /></Tag>}
                               </div>
                               <div className="!z-10 flex items-center gap-1">
-                                <div className="opacity-50 mix-blend-difference grow ml-8 text-white text-xs text-left">
+                              
+                                <div className="mix-blend-difference ml-8 justify-between grow text-neutral-300 text-xs text-left">
+                                {isBefore(
+                                  new Date(lastVisit),
+                                  new Date(song.addedAt)
+                                ) && <Tag className="font-bold mr-3 h-[15px] !text-[9px]" intent="success">NEW</Tag>}
                                   {`added 
                                   ${formatDistance(
                                     new Date(song.addedAt),
@@ -171,7 +173,7 @@ export default function Web() {
                                   )}
                                    to `}
                                   <Link
-                                    className="!text-white underline"
+                                    className="!text-neutral-200"
                                     href={openInApp
                                       ? `spotify:playlist:${song.playlists[0].sid}`
                                       : song.playlists[0].externalUrl}
