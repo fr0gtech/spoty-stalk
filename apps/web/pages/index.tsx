@@ -169,7 +169,7 @@ export default function Web() {
                                       addSuffix: true,
                                     }
                                   )}
-                                  to{" "}
+                                  {" "}to{" "}
                                   <Link
                                     className="!text-white underline"
                                     href={openInApp
