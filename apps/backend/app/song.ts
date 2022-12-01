@@ -23,7 +23,7 @@ export const getSongsFromPlaylist = async (playlist: any) => {
 export const saveSong = async (song: any, artists: any, playlist: any) => {
   const ar = artists
     .map((e: any) => {
-      if (e.id) {
+      if (e) {
         return { name: e.name };
       } else {
         return undefined;

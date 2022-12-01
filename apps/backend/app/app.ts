@@ -41,10 +41,6 @@ const init = async () => {
       songs.map(async (song: any, i: any) => {
         setTimeout(async () => {
           await saveArtist(song).then(async (artists) => {
-            if (artists.filter(Boolean).length === 0 || !song.track.id) {
-              console.log(song.track.name, artists);
-              return;
-            }
             await saveSong(song, artists, playlist);
           });
         }, 10 * i); // dumb throttle
