@@ -23,7 +23,7 @@ function SoundcloudItem({song,index, lastVisit}:any){
                   return (
                    
                       <Tag
-                        className="!bg-neutral-900 !text-neutral-300"
+                        className="!bg-neutral-900 !text-neutral-300 text-base"
                       >
                         {e.name}
 

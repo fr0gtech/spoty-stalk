@@ -36,11 +36,11 @@ function Settings(){
               </FormGroup>
               <FormGroup
               label="Hide Discover Weekly"
-              helperText={showDiscoverWeekly?"Hiding songs from Discover Weekly" : "Showing songs from Discover Weekly"}
+              helperText={!showDiscoverWeekly?"Hiding songs from Discover Weekly" : "Showing songs from Discover Weekly"}
 
               >
               <Switch
-                defaultChecked={showDiscoverWeekly}
+                defaultChecked={!showDiscoverWeekly}
                 onChange={() =>
                   dispatch(setShowDiscoverWeekly(!showDiscoverWeekly))
                 }

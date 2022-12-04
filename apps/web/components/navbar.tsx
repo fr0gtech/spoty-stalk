@@ -1,4 +1,4 @@
-import { Tag, Button, Spinner, Switch, Icon, ButtonGroup } from "@blueprintjs/core";
+import { Tag, Button, Spinner, Switch, Icon, ButtonGroup, Divider } from "@blueprintjs/core";
 import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import PlaylistComp from "./playlist";
 import Link from "next/link";
@@ -34,14 +34,30 @@ function Navbar(props: any) {
             </h1>
           </Button>
           </Link>
-            <Tooltip2
-              position="bottom"
-              content={
-                <span className="text-xs"><Tag intent="none">Songs</Tag>, <Tag intent="warning">Playlists</Tag>,<Tag intent="primary"> Albums</Tag> and <Tag intent="danger">Artist</Tag>  posted on the subreddit</span>}>
+         
               <Link href="/recommended">
-                <Button className="!bg-neutral-800" active={router.pathname === "/recommended"} rightIcon={<Reddit height={16} width={16} fill={"#C6C6C6"} />}>Recommended</Button>
+                <Button className="!bg-neutral-800" active={router.pathname === "/recommended"} rightIcon={
+                   <Popover2
+                   interactionKind="hover"
+                   minimal
+                   className=""
+                   position="bottom"
+                   content={
+                    <div className="!bg-neutral-800 p-3">
+
+                    <span className="gap-1 text-xs flex">
+                      <Tag minimal intent="none">Songs</Tag>,
+                      <Tag minimal intent="warning">Playlists</Tag>,
+                      <Tag minimal intent="primary"> Albums</Tag> and
+                      <Tag minimal intent="danger">Artist</Tag>posted on the subreddit
+                    </span>
+                    </div>
+                    }>
+                    <Icon className="!ml-[2px] !mr-[1px] opacity-40" icon="info-sign"/>
+                    </Popover2>
+
+                }>Recommended</Button>
               </Link>
-            </Tooltip2>
             <PlaylistComp className="!bg-neutral-800" openInApp={props.openInApp} />
           </ButtonGroup>
           <div className="flex gap-2 text-xs opacity-70 items-center">

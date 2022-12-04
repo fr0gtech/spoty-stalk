@@ -43,7 +43,11 @@ function Info(){
                   Recommended:
                 </span>
                 <p>
-                  We track <span className="text-xs"><Tag intent="none">Songs</Tag>, <Tag intent="warning">Playlists</Tag>,<Tag intent="primary"> Albums</Tag> and <Tag intent="danger">Artist</Tag>  posted on the subreddit</span>
+                   <span className="flex gap-1">We track
+                   <Tag minimal intent="none">Songs</Tag>,
+                   <Tag minimal intent="warning">Playlists</Tag>,
+                   <Tag minimal intent="primary"> Albums</Tag> and
+                   <Tag minimal intent="danger">Artist</Tag>  posted on the subreddit</span>
 
                 </p>
 
