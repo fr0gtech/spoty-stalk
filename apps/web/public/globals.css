@@ -1,6 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "~@blueprintjs/core/lib/css/blueprint.css";
-@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
-@import "~@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+body, html{
+background-color: #171717;
+}
+.spotifyembed, .spotifyembed .bp4-popover2-content{
+  border-radius: 20px !important;
+}
+html {
+    scrollbar-color: #494949 #171717;
+    scrollbar-width: thin;
+  }
+  
+  /* WebKit and Chromiums */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #171717;
+  }
+  ::-webkit-scrollbar-corner {
+    background: rgba(0,0,0,0);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #494949;
+    border-radius: 5px;
+  }
+
+  .navbuttons .bp4-active{
+    background-color: #404040 !important;
+  }

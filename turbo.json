@@ -31,6 +31,8 @@
   },
   "globalDependencies": [],
   "globalEnv": [
+    "SUBREDDIT",
+    "SOUNDCLOUD_USER",
     "NEXT_PUBLIC_GITHUB_REPO",
     "NEXT_PUBLIC_GITHUB_USER",
     "NEXT_PUBLIC_TITLE",

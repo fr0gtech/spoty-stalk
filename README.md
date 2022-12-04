@@ -1,14 +1,17 @@
 # spoty-stalk
-
+ 
+ (can also stalk soundcloud likes)
 ![Screenshot 2022-11-30 at 20-00-14 Screenshot](https://user-images.githubusercontent.com/119510346/204888118-d3502171-8b73-40d8-b168-f9aca5bf40ad.png)
 A monorepo containing a frontend and backend for spoty-stalk. This app is pretty simple and put together quickly.
 
 ## Features
-- [x] hide discover weekly songs
-- [x] show top5 most added artist
-- [x] listen to preview
-- [x] last scan indicator
-- [ ] removed and duplication handling
+- [x] Source selection in menu
+- [x] Scan all playlists (spotify)
+- [X] Scan all likes (soundcloud)
+- [x] Keep track of changed playlists (add/remove)
+- [x] Hide discover weekly songs
+- [x] Show Top10 most added artist
+- [x] Listen to previews
 - much more can be done submit a pull request 
 
 ## How this works

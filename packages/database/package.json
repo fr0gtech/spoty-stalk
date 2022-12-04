@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
-    "prisma": "^4.6.1"
+    "prisma": "^4.7.1"
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^9.1.7",
