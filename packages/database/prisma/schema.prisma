@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["filteredRelationCount"]
 }
 
@@ -11,21 +11,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Scan{
-  id          Int    @id @default(autoincrement())
-  updated   Playlist[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Scan {
+  id        Int        @id @default(autoincrement())
+  sid       Int        @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
+
 model Playlist {
-  id          Int    @id @default(autoincrement())
-  sid         String @unique
-  name        String
-  images      Json
-  externalUrl String
-  description String
-  tracks      Int
-  updated     Scan[]
+  id             Int    @id @default(autoincrement())
+  sid            String @unique
+  name           String
+  images         Json
+  externalUrl    String
+  description    String
+  tracks         Int
   songs          Song[]
   lastSnapShotId String
 
@@ -34,14 +34,17 @@ model Playlist {
 }
 
 model Artist {
-  id          Int    @id @default(autoincrement())
-  sid         String? 
-  name        String @unique
+  id          Int     @id @default(autoincrement())
+  sid         String?
+  name        String
   externalUrl String?
   songs       Song[]
+  platform    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([name, platform])
 }
 
 model Song {
@@ -52,6 +55,8 @@ model Song {
   externalUrl String?
   images      Json
 
+  source String
+
   previewUrl String?
   durationMs Int
   playlists  Playlist[]
@@ -59,4 +64,23 @@ model Song {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Recommended{
+  id Int @id @default(autoincrement())
+  sid String
+  title String
+  artist String
+  url String
+  externalUrl String
+  description String
+  type String?
+  addedAt     DateTime
+  image String
+  source String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([title, artist])
 }
