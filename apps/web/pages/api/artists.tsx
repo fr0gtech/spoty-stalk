@@ -10,12 +10,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         _count: "desc"
       }
     },
+
     include: {
       _count: {
         select: { songs: true },
       },
     },
-    take: 5
+    take: 10
   });
 
   res.status(200).json({
