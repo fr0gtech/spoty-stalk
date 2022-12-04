@@ -5,7 +5,8 @@ import Spotify from "../public/spotify.svg";
 import Share from "../public/share.svg";
 import { selectOpenInApp, selectShowDiscoverWeekly, selectShowSoundCloud, selectShowSpotify, setOpenInApp, setShowDiscoverWeekly, setShowSoundCloud, setShowSpotify } from "../redux/settingSlice";
 import { useQueryClient } from "@tanstack/react-query";
-
+import Github from '../public/github.svg'
+import Link from "next/link";
 function Settings(){
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -84,9 +85,21 @@ function Settings(){
                 }
               ></Switch>
               </FormGroup>
+              
+              <div className="flex gap-2 items-center opacity-40 hover:opacity-100 duration-150">
+                <div className="text-xs">do you want to contribute?</div>
+                <div>
+                <Link href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USER as string}/${process.env.NEXT_PUBLIC_GITHUB_REPO}`}>
+
+              <Button className="!bg-neutral-800" icon={<Github height={16} width={16} fill={'#fff'}/>}>spoty-stalk</Button>
+              </Link>
+
+                </div>
+
+              </div>
             </div>
         }>
-            <Button className="!bg-neutral-800"  icon="settings"/>
+            <Button minimal  icon="settings"/>
         </Popover2>
     )
 }

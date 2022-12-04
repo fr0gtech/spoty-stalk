@@ -5,14 +5,16 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import { FocusStyleManager } from "@blueprintjs/core";
-import { wrapper } from "../redux/store";
+import store from "../redux/store"
+import { Provider } from "react-redux"
 FocusStyleManager.onlyShowFocusOnTabs();
 const queryClient = new QueryClient();
-function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
+    <Provider store={store}>
     <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />
     </QueryClientProvider>
+    </Provider>
   );
 }
-export default wrapper.withRedux(App);

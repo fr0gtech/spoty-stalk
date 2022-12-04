@@ -19,7 +19,7 @@ const initialState: SettingState = {
   showSoundCloud: true,
   showDiscoverWeekly: false,
   openInApp: true,
-  lastVisit: getCookie("left") || new Date(),
+  lastVisit: [], // arry of object of pages to track
 };
 
 // Actual Slice
@@ -27,8 +27,8 @@ export const settingSlice = createSlice({
   name: "setting",
   initialState,
   reducers: {
-    setLastVisit(state, action) {
-      state.lastVisit = action.payload;
+    setLastVisit(state, action) {    
+      state.lastVisit = [...state.lastVisit,action.payload];
     },
     setShowSpotify(state, action) {
       state.showSpotify = action.payload;

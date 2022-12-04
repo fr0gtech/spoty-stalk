@@ -21,24 +21,19 @@ function SoundcloudItem({song,index, lastVisit}:any){
               <div className="flex gap-1 leading-relaxed">
                 {song.artists.map((e: any, i: any) => {
                   return (
-                    <Link
-                      key={i}
-                      href={""}
-                    >
+                   
                       <Tag
                         className="!bg-neutral-900 !text-neutral-300"
                       >
                         {e.name}
 
                       </Tag>
-
-                    </Link>
                   );
                 })}
               </div>
 
             </div>
-            <div className="flex ml-8 items-center gap-3 grow text-neutral-300 text-xs text-left">
+            <div className="flex ml-5 items-center gap-3 grow text-neutral-300 text-xs text-left">
               <div>
               {isBefore(
                 new Date(lastVisit),

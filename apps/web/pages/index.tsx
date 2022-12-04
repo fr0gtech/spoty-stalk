@@ -6,7 +6,7 @@ import axios from "axios";
 import {
   Button,
 } from "@blueprintjs/core";
-import { format, subDays  } from "date-fns";
+import { format, formatDistance, formatDistanceToNow, formatISO, fromUnixTime, getUnixTime, isValid, parseISO, subDays  } from "date-fns";
 import { setCookie, getCookie } from "cookies-next";
 
 
@@ -14,23 +14,27 @@ import LoadingComp from "../components/loading";
 import React from "react";
 import Navbar from "../components/navbar";
 import Head from "next/head";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectLastVisit, selectOpenInApp, selectShowDiscoverWeekly, selectShowSoundCloud, selectShowSpotify, setLastVisit } from "../redux/settingSlice";
 import Nodata from "../components/nodata";
 import NewTag from "../components/newtag";
 import SoundcloudItem from "../components/soundcloudItem";
 import SpotifyItem from "../components/spotifyItem";
+import { useRouter } from "next/router";
+import { parseJSON } from "date-fns/esm";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 50;
 
 export default function Web() {
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const [lastVisit, setLastVisit] = useState<any>()
   const queryClient = useQueryClient()
   const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly)
   const openInApp = useSelector(selectOpenInApp)
   const showSpotify = useSelector(selectShowSpotify)
   const showSoundcloud = useSelector(selectShowSoundCloud)
-  const lastVisit = useSelector(selectLastVisit)
   const { ref, inView } = useInView();
   // const [hideDiscoverWeekly, setHideDiscoverWeekly] = useState<any>(true)
   const { data: topartists, error: pl_error } = useSWR(
@@ -55,13 +59,14 @@ export default function Web() {
       getPreviousPageParam: (firstPage) => firstPage.previusCursor,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
-  ); 
+  );
 
   useEffect(() => {
+    setLastVisit(getCookie(router.pathname) as any || new Date());
     return () => {
-      setCookie("left", new Date());
+      setCookie(router.pathname, new Date());
     };
-  }, []);
+  }, [router.pathname]);
 
   useEffect(() => {
     if (inView) {
@@ -74,7 +79,7 @@ export default function Web() {
       return topartists.data.map((artist: any) => artist.name)
     }
   }, [topartists])
-
+  
   // if (!data) return <LoadingComp />;
   return (
     <><Head>
@@ -83,7 +88,8 @@ export default function Web() {
       <link rel="icon" href="/favicon.ico" />
     </Head><div className="min-h-screen w-full bg-neutral-900 bp4-dark">
         <div className="container mx-auto p-1">
-          <Navbar isFetching={isFetching} />
+          <Navbar isFetching={isFetching} lastVisit={lastVisit} />
+          
           <div className="mt-2">
             <div className="pr-2 flex gap-3 flex-wrap text-white overflow-scroll max-h-[calc(100vh-70px)]">
               {data &&
@@ -131,3 +137,4 @@ export default function Web() {
       </div></>
   );
 }
+

@@ -18,65 +18,54 @@ function Navbar(props: any) {
     refreshInterval: 60000,
   });
 
-  const lastScanState = (lastscan && lastscan.data) ? formatDistanceToNow(new Date(lastscan.data.createdAt), {
+  const lastScanState = (lastscan && lastscan.data) ? formatDistanceToNow(new Date(lastscan.data.updatedAt), {
     addSuffix: true, includeSeconds: true
   }) : "loading"
 
   return (
-    <nav className="flex py-3 items-center sm:gap-3 justify-between border-b-1 border-neutral-700">
+    <nav className="flex items-center sm:gap-3 justify-between border-b-1 border-neutral-700">
       <div className="flex sm:gap-3 items-center relative">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl">
-            {(process.env.NEXT_PUBLIC_TITLE as string) || "frogstalk"}
-          </h1>
-          <div className="flex gap-2 text-xs opacity-70 items-center">
-            <span>by</span>
-            <Link href={"https://frogtech.dev"} >
-              frogtech
-            </Link>
-            <div className="rounded w-1 h-1 bg-slate-200 animate-pulse"></div>
-            <div>
-              {`last scan ${lastScanState}`}
-            </div>
-            <div>
-            </div>
-          </div>
-        </div>
-        {lastScanState && lastScanState !== null && (
-          <div className="text-xs opacity-70">
-
-          </div>
-        )}
-        {/* <div className="!absolute -right-10">
-          {props.isFetching && <Spinner size={20} />}
-        </div> */}
-      </div>
-      <Info/>
-      <div className="flex gap-3 items-center">
-        <div className="flex items-center gap-3">
-          
-        <ButtonGroup className="navbuttons">
-         
-          <Link href="/" >
-           <Button active={router.pathname === "/"} className="!bg-neutral-800"  icon="home">
-            Home
+        <ButtonGroup minimal className="navbuttons gap-1">
+        <Link href="/" className="!text-white !no-underline" >
+          <Button active={router.pathname === '/'} className="!bg-neutral-800">
+            <h1 className="font-bold">
+                {(process.env.NEXT_PUBLIC_TITLE as string) || "frogstalk"}
+            </h1>
           </Button>
           </Link>
-          
-          <Tooltip2
-            content={
-                <span className="text-xs"><Tag intent="none">Songs</Tag>, <Tag intent="warning">Playlists</Tag>,<Tag intent="primary"> Albums</Tag> and <Tag intent="danger">Artist</Tag>  posted on the subreddit</span>
-
-              }          
-          >
-          <Link  href="/recommended">
-          <Button className="!bg-neutral-800" active={router.pathname === "/recommended"} rightIcon={<Reddit height={20} width={20} fill={"#C6C6C6"} />}>Recommended</Button>
-          </Link>
-          </Tooltip2>
-          <PlaylistComp className="!bg-neutral-800" openInApp={props.openInApp} />
-          <Settings />
+            <Tooltip2
+              position="bottom"
+              content={
+                <span className="text-xs"><Tag intent="none">Songs</Tag>, <Tag intent="warning">Playlists</Tag>,<Tag intent="primary"> Albums</Tag> and <Tag intent="danger">Artist</Tag>  posted on the subreddit</span>}>
+              <Link href="/recommended">
+                <Button className="!bg-neutral-800" active={router.pathname === "/recommended"} rightIcon={<Reddit height={16} width={16} fill={"#C6C6C6"} />}>Recommended</Button>
+              </Link>
+            </Tooltip2>
+            <PlaylistComp className="!bg-neutral-800" openInApp={props.openInApp} />
           </ButtonGroup>
+          <div className="flex gap-2 text-xs opacity-70 items-center">
+            <span>by</span>
+            <Link href={"https://frogtech.dev"} className="!text-white" >
+              frogtech
+            </Link>
+            {/* <Tooltip2
+              content={}>
+              <div className="rounded w-1 m-2 h-1 bg-slate-200 animate-pulse"></div>
+            </Tooltip2> */}
+          </div>
         </div>
+      </div>
+      <div className="text-xs opacity-50">
+                {`last scan ${lastScanState}`}
+              </div>
+      {/* <div className="text-xs">
+        {props.lastVisit && `last visit ${formatDistance(new Date(props.lastVisit), new Date(), { addSuffix: true })}`}
+      </div> */}
+      <div className="mr-2">
+      <Info />
+      <Settings />
+
       </div>
     </nav>
   );

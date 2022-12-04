@@ -64,7 +64,7 @@ function SpotifyItem({song, index, openInApp, topartistsname, lastVisit}:any){
             </div>
             <div className="!z-10 flex items-center gap-1">
 
-              <div className="mix-blend-difference ml-8 gap-3 flex grow text-neutral-300 text-xs text-left">
+              <div className="mix-blend-difference ml-5 gap-3 flex grow text-neutral-300 text-xs text-left">
                 <div>
                 {isBefore(
                   new Date(lastVisit),

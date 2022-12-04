@@ -6,7 +6,7 @@ import axios from "axios";
 import {
   Button, Tag,
 } from "@blueprintjs/core";
-import { format, formatDistance, isBefore } from "date-fns";
+import { format, formatDistance, formatISO, isBefore, subDays } from "date-fns";
 import { setCookie, getCookie } from "cookies-next";
 
 import Soundcloud from "../public/soundcloud.svg"
@@ -25,17 +25,20 @@ import SpotifyItem from "../components/spotifyItem";
 import PreviewSC from "../components/previewSC";
 import PreviewSP from "../components/previewSP";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 50;
 
 export default function Web() {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly)
   const openInApp = useSelector(selectOpenInApp)
   const showSpotify = useSelector(selectShowSpotify)
   const showSoundcloud = useSelector(selectShowSoundCloud)
-  const lastVisit = useSelector(selectLastVisit)
+  const [lastVisit, setLastVisit] = useState<any>()
+
   const { ref, inView } = useInView();
   // const [hideDiscoverWeekly, setHideDiscoverWeekly] = useState<any>(true)
   const { data: topartists, error: pl_error } = useSWR(
@@ -61,31 +64,14 @@ export default function Web() {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-
-  // const onChange = useCallback(
-  //   async () => {
-  //     if (!isFetching) queryClient.removeQueries({ queryKey: ['songs'], type: 'active' })
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [isFetching, queryClient, showSpotify, showSoundcloud],
-  // )
-
-  //   useEffect(()=>{
-  //     onChange()
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   },[showSpotify, showSoundcloud])
-
+  
   useEffect(() => {
+    setLastVisit(getCookie(router.pathname) as any || new Date());
     return () => {
-      setCookie("left", new Date());
+      setCookie(router.pathname, new Date());
     };
-  }, []);
+  }, [router.pathname]);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setNow(format(new Date(), "MM/dd/yyyy - h:m:ss"));
-  //   }, 1000);
-  // }, [now]);
 
   useEffect(() => {
     if (inView) {
@@ -102,7 +88,7 @@ export default function Web() {
       <link rel="icon" href="/favicon.ico" />
     </Head><div className="min-h-screen w-full bg-neutral-900 bp4-dark">
         <div className="container mx-auto p-1">
-          <Navbar isFetching={isFetching} />
+          <Navbar isFetching={isFetching} lastVisit={lastVisit} />
           <div className="mt-2">
             <div className="pr-2 flex gap-3 flex-wrap text-white overflow-scroll max-h-[calc(100vh-70px)]">
               {data &&
@@ -150,7 +136,7 @@ export default function Web() {
 
                                 }
                               </div>
-                              <div className="flex ml-8 gap-3 items-center justify-between grow text-neutral-300 text-xs text-left">
+                              <div className="flex ml-5 gap-3 items-center justify-between grow text-neutral-300 text-xs text-left">
                                 <div>
                               {isBefore(
                                 new Date(lastVisit),
