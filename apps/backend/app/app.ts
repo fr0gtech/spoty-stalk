@@ -5,8 +5,8 @@ import { syncSoundCloud } from "./soundcloud";
 import { scanInfo } from "./helpers";
 import { syncSpotify } from "./spotify";
 import { syncReddit } from "./recommended";
-
-dotenv.config({ path: "../../.env" });
+import cron from 'node-cron'
+dotenv.config({ path: "../../../.env" });
 
 
 export const spotifyApi = new SpotifyWebApi({
@@ -32,9 +32,9 @@ const run = async () => {
 run()
 
 
-// cron.schedule('* * * * *', () => {
-//   run()
-// });
+cron.schedule('* * * * *', () => {
+  run()
+});
 
 
 
