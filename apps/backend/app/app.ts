@@ -6,9 +6,8 @@ import { scanInfo } from "./helpers";
 import { syncSpotify } from "./spotify";
 import { syncReddit } from "./recommended";
 import cron from 'node-cron'
-dotenv.config({ path: "../../.env" });
-
-console.log(process.env);
+import path from "path";
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 export const spotifyApi = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
