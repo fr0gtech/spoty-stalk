@@ -1,19 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body, html{
-background-color: #171717;
-}
-.spotifyembed, .spotifyembed .bp4-popover2-content{
-  border-radius: 20px !important;
-}
-html {
-    scrollbar-color: #494949 #171717;
-    scrollbar-width: thin;
+  body, html{
+  background-color: #171717;
+  font-size: 18px;
   }
-  
+  #scslider .bp4-slider-handle{
+    background: #494949 !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 100%;
+    margin-top: 5px;
+    box-shadow: none;
+  }
+  html {
+    scrollbar-color: transparent transparent !important;
+    scrollbar-width: none !important;
+  }
+  #sccheck .bp4-control{
+    margin-bottom: 0 !important;
+  }
+  #spcheck .bp4-control{
+    margin-bottom: 0 !important;
+  }
+  #sccheck .bp4-control input:checked ~ .bp4-control-indicator{
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  #sccheck .bp4-control input ~ .bp4-control-indicator{
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  #sccheck .bp4-control.bp4-checkbox input:checked ~ .bp4-control-indicator::before {
+    background-image: url("/soundcloud.svg") !important;
+    filter: grayscale(0);
+    margin-top: 2px;
+    background-repeat: no-repeat;
+  }
+  #sccheck .bp4-control.bp4-checkbox input ~ .bp4-control-indicator::before {
+    filter: grayscale(1);
+    background-image: url("/soundcloud.svg") !important;
+    background-repeat: no-repeat;
+    margin-top: 2px;
+
+  }
+  #spcheck .bp4-control input:checked ~ .bp4-control-indicator{
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  #spcheck .bp4-control input ~ .bp4-control-indicator{
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  #spcheck .bp4-control.bp4-checkbox input:checked ~ .bp4-control-indicator::before {
+    background-image: url("/spotify.svg") !important;
+    filter: grayscale(0)
+  }
+  #spcheck .bp4-control.bp4-checkbox input ~ .bp4-control-indicator::before {
+    filter: grayscale(1);
+    background-image: url("/spotify.svg") !important;
+  }
   /* WebKit and Chromiums */
   ::-webkit-scrollbar {
+    display: none !important;
     width: 8px;
     height: 8px;
     background-color: #171717;
@@ -29,4 +78,11 @@ html {
 
   .navbuttons .bp4-active{
     background-color: #404040 !important;
+  }
+
+  .playerbuttons .bp4-active{
+    background-color: #404040 !important;
+  }
+  .volumeSlider .bp4-slider-progress.bp4-intent-primary, .seekSlider .bp4-slider-progress.bp4-intent-primary{
+    background-color: rgb(146, 146, 146) !important;
   }

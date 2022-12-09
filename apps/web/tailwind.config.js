@@ -10,8 +10,13 @@ module.exports = {
             'gradient-x':'gradient-x 5s ease infinite',
             'gradient-y':'gradient-y 5s ease infinite',
             'gradient-xy':'gradient-xy 5s ease infinite',
+            border: 'border 4s ease infinite',
         },
         'keyframes': {
+            border: {
+                '0%, 100%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+              },
             'gradient-y': {
                 '0%, 100%': {
                     'background-size':'400% 400%',

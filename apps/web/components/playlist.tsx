@@ -72,7 +72,7 @@ function PlaylistComp(props: any) {
         </div>
       }
     >
-      <Button className={props.className}>Playlists</Button>
+      <Button small className={props.className}>Playlists</Button>
     </Popover2>)
 }
 export default PlaylistComp

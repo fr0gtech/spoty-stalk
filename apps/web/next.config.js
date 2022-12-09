@@ -1,6 +1,6 @@
 module.exports = {
   images:{
-    domains: ['i.scdn.co', 'mosaic.scdn.co', 'scdn.co', 'newjams-images.scdn.co']
+    domains: ['i.scdn.co', 'mosaic.scdn.co', 'scdn.co', 'newjams-images.scdn.co', 'i1.sndcdn.com']
   },
   reactStrictMode: true,
   experimental: {

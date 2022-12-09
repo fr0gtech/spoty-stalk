@@ -1,9 +1,12 @@
-import { Button, Tag } from "@blueprintjs/core"
+import { Button, Code, Tag } from "@blueprintjs/core"
 import { Popover2 } from "@blueprintjs/popover2"
+import { useSession } from "next-auth/react";
 import NewTag from "./newtag"
 
 function Info(){
-    return (
+  const {data: session}:any = useSession();
+
+  return (
         <Popover2
             minimal
             content={
@@ -51,7 +54,7 @@ function Info(){
 
                 </p>
 
-               
+               {/* <Code><pre>{JSON.stringify(session, null, 4)}</pre></Code> */}
               </div>
             }
           >

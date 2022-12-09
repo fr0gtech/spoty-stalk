@@ -7,8 +7,8 @@ const logger = log.child({name: 'soundcloudSong'})
 
 export const saveSongSC = async (song: any, artist: any) => {
     if (song.track === undefined || song.track.title === undefined) return // if liked thing has no track             
-    // logger.debug(`running saveSongSC: ${song.track.title || undefined} - ${artist.name}`)
-  
+    // logger.debug(`running saveSongSC: ${song.track.title || undefined} - ${artist.name}`)    
+
     return await prisma.song
       .upsert({
         where: { sid: song.track.id.toString() },

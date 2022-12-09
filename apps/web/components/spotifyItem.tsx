@@ -1,4 +1,4 @@
-import { Tag, Icon } from "@blueprintjs/core";
+import { Tag, Icon, Button } from "@blueprintjs/core";
 import { isBefore, formatDistance } from "date-fns";
 import Link from "next/link";
 import React from "react";
@@ -7,16 +7,24 @@ import Preview from "./preview";
 import SoundcloudItem from "./soundcloudItem";
 import Spotify from "../public/spotify.svg";
 import Share from "../public/share.svg";
-function SpotifyItem({song, index, openInApp, topartistsname, lastVisit}:any){
+import { useDispatch, useSelector } from "react-redux";
+import { selectToPlay, setToPlay } from "../redux/settingSlice";
+import { data } from "autoprefixer";
+
+function SpotifyItem({song, songIndex, pageIndex, openInApp, topartistsname, lastVisit}:any){
+  const dispatch = useDispatch()
+  const toPlay = useSelector(selectToPlay)
+  const isPlaying = toPlay === songIndex + pageIndex * 50
     return (
         <div
-          key={index}
-          className="max-w-full bg-slate-900 shadow-md rounded h-[56px] flex flex-col relative grow"
+          key={songIndex + pageIndex * 50}
+          className={ "max-w-full bg-slate-900 shadow-md rounded flex flex-col relative grow cursor-pointer"}
+          onClick={()=>dispatch(setToPlay(songIndex + pageIndex * 50))}
         >
-
-          <div className="!z-10 w-full p-2 bg-opacity-90 gap-2 rounded bg-neutral-800">
+          <div className={!isPlaying ? "!z-10 w-full p-2 bg-opacity-90 gap-2 rounded bg-neutral-800" : "!z-10 w-full p-2 bg-opacity-40 gap-2 rounded bg-neutral-800"}>
             <div className="flex gap-2 justify-start">
-              <Preview song={song} />
+              {/* <Preview song={song} /> */}
+              {/* <Button minimal intent={ isPlaying ? "success" : "none"} icon="play" onClick={()=>dispatch(setToPlay(songIndex + pageIndex * 50))}/> */}
               <h4 title={song.name} className="text-white leading-relaxed mix-blend-difference text-[15px] truncate font-semibold">
                 {song.name.replace(/\(([^)]+)\)/, "").split('-')[0]}
 
@@ -64,13 +72,11 @@ function SpotifyItem({song, index, openInApp, topartistsname, lastVisit}:any){
             </div>
             <div className="!z-10 flex items-center gap-1">
 
-              <div className="mix-blend-difference ml-5 gap-3 flex grow text-neutral-300 text-xs text-left">
-                <div>
+              <div className="mix-blend-difference gap-3 flex grow text-neutral-300 text-xs text-left">
                 {isBefore(
                   new Date(lastVisit),
                   new Date(song.addedAt)
                 ) && <NewTag/>}
-                </div>
                 <div>
                 {`added 
                 ${formatDistance(
@@ -114,7 +120,7 @@ function SpotifyItem({song, index, openInApp, topartistsname, lastVisit}:any){
           </div>
           {song.images[0] && (
             <div
-              className="h-[56px] rounded bg-cover bg-center w-full absolute !z-0 brightness-50"
+              className={"h-full bg-fill w-full rounded bg-center absolute !z-0 brightness-50"}
               style={{
                 backgroundImage: `url(${song.images[0].url || ""})`,
               }} />

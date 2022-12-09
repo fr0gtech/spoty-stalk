@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormGroup, Icon, InputGroup, Switch } from "@blueprintjs/core";
+import { Button, Checkbox, FormGroup, Icon, InputGroup, Slider, Switch } from "@blueprintjs/core";
 import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import { useDispatch, useSelector } from "react-redux";
 import Spotify from "../public/spotify.svg";
@@ -7,9 +7,11 @@ import { selectOpenInApp, selectShowDiscoverWeekly, selectShowSoundCloud, select
 import { useQueryClient } from "@tanstack/react-query";
 import Github from '../public/github.svg'
 import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 function Settings(){
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { data: session, status }: any = useSession();
 
   const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly)
   const openInapp = useSelector(selectOpenInApp)
@@ -20,7 +22,18 @@ function Settings(){
         minimal
         content={
             <div className="p-3 bg-neutral-800">
+              <div className="flex justify-between items-start">
               <h3 className="text-xl mb-2">Settings</h3>
+              {session && (
+          <Button
+                title="Log Out"
+            minimal
+            intent="danger"
+            icon="log-out"
+            onClick={() => signOut()}
+          />
+        )}
+              </div>
               <FormGroup
               label="Sources"
               >
@@ -84,14 +97,13 @@ function Settings(){
                   </span>
                 }
               ></Switch>
-              </FormGroup>
-              
+              </FormGroup>              
               <div className="flex gap-2 items-center opacity-40 hover:opacity-100 duration-150">
-                <div className="text-xs">do you want to contribute?</div>
-                <div>
+                <div className="text-xs truncate">do you want to contribute?</div>
+                <div className="grow">
                 <Link href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USER as string}/${process.env.NEXT_PUBLIC_GITHUB_REPO}`}>
 
-              <Button className="!bg-neutral-800" icon={<Github height={16} width={16} fill={'#fff'}/>}>spoty-stalk</Button>
+              <Button className="!bg-neutral-800 truncate" icon={<Github height={16} width={16} fill={'#fff'}/>}>spoty-stalk</Button>
               </Link>
 
                 </div>

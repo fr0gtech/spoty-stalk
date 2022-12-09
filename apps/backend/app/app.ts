@@ -10,8 +10,8 @@ import path from "path";
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 export const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
 const logger = log.child({name: 'app'})
