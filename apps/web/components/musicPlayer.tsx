@@ -446,10 +446,10 @@ function MusicPlayer() {
   return (
     <>
       <div className="flex">
-        <div className="flex gap-[20%] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
+        <div className="flex md:gap-[20%] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
           {/* <div>{JSON.stringify(songDetails)}</div> */}
           {songDetails && songDetails.song ? (
-            <div className="flex gap-2 w-[10%]">
+            <div className="flex gap-2 md:w-[10%]">
               {songDetails.song.image === "" ? (
                 <Image
                   src="/frog.png"
@@ -506,7 +506,9 @@ function MusicPlayer() {
             </div>
           )}
           {renderButtons()}
+          <div className="hidden md:flex">
           {volumeSlider()}
+          </div>
         </div>
       </div>
       <div className="opacity-0 !-z-10 absolute bottom-0 left-0">

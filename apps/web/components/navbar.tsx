@@ -8,8 +8,9 @@ import {
   Divider,
   FormGroup,
   Checkbox,
+  Menu,
 } from "@blueprintjs/core";
-import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
+import { MenuItem2, Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import PlaylistComp from "./playlist";
 import Link from "next/link";
 import useSWR from "swr";
@@ -63,7 +64,10 @@ function Navbar(props: any) {
     <nav className="flex items-center sm:gap-3 mx-[2px] mb-1 justify-between border-b-1 border-neutral-700">
       <div className="flex sm:gap-3 items-center relative">
         <div className="flex items-center gap-3">
-          <ButtonGroup minimal className="navbuttons gap-1 items-center">
+          <ButtonGroup
+            minimal
+            className="navbuttons gap-1 items-center "
+          >
             <Link href="/" className="!text-white !no-underline">
               <Button
                 small
@@ -121,14 +125,17 @@ function Navbar(props: any) {
                 Recommended
               </Button>
             </Link>
+            <div className="hidden sm:block">
+
             <PlaylistComp
-              className="!bg-neutral-800"
+              className="!bg-neutral-800 "
               openInApp={props.openInApp}
             />
+            </div>
           </ButtonGroup>
           {/* <LoginComp/> */}
 
-          <div className="flex gap-2 text-xs opacity-70 items-center">
+          <div className="flex gap-2 text-xs hidden md:block opacity-70 items-center">
             <span>by</span>
             <Link href={"https://frogtech.dev"} className="!text-white">
               frogtech
@@ -136,13 +143,13 @@ function Navbar(props: any) {
           </div>
         </div>
       </div>
-      <div className="text-xs opacity-50">{`last scan ${lastScanState}`}</div>
+      <div className="text-xs opacity-50 hidden md:block ">{`last scan ${lastScanState}`}</div>
       <div className="flex">
         <div id="spcheck" className="text-xs">
           <Checkbox
             inline
             checked={showSpotify}
-            label="Spotify"
+            label=""
             onChange={() => {
               queryClient.removeQueries({
                 queryKey: ["songs"],
@@ -155,7 +162,7 @@ function Navbar(props: any) {
         <div id="sccheck" className="text-xs">
           <Checkbox
             checked={showSoundclud}
-            label="Soundcloud"
+            label=""
             onChange={() => {
               queryClient.removeQueries({
                 queryKey: ["songs"],
