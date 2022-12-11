@@ -240,8 +240,8 @@ export default function Index() {
                                   );
                               }}
                             >
-                              <div className="flex gap-3">
-                                <div className="absolute bg-neutral-800 mx-auto">
+                              <div className="flex gap-3 ">
+                                <div className="absolute bg-neutral-800 mx-auto !z-10">
                                   {song.source === "soundcloud" && !session && (
                                     <PreviewSC id={song.sid} />
                                   )}

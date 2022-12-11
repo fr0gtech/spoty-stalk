@@ -49,11 +49,13 @@ export default NextAuth({
         token.expiresAt = account.expires_at;
         token.refreshToken = account.refresh_token;
         token.accessToken = account.access_token;
+
         if (Date.now() / 1000 > token.expiresAt) {
           const newToken = await refreshAccessToken(token);
           token.expiresAt = newToken.expiresAt;
           token.accessToken = newToken.accessToken;
         }
+
       }
 
       return token;
