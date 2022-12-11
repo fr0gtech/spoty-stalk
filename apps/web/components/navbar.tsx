@@ -60,7 +60,7 @@ function Navbar(props: any) {
       : "loading";
 
   return (
-    <nav className="flex items-center sm:gap-3 justify-between border-b-1 border-neutral-700">
+    <nav className="flex items-center sm:gap-3 mx-[2px] mb-1 justify-between border-b-1 border-neutral-700">
       <div className="flex sm:gap-3 items-center relative">
         <div className="flex items-center gap-3">
           <ButtonGroup minimal className="navbuttons gap-1 items-center">
@@ -166,10 +166,7 @@ function Navbar(props: any) {
           />
         </div>
       </div>
-      <div className="mr-2">
-        
-        <Settings />
-      </div>
+      <Settings />
     </nav>
   );
 }
