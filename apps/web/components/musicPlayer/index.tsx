@@ -187,6 +187,7 @@ function MusicPlayer() {
       scref.current.seekTo(seekset, "seconds");
     if (spref.current && seekset && player === "spotify")
       seekSPFN((seekset * 1000).toFixed(0));
+      return ()=> setSeekset(0)
   }, [seekset, player, scref, spref, session, seekSPFN]);
 
   // song to play
@@ -214,7 +215,7 @@ function MusicPlayer() {
   // play setter 
   useEffect(() => {
     if (playSetter && ready) {
-      setSeek(0);
+      setSeek(0)
       setLastSong();
       setPlaying(true);
     } else if (playSetter) {
@@ -236,7 +237,6 @@ function MusicPlayer() {
 
   // get soundcloud song details
   const getSCDetails = useCallback(async () => {
-    console.log("getSCdetails");
     const player = scref.current.getInternalPlayer();
     player.getCurrentSound(function (sound: any) {
       if (!sound) return;
@@ -381,7 +381,7 @@ function MusicPlayer() {
               showTrackFill={true}
               intent="primary"
               onRelease={(e) => {
-                setSeekset(e);
+                setSeekset(e);                
                 setIsHolding(false);
               }}
               min={0}
@@ -482,7 +482,9 @@ function MusicPlayer() {
           </div>
         </div>
       </div>
-      <div className="opacity-0 !-z-10 absolute bottom-0 left-0">
+      <div
+      className="opacity-0 !-z-10 absolute bottom-0 left-0"
+      >
         <SpotifyPlayer
           initialVolume={volume}
           callback={async (e) => {
@@ -525,7 +527,7 @@ function MusicPlayer() {
           ref={spref as any}
           syncExternalDevice={true}
           token={accessToken}
-          uris={songToPlay}
+          uris={songToPlay && songToPlay.includes('soundcloud') ? ["spotify:track:xxxxxxxxxxxxxxxxxxxxxx"] : songToPlay}
         />
         <ReactPlayer
           muted={volume === 0}

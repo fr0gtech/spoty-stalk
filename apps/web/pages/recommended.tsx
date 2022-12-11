@@ -32,6 +32,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../components/layout";
 import PreviewSP from "../components/musicItem/previewSP";
+import MusicPlayer from "../components/musicPlayer";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 50;
@@ -105,7 +106,7 @@ export default function Recommended() {
       </Head>
       <Layout>
         <div className="mt-2">
-          <div className="pr-2 flex gap-3 flex-wrap text-white overflow-scroll h-[calc(100vh-130px)] max-h-[calc(100vh-130px)]">
+          <div className="pr-2 flex gap-3 flex-wrap text-white overflow-scroll h-[calc(100vh-20px)] max-h-[calc(100vh-20px)]">
             {data &&
               data.pages.map((page: any) => {
                 if (page.data.length === 0) return <Nodata />;
