@@ -72,7 +72,7 @@ function MusicPlayer() {
   // Set initial vars for refreshing token
   useEffect(() => {
     if (session){
-      setAccessToken(session.access_token);
+      setAccessToken(session.accessToken);
       setTokenExpires(session.expiresAt);
     }
   }, [session]);
