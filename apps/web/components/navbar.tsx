@@ -1,31 +1,20 @@
 import {
   Tag,
   Button,
-  Spinner,
-  Switch,
   Icon,
   ButtonGroup,
-  Divider,
-  FormGroup,
   Checkbox,
-  Menu,
 } from "@blueprintjs/core";
-import { MenuItem2, Popover2, Tooltip2 } from "@blueprintjs/popover2";
+import { MenuItem2, Popover2 } from "@blueprintjs/popover2";
 import PlaylistComp from "./playlist";
 import Link from "next/link";
 import useSWR from "swr";
 import { fetcher } from "../pages";
-import { formatDistance, formatDistanceToNow } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import {  formatDistanceToNow } from "date-fns";
 import Settings from "./settings";
-import Image from "next/image";
-import Github from "../public/github.svg";
-import Info from "./info";
-import Reddit from "../public/reddit.svg";
 import { useRouter } from "next/router";
 import LoginComp from "./login";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Spotify from "../public/spotify.svg";
+import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -40,9 +29,6 @@ import {
 function Navbar(props: any) {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-
-  const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
-  const openInapp = useSelector(selectOpenInApp);
   const showSpotify = useSelector(selectShowSpotify);
   const showSoundclud = useSelector(selectShowSoundCloud);
   const { data: session, status }: any = useSession();
@@ -135,9 +121,9 @@ function Navbar(props: any) {
           </ButtonGroup>
           {/* <LoginComp/> */}
 
-          <div className="flex gap-2 text-xs hidden md:block opacity-70 items-center">
+          <div className="hidden gap-2 text-xs md:flex opacity-70 items-center">
             <span>by</span>
-            <Link href={"https://frogtech.dev"} className="!text-white">
+            <Link target="_blank" href={"https://frogtech.dev"} className="!text-white">
               frogtech
             </Link>
           </div>

@@ -1,11 +1,11 @@
 import { Tag } from "@blueprintjs/core";
 import useSWR from "swr";
-import { fetcher } from "../pages";
+import { fetcher } from "../../pages";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { selectOpenInApp } from "../redux/settingSlice";
-import Spotify from "../public/spotify.svg";
-import Soundcloud from "../public/soundcloud.svg";
+import { selectOpenInApp } from "../../redux/settingSlice";
+import Spotify from "../../public/spotify.svg";
+import Soundcloud from "../../public/soundcloud.svg";
 import { Tooltip2 } from "@blueprintjs/popover2";
 
 function Top10(props: any) {

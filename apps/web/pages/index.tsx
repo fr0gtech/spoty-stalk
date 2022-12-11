@@ -24,15 +24,15 @@ import {
   setSpotifySongs,
   setToPlay,
 } from "../redux/settingSlice";
-import Nodata from "../components/nodata";
+import Nodata from "../components/musicItem/nodata";
 import { useRouter } from "next/router";
 import Layout from "../components/layout";
 import Spotify from "../public/spotify.svg";
 import Soundcloud from "../public/soundcloud.svg";
 import dynamic from "next/dynamic";
 import { Toast } from "../components/toaster";
-import PreviewSC from "../components/previewSC";
-import Preview from "../components/preview";
+import PreviewSC from "../components/musicItem/previewSC";
+import Preview from "../components/musicItem/preview";
 import { useSession } from "next-auth/react";
 import MusicPlayer from "../components/musicPlayer";
 import Link from "next/link";
@@ -172,9 +172,9 @@ export default function Index() {
           <div className="overflow-scroll rounded">
             <div className="gap-2 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-8 text-white rounded">
               {!data &&
-                [...Array(100)].map(() => {
+                [...Array(100)].map((value:any, i:any) => {
                   return (
-                    <div className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]">
+                    <div key={i} className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]">
                       <div className="flex items-center h-full p-2 gap-3">
                         <div>
                           <div className="h-[50px] w-[50px] bg-neutral-800 rounded"></div>

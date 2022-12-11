@@ -1,5 +1,5 @@
-import { signIn, useSession } from "next-auth/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SpotifyPlayer from "react-spotify-web-playback";
 import {
@@ -11,29 +11,25 @@ import {
   setSongDetails,
   setSongPlaying,
   setToPlay,
-} from "../redux/settingSlice";
+} from "../../redux/settingSlice";
 import ReactPlayer from "react-player/soundcloud";
 import {
   Button,
   ButtonGroup,
-  Divider,
   Icon,
   Slider,
-  Tag,
 } from "@blueprintjs/core";
-import { fromUnixTime, isPast } from "date-fns";
-import MusicPlayerNeedsLogin from "./musicPlayerNeedsLogin";
-import Spotify from "../public/spotify.svg";
-import Soundcloud from "../public/soundcloud.svg";
-import toast from "react-simple-toasts";
+import { isPast } from "date-fns";
+import MusicPlayerNeedsLogin from "./needsLogin";
+import Spotify from "../../public/spotify.svg";
+import Soundcloud from "../../public/soundcloud.svg";
 import Image from "next/image";
-import { shimmer, toBase64 } from "../pages";
+import { shimmer, toBase64 } from "../../pages";
 import Link from "next/link";
-import { Toast } from "./toaster";
-import useStorage from "../hooks/useSessionStorage";
+import { Toast } from "../toaster";
+import useStorage from "../../hooks/useSessionStorage";
 import { useRouter } from "next/router";
-import MusicPlayerCantPlayHere from "./musicPlayCantPlayHere";
-import { getToken } from "next-auth/jwt";
+import MusicPlayerCantPlayHere from "./cantPlayHere";
 
 function MusicPlayer() {
   const dispatch = useDispatch();
@@ -73,55 +69,49 @@ function MusicPlayer() {
   const [accessToken, setAccessToken] = useState<any>();
   const [tokenExpires, setTokenExpires] = useState<any>();
 
+  // Set initial vars for refreshing token
+  useEffect(() => {
+    if (session){
+      setAccessToken(session.access_token);
+      setTokenExpires(session.expiresAt);
+    }
+  }, [session]);
+
+  // Refresh token when needed FIXME
+  useEffect(() => {
+    const get = async () => {
+      await fetch("/api/refreshtoken?token=" + session.refreshToken).then(
+        async (e) => {
+          const body = await e.json();
+          setAccessToken(body.accessToken);
+          setTokenExpires(body.expiresAt);
+        }
+      );
+    }
+    if (session && isPast(new Date(tokenExpires * 1000))) get()
+  }, [session, tokenExpires]);
+
+  // Load saved volume from localstorage
   useEffect(() => {
     const oldV = getItem("volume");
-    if (oldV) {
-      console.log("setting nold", volume);
-
-      setVolume(parseFloat(oldV));
-    }
-    // if (spref.current){
-    //   console.log(spref.current);
-
-    // }
+    if (oldV) setVolume(parseFloat(oldV));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (spref.current) {
-      // console.log(spref.current);
-    }
-  }, [spref]);
-
-  const getTokenAndSet = useCallback(async () => {
-    await fetch("/api/refreshtoken?token=" + session.refreshToken).then(
-      async (e) => {
-        const body = await e.json();
-        setAccessToken(body.accessToken);
-        setTokenExpires(body.expiresAt);
-      }
-    );
-  }, [session]);
-
-  // this is pretty bad fix for now
-  useEffect(() => {
-    if (session) {
-      setAccessToken(session.access_token);
-      setTokenExpires(session.expiresAt);
-      if (isPast(new Date(tokenExpires * 1000))) {
-        // get new token
-        getTokenAndSet();
-        // signIn()
-      }
-    }
-  }, [getTokenAndSet, session, tokenExpires]);
-
+  // Save volume to localstorage
   useEffect(() => {
     if (volume) setItem("volume", volume.toString());
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [volume]);
 
+  // VOLUME
+  useEffect(() => {
+    if (volume !== undefined && spref.current && player === "spotify")
+      spref.current.setVolume(volume);
+  }, [volume, spref, player]);
+
+
+  // Seek in
   const seekSPFN = useCallback(
     async (position: any) => {
       await fetch(
@@ -138,6 +128,7 @@ function MusicPlayer() {
     [session]
   );
 
+  // Next song function handles shuffle and things
   const nextSong = useCallback(() => {
     if (shuffle) {
       dispatch(
@@ -153,19 +144,16 @@ function MusicPlayer() {
       dispatch(setToPlay(0));
       return;
     }
-    // so we need to get next song url
+
     const next = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) + 1];
-    if (next) {
-      dispatch(setToPlay(next));
-    } else {
-      dispatch(setToPlay(loadedSongsMapped[0]));
-    }
-    setSeek(0);
-    // dispatch(setToPlay(toPlay !== null ? toPlay + 1 : 0));
+    next
+    ? dispatch(setToPlay(next))
+    : dispatch(setToPlay(loadedSongsMapped[0]));
+
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
+  // Prev song function
   const prevSong = useCallback(() => {
-    // TODO: save history of shuffle so you can go back
     if (shuffle) {
       dispatch(
         setToPlay(
@@ -176,40 +164,24 @@ function MusicPlayer() {
       );
       return;
     }
-
     const prev = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) - 1];
-    console.log(prev);
-    if (prev) {
-      dispatch(setToPlay(prev));
-    } else {
-      dispatch(setToPlay(loadedSongsMapped[loadedSongsMapped.length - 1]));
-    }
+    prev 
+    ? dispatch(setToPlay(prev))
+    : dispatch(setToPlay(loadedSongsMapped[loadedSongsMapped.length - 1]));
+
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
-  // VOLUME
-  useEffect(() => {
-    if (volume !== undefined && spref.current && player === "spotify")
-      spref.current.setVolume(volume);
-  }, [volume, spref, player]);
 
-  // sp duration setter
+
+  // spotify seek position setter
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (spref.current && player === "spotify")
-        setSeek(spref.current.state.progressMs / 1000);
-      // if (
-      //   spref.current &&
-      //   player === "spotify" &&
-      //   duration <= spref.current.state.progressMs / 1000
-      // ){
-      //   nextSong();
-      // }
+      if (spref.current && player === "spotify") setSeek(spref.current.state.progressMs / 1000);
     }, 1000);
-
     return () => clearTimeout(timeout);
   }, [spref, seek, player, nextSong, duration]);
 
-  // sc seek setter
+  // player seek to
   useEffect(() => {
     if (scref.current && seekset && player === "soundcloud")
       scref.current.seekTo(seekset, "seconds");
@@ -217,12 +189,13 @@ function MusicPlayer() {
       seekSPFN((seekset * 1000).toFixed(0));
   }, [seekset, player, scref, spref, session, seekSPFN]);
 
+  // song to play
   const setLastSong = useCallback(() => {
     if (
       toPlay !== null &&
       loadedSongsMapped !== undefined &&
       playSetter &&
-      spref.current !== undefined
+      spref.current !== undefined && spref.current !== null
     ) {
       if (toPlay.includes("soundcloud")) {
         setPlayer("soundcloud");
@@ -236,37 +209,34 @@ function MusicPlayer() {
         dispatch(setSongPlaying(toPlay));
       }
     }
-    // onPlay we cache current song
   }, [dispatch, loadedSongsMapped, playSetter, toPlay]);
 
+  // play setter 
   useEffect(() => {
     if (playSetter && ready) {
       setSeek(0);
       setLastSong();
       setPlaying(true);
     } else if (playSetter) {
-      // this helps with ppl clicking too fast after load we need to wait for ready to be set
-      toast(`could not play playSetter:${playSetter} ready:${ready}`);
+      Toast?.show({message: "no ready"})
     }
-    return () => {
-      setPlaySetter(false);
-    };
+    return () => setPlaySetter(false);
   }, [playSetter, ready, setLastSong]);
 
+  // toPlay sets playsetter
   useEffect(() => {
     if (toPlay !== null) setPlaySetter(true);
     return () => setPlaySetter(false);
   }, [setPlaySetter, toPlay]);
 
+  // global for SPready
   useEffect(() => {
-    if (scref.current && spref.current && SPready) {
-      dispatch(setPlayerReady(true));
-    }
+    if (scref.current && spref.current && SPready) dispatch(setPlayerReady(true));
   }, [SPready, dispatch]);
 
+  // get soundcloud song details
   const getSCDetails = useCallback(async () => {
     console.log("getSCdetails");
-
     const player = scref.current.getInternalPlayer();
     player.getCurrentSound(function (sound: any) {
       if (!sound) return;
@@ -441,7 +411,7 @@ function MusicPlayer() {
     toPlay,
   ]);
 
-  if (!session) return <MusicPlayerNeedsLogin />;
+  if (!session || !accessToken) return <MusicPlayerNeedsLogin />;
   if (router.pathname !== "/") return <MusicPlayerCantPlayHere />;
   return (
     <>
@@ -486,9 +456,10 @@ function MusicPlayer() {
                   </div>
                 </Link>
                 <div className="flex gap-1 text-xs">
-                  {songDetails.artists.map((e: any) => {
+                  {songDetails.artists.map((e: any, i:any) => {
                     return (
                       <Link
+                        key={i}
                         href={e.url || e.external_urls.spotify}
                         className="!no-underline !text-neutral-400 hover:!underline"
                       >
@@ -553,7 +524,7 @@ function MusicPlayer() {
           play={playing && player === "spotify"}
           ref={spref as any}
           syncExternalDevice={true}
-          token={session.accessToken}
+          token={accessToken}
           uris={songToPlay}
         />
         <ReactPlayer

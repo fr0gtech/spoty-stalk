@@ -8,7 +8,7 @@ import SoundcloudItem from "./soundcloudItem";
 import Spotify from "../public/spotify.svg";
 import Share from "../public/share.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { selectToPlay, setToPlay } from "../redux/settingSlice";
+import { selectToPlay, setToPlay } from "../../redux/settingSlice";
 import { data } from "autoprefixer";
 
 function SpotifyItem({

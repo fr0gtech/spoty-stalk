@@ -5,7 +5,7 @@ import PreviewSC from "./previewSC";
 import Soundcloud from "../public/soundcloud.svg";
 import NewTag from "./newtag";
 import { useDispatch, useSelector } from "react-redux";
-import { selectToPlay, setToPlay } from "../redux/settingSlice";
+import { selectToPlay, setToPlay } from "../../redux/settingSlice";
 function SoundcloudItem({ song, songIndex, pageIndex, lastVisit }: any) {
   const dispatch = useDispatch();
   const toPlay = useSelector(selectToPlay);

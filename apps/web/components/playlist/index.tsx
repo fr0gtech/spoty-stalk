@@ -3,10 +3,10 @@ import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import Link from "next/link";
 import Image from "next/image";
 import useSWR from "swr";
-import { fetcher } from "../pages";
+import { fetcher } from "../../pages";
 import Top10 from "./top10";
 import { useSelector } from "react-redux";
-import { selectOpenInApp } from "../redux/settingSlice";
+import { selectOpenInApp } from "../../redux/settingSlice";
 function PlaylistComp(props: any) {
   const openInApp = useSelector(selectOpenInApp);
   const { data: playlists, error: pl_error } = useSWR(

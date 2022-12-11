@@ -23,15 +23,15 @@ import {
   selectShowSpotify,
   setLastVisit,
 } from "../redux/settingSlice";
-import Nodata from "../components/nodata";
-import NewTag from "../components/newtag";
-import SoundcloudItem from "../components/soundcloudItem";
-import SpotifyItem from "../components/spotifyItem";
-import PreviewSC from "../components/previewSC";
-import PreviewSP from "../components/previewSP";
+import Nodata from "../components/musicItem/nodata";
+import NewTag from "../components/musicItem/newtag";
+import SoundcloudItem from "../components/musicItem/soundcloudItem";
+import SpotifyItem from "../components/musicItem/spotifyItem";
+import PreviewSC from "../components/musicItem/previewSC";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../components/layout";
+import PreviewSP from "../components/musicItem/previewSP";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 50;

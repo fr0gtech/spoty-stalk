@@ -1,6 +1,6 @@
 import { Button } from "@blueprintjs/core";
 import { signIn } from "next-auth/react";
-import Spotify from "../public/spotify.svg";
+import Spotify from "../../public/spotify.svg";
 
 function MusicPlayerNeedsLogin() {
   return (
