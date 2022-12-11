@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SpotifyPlayer from "react-spotify-web-playback";
@@ -26,6 +26,7 @@ import { Toast } from "./toaster";
 import useStorage from '../hooks/useSessionStorage';
 import { useRouter } from "next/router";
 import MusicPlayerCantPlayHere from "./musicPlayCantPlayHere";
+import { getToken } from "next-auth/jwt";
 
 function MusicPlayer() {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ function MusicPlayer() {
   // PLAYING / PAUSE
   const [playing, setPlaying] = useState(false); // play pause
   const [playSetter, setPlaySetter] = useState<any>(); // play setter if user presses play we set it here this sets playing
+  const [SPplaying, setSPplaying] = useState<any>()
   // VOLUME
   const [volume, setVolume] = useState<any>(0);
   const [lastVolume, setLastVolume] = useState<any>();
@@ -61,6 +63,8 @@ function MusicPlayer() {
   // SONG INFO
   const songDetails = useSelector(selectSongDetails)
 
+  const [accessToken, setAccessToken] = useState<any>()
+  const [tokenExpires, setTokenExpires] = useState<any>()
 
   useEffect(()=>{
     const oldV = getItem('volume')
@@ -69,8 +73,41 @@ function MusicPlayer() {
       
       setVolume(parseFloat(oldV))
     }
+    // if (spref.current){
+    //   console.log(spref.current);
+      
+    // }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+
+  useEffect(()=>{
+    if (spref.current){
+      // console.log(spref.current);
+      
+    }
+  },[spref])
+
+  const getTokenAndSet = useCallback(async()=>{    
+    await fetch('/api/refreshtoken?token=' + session.refreshToken).then(async (e)=>{
+      const body = await e.json()
+      setAccessToken(body.accessToken)
+      setTokenExpires(body.expiresAt)
+    })
+  }, [session])
+
+  // this is pretty bad fix for now
+  useEffect(()=>{
+    if (session) {
+      setAccessToken(session.access_token)
+      setTokenExpires(session.expiresAt)
+      if (isPast(new Date(tokenExpires * 1000))){
+        // get new token
+        getTokenAndSet()
+        // signIn()
+      }
+    }
+  },[getTokenAndSet, session, tokenExpires])
+
   useEffect(()=>{
 
    if (volume) setItem('volume', volume.toString())
@@ -109,10 +146,9 @@ function MusicPlayer() {
     if (next){
       dispatch(setToPlay(next))
     }else{
-      dispatch(setToPlay(loadedSongsMapped[0]))
-
-      
+      dispatch(setToPlay(loadedSongsMapped[0]))      
     }
+    setSeek(0)
     // dispatch(setToPlay(toPlay !== null ? toPlay + 1 : 0));
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
@@ -145,23 +181,26 @@ function MusicPlayer() {
     const timeout = setTimeout(() => {
       if (spref.current && player === "spotify")
         setSeek(spref.current.state.progressMs / 1000);
-      //oh no we need to check here if song over?
-      if (
-        spref.current &&
-        player === "spotify" &&
-        duration < spref.current.state.progressMs / 1000
-      )
-        nextSong();
-    }, 100);
+        // if (
+        //   spref.current &&
+        //   player === "spotify" &&
+        //   duration <= spref.current.state.progressMs / 1000
+        // ){
+        //   nextSong();
+        // }
+    }, 1000);
+
+  
+
     return () => clearTimeout(timeout);
-  }, [spref, seek, ready, player, duration, nextSong]);
+  }, [spref, seek, player, nextSong, duration]);
 
   // sc seek setter
   useEffect(() => {
     if (scref.current && seekset && player === "soundcloud")
       scref.current.seekTo(seekset, "seconds");
     if (spref.current && seekset && player === "spotify")
-      seekSPFN(seekset * 1000);
+      seekSPFN((seekset * 1000).toFixed(0));
   }, [seekset, player, scref, spref, session, seekSPFN]);
 
 
@@ -170,7 +209,8 @@ function MusicPlayer() {
     if (
       toPlay !== null &&
       loadedSongsMapped !== undefined &&
-      playSetter
+      playSetter &&
+      spref.current !== undefined
     ) {      
       if (toPlay.includes("soundcloud")) {
         setPlayer("soundcloud");
@@ -190,6 +230,7 @@ function MusicPlayer() {
 
   useEffect(() => {
     if (playSetter && ready) {
+      setSeek(0)
       setLastSong();
       setPlaying(true);
 
@@ -217,11 +258,9 @@ function MusicPlayer() {
     
     const player = scref.current.getInternalPlayer()
     player.getCurrentSound(function(sound:any) {
-      if (!sound) return
-      console.log(sound);
-      
+      if (!sound) return      
         dispatch(setSongDetails({
-          'song':{title: sound.title, image: sound.artwork_url, uri: sound.permalink_url},
+          'song': {title: sound.title, image: sound.artwork_url || "", uri: sound.permalink_url},
           'artists': [{ name: sound.user.username, url: sound.user.permalink_url}]
         }))
     });
@@ -266,7 +305,6 @@ function MusicPlayer() {
           min={0}
           max={1}
         />
-        <Icon className="opacity-20" icon="fullscreen" />
       </div>
     );
   }, [lastVolume, volume]);
@@ -372,22 +410,31 @@ function MusicPlayer() {
   return (
     <>
       <div className="flex">
-        <div className="flex gap-[20%] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-1 mr-1">
+        <div className="flex gap-[20%] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
           {/* <div>{JSON.stringify(songDetails)}</div> */}
           {songDetails && songDetails.song ? (
             <div className="flex gap-2 w-[10%]">
-            <Image
-              className="rounded shadow-md"
-              blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(50, 50))}`}
-              src={songDetails && songDetails.song.image} height={50} width={50}  alt={songDetails.song.title} />
+              {songDetails.song.image === "" ?
+              ( <Image
+                src="/frog.png"
+                className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
+                alt="tets"
+                height={50}
+                width={50}
+              />):(<Image
+                className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(50, 50))}`}
+                src={songDetails && songDetails.song.image} height={50} width={50}  alt={songDetails.song.title} />)}
+            
             {/* {songDetails.song.image} */}
               <div className="justify-center flex flex-col">
                 <Link href={songDetails && songDetails.song.uri ? songDetails.song.uri: ""} className="!no-underline !text-neutral-200 hover:!underline">
                   <div className="truncate font-bold">{songDetails.song.title}</div>
                 </Link>
               <div className="flex gap-1 text-xs">{songDetails.artists.map((e:any)=>{
+                
                 return (
-                <Link href={e.url} className="!no-underline !text-neutral-400 hover:!underline">
+                <Link href={e.url || e.external_urls.spotify} className="!no-underline !text-neutral-400 hover:!underline">
                 <div className="truncate">{e.name}</div>
                 </Link>)
               })}</div>
@@ -405,11 +452,18 @@ function MusicPlayer() {
           {volumeSlider()}
         </div>
       </div>
-      <div className="opacity-0 absolute bottom-0 left-0">
+      <div className="opacity-0 !-z-10 absolute bottom-0 left-0">
         <SpotifyPlayer
         initialVolume={volume}
         callback={async (e) => {
-          if (e.isPlaying){              
+          // we need a isPlaying state to check for nextsong
+          if (e.isActive && e.isPlaying){
+            setSPplaying(true)
+          }
+          if (e.isActive && !e.isPlaying){
+            setSPplaying(false)
+          }
+          if (e.isPlaying){        
             dispatch(setSongDetails(
              {
                 'song':{title: e.track.name, image: e.track.image, uri: e.track.uri},
@@ -417,9 +471,12 @@ function MusicPlayer() {
               }
             ))
           }
-          // setSongDetails({title: sound.title, image: sound.artwork_url})
-          // setSongArtist({ name: sound.user.username, url: sound.user.permalink_url})
-          if (e.status === "READY")setSPready(true);
+          // check when playing when not only do next song check then this is fucked!
+          if (e.status === "READY" && e.isActive && !e.isPlaying && seek !== 0 && SPplaying) {
+             // IS REALLY DONE?????
+            nextSong()
+          }          
+          if (e.status === "READY") setSPready(true);
           setDuration(e.track.durationMs / 1000);
           setSPcallback(e);
         }}
@@ -431,6 +488,7 @@ function MusicPlayer() {
         uris={songToPlay}
       />
         <ReactPlayer
+          muted={volume === 0}
           onProgress={(e) => !isHolding && setSeek(e.playedSeconds)}
           onEnded={() => nextSong()}
           onReady={(e) => {
