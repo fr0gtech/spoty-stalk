@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { useInView } from "react-intersection-observer";
 import axios from "axios";
 import { Button } from "@blueprintjs/core";
-import { formatDistance } from "date-fns";
+import { formatDistance, isBefore, subDays } from "date-fns";
 import { setCookie, getCookie } from "cookies-next";
 import Image from "next/image";
 import LoadingComp from "../components/loading";
@@ -36,6 +36,7 @@ import Preview from "../components/musicItem/preview";
 import { useSession } from "next-auth/react";
 import MusicPlayer from "../components/musicPlayer";
 import Link from "next/link";
+import NewTag from "../components/musicItem/newtag";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 100;
@@ -251,17 +252,24 @@ export default function Index() {
                                 {song &&
                                 song.images[0] &&
                                 song.images[0].url ? (
-                                  <Image
-                                    placeholder="blur"
-                                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                      shimmer(50, 50)
-                                    )}`}
-                                    className="rounded shadow-md"
-                                    src={song.images[0].url}
-                                    width={50}
-                                    height={50}
-                                    alt="idk"
-                                  />
+                                  <div className="relative">
+                                    <Image
+                                      placeholder="blur"
+                                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                                        shimmer(50, 50)
+                                      )}`}
+                                      className="rounded shadow-md"
+                                      src={song.images[0].url}
+                                      width={50}
+                                      height={50}
+                                      alt="idk"
+                                    />
+                                    {isBefore(new Date(lastVisit), new Date(song.addedAt)) && (
+                                        <div className="absolute -top-1 -left-1">
+                                        <NewTag/>
+                                        </div>
+                                      )}
+                                  </div>
                                 ) : song.images.url ? (
                                   <Image
                                     placeholder="blur"
@@ -275,13 +283,20 @@ export default function Index() {
                                     alt="idk"
                                   />
                                 ) : (
-                                  <Image
-                                    src="/frog.png"
-                                    className="rounded bg-neutral-900 h-[50px] w-[50px]"
-                                    alt="tets"
-                                    height={50}
-                                    width={50}
-                                  />
+                                  <div className="relative">
+                                    <Image
+                                      src="/frog.png"
+                                      className="rounded bg-neutral-900 h-[50px] w-[50px]"
+                                      alt="tets"
+                                      height={50}
+                                      width={50}
+                                    />
+                                    {isBefore(new Date(lastVisit), new Date(song.addedAt)) && (
+                                      <div className="absolute -top-1 -left-1">
+                                      <NewTag/>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
 
                                 <div className="w-[calc(100%-60px)]">
