@@ -118,14 +118,14 @@ function MusicPlayer() {
         `https://api.spotify.com/v1/me/player/seek?position_ms=${position}`,
         {
           headers: {
-            Authorization: `Bearer ${session.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
           method: "PUT",
         }
       );
     },
-    [session]
+    [accessToken]
   );
 
   // Next song function handles shuffle and things
