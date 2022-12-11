@@ -23,7 +23,6 @@ export default function App({Component, pageProps: {session, ...pageProps}}: App
     <HotkeysProvider>
       <div className="bp4-dark mx-auto">
       <Component {...pageProps} />
-      <MusicPlayer/>
       </div>
     </HotkeysProvider>
 

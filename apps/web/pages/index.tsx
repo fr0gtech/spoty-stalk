@@ -34,9 +34,11 @@ import { Toast } from "../components/toaster";
 import PreviewSC from "../components/previewSC";
 import Preview from "../components/preview";
 import { useSession } from "next-auth/react";
+import MusicPlayer from "../components/musicPlayer";
+import Link from "next/link";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const pageSize = 50;
+const pageSize = 100;
 export const shimmer = (w: number, h: number) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
@@ -166,15 +168,34 @@ export default function Index() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <div></div>
-        <div className="mt-2 h-[calc(100vh-120px)] max-h-[calc(100vh-120px)] overflow-scroll">
+        <div className="h-[calc(100vh-40px)] min-h-[calc(100vh-40px)] justify-between flex flex-col gap-1">
+
+        <div className="overflow-scroll rounded">
           <div className="gap-2 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-8 text-white rounded">
+            {!data && [...Array(100)].map(()=>{
+              return  <div className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]">
+                <div className="flex items-center h-full p-2 gap-3">
+                  <div>
+                    <div className="h-[50px] w-[50px] bg-neutral-800 rounded"></div>
+                  </div>
+                  <div className=" flex gap-2 flex-col">
+                    <div className="w-[80px] h-[15px] bg-neutral-800"></div>
+                    <div className="w-[80px] h-[15px] bg-neutral-800"></div>
+
+                  </div>
+                </div>
+              </div>
+            }) 
+              
+            }
             {data &&
               data.pages.map((page: any, pageIndex: any) => {
                 if (page.data.length === 0) return <Nodata />;
                 return (
                   <React.Fragment key={page.nextCursor}>
                     {page.data.map((song: any, songIndex: any) => {
+                      if (song.playlists[0] && song.playlists[0].name.includes('Discover Weekly') && !showDiscoverWeekly) return;
+
                       let isPlaying = false;
                       song.source === "soundcloud"
                         ? (isPlaying = songPlaying === song.externalUrl)
@@ -289,11 +310,6 @@ export default function Index() {
                                 </div>
                                 <div className="truncate text-[11px] opacity-50">
                                   <div className="flex truncate gap-[2px] items-center">
-                                      {/* {song.playlists[0] ? (
-                                         <Icon size={10} icon="plus" />
-                                      ) : (
-                                        <Icon size={10} icon="heart" />
-                                      )} */}
                                     <div className="truncate" title={song.playlists[0] && song.playlists[0].name}>
                                       {formatDistance(
                                         new Date(song.addedAt),
@@ -302,8 +318,10 @@ export default function Index() {
                                           addSuffix: true,
                                         }
                                       )}
-                                      {song.playlists[0] &&
-                                        ` (${song.playlists[0].name})`}
+                                      {song.playlists[0] && <Link href={song.playlists[0].externalUrl} className="!text-neutral-300">
+                                      {" "}{song.playlists[0].name}
+                                      </Link>
+                                      }
                                     </div>
                                   </div>
                                 </div>
@@ -311,31 +329,7 @@ export default function Index() {
                             </div>
                           </div>
                         </div>
-                        // </div>
-
                       );
-                      // } else if (song.source === "spotify") {
-                      //   if (song.playlists[0].name.includes('Discover Weekly') && !showDiscoverWeekly) return;
-                      //   return <div className="bg-neutral-800 rounded p-1 h-fit w-[15%]">
-                      //     <div className="flex gap-3 max-w-full">
-                      //       <Image className="rounded" src={song.images[0].url || 0} width={40} height={40} alt="idk" />
-                      //       <div className="flex flex-col">
-                      //         <div className="font-bold truncate">
-                      //           <span className="flex items-center gap-2">
-                      //           {song.name.replace(/\(([^)]+)\)/, "").split('-')[0]}
-
-                      //           <Spotify fill={"#1DB954"} width={11} height={11} />
-
-                      //           </span>
-
-                      //         </div>
-                      //         <div className="text-xs truncate w-fit">
-                      //           {song.artists.map((e:any)=>e.name)}
-                      //         </div>
-                      //       </div>
-                      //     </div>
-                      //   </div>
-                      // }
                     })}
                   </React.Fragment>
                 );
@@ -345,7 +339,7 @@ export default function Index() {
                 loading={isFetching}
                 disabled={!hasNextPage || isFetching}
                 onClick={() => fetchNextPage()}
-                className="h-[30px]"
+                className="m-[2px] rounded !bg-neutral-800"
                 elementRef={ref}
                 minimal
                 fill
@@ -355,6 +349,9 @@ export default function Index() {
             )}
           </div>
         </div>
+        <MusicPlayer/>
+        </div>
+
       </Layout>
     </>
   );

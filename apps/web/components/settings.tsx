@@ -26,6 +26,7 @@ function Settings(){
               <h3 className="text-xl mb-2">Settings</h3>
               {session && (
           <Button
+          small
                 title="Log Out"
             minimal
             intent="danger"

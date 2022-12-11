@@ -8,7 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let spotify = JSON.parse(req.query.sp as any)
   let soundcloud = JSON.parse(req.query.sc as any)
     
-  if (pageSize > 50 || cursor === undefined || pageSize === undefined) {
+  if (pageSize > 100 || cursor === undefined || pageSize === undefined) {
     return res.status(404).json({
       error: "error",
     });
