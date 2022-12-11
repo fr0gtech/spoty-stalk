@@ -6,10 +6,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const data = await prisma.scan.findFirst({
     orderBy: [
       {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     ],
-    take: 1
+    take: 1,
   });
 
   res.status(200).json({

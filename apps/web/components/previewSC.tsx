@@ -16,15 +16,11 @@ function PreviewSC(props: any) {
               frameBorder="no"
               allow="autoplay"
               src={`https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${props.id}&color=%23264858&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`}
-              />
+            />
           </>
         }
       >
-        <Button
-          minimal
-          small
-          icon="play"
-        />
+        <Button minimal small icon="play" />
       </Popover2>
     </div>
   );

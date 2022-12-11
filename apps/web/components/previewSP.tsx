@@ -7,26 +7,20 @@ function PreviewSP(props: any) {
   return (
     <div>
       <Popover2
-      popoverClassName="spotifyembed"
+        popoverClassName="spotifyembed"
         content={
-          <div >
+          <div>
             <iframe
-            style={{borderRadius: "14px"}}
-            src={props.url}
-            height="80"
-            frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-
-            </iframe>
-
+              style={{ borderRadius: "14px" }}
+              src={props.url}
+              height="80"
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            ></iframe>
           </div>
         }
       >
-        <Button
-          minimal
-          small
-          icon="play"
-        />
+        <Button minimal small icon="play" />
       </Popover2>
     </div>
   );

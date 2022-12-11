@@ -1,7 +1,7 @@
-import Link from "next/link"
-import Image from "next/image"
-import Top10 from "./top10"
-import { Button } from "@blueprintjs/core"
+import Link from "next/link";
+import Image from "next/image";
+import Top10 from "./top10";
+import { Button } from "@blueprintjs/core";
 import Github from "../public/github.svg";
 
 function FooterComp(props: any) {
@@ -10,19 +10,12 @@ function FooterComp(props: any) {
       <div className="flex justify-between gap-3">
         <div className="flex items-center">
           <div>
-            made by{" "}
-            <Link
-              href={"https://frogtech.dev"}
-            >
-              {" "}
-              frogtech
-            </Link>
+            made by <Link href={"https://frogtech.dev"}> frogtech</Link>
           </div>
 
           <div>
             <Image alt="logo" src="/frog.png" height={30} width={30} />
           </div>
-
         </div>
 
         {/* <Top10 openInApp={props.openInApp} /> */}
@@ -30,7 +23,7 @@ function FooterComp(props: any) {
         {/* {data && <div>Loaded {data.pages.length * pageSize} songs</div>} */}
       </div>
     </footer>
-  )
+  );
 }
 
-export default FooterComp
+export default FooterComp;

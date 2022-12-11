@@ -6,9 +6,9 @@ import playlists from "./playlists";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const data = await prisma.artist.findMany({
     orderBy: {
-      songs:{
-        _count: "desc"
-      }
+      songs: {
+        _count: "desc",
+      },
     },
 
     include: {
@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         select: { songs: true },
       },
     },
-    take: 10
+    take: 10,
   });
 
   res.status(200).json({

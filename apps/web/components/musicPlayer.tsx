@@ -13,24 +13,31 @@ import {
   setToPlay,
 } from "../redux/settingSlice";
 import ReactPlayer from "react-player/soundcloud";
-import { Button, ButtonGroup, Divider, Icon, Slider, Tag } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Divider,
+  Icon,
+  Slider,
+  Tag,
+} from "@blueprintjs/core";
 import { fromUnixTime, isPast } from "date-fns";
 import MusicPlayerNeedsLogin from "./musicPlayerNeedsLogin";
 import Spotify from "../public/spotify.svg";
 import Soundcloud from "../public/soundcloud.svg";
-import toast from 'react-simple-toasts';
+import toast from "react-simple-toasts";
 import Image from "next/image";
 import { shimmer, toBase64 } from "../pages";
 import Link from "next/link";
 import { Toast } from "./toaster";
-import useStorage from '../hooks/useSessionStorage';
+import useStorage from "../hooks/useSessionStorage";
 import { useRouter } from "next/router";
 import MusicPlayerCantPlayHere from "./musicPlayCantPlayHere";
 import { getToken } from "next-auth/jwt";
 
 function MusicPlayer() {
   const dispatch = useDispatch();
-  const router = useRouter()
+  const router = useRouter();
   const { getItem, setItem } = useStorage();
   const { data: session, status }: any = useSession();
   const toPlay = useSelector(selectToPlay);
@@ -41,7 +48,7 @@ function MusicPlayer() {
   const [SPready, setSPready] = useState<any>(); // spotify ready state
   // PLAYER
   // const [ready, setReady] = useState<any>(); // if we are ready to play
-  const ready = useSelector(selectPlayerReady)
+  const ready = useSelector(selectPlayerReady);
   const [player, setPlayer] = useState<any>(); // type if spoty or sc
   // TIMELINE / SEEK
   const [seek, setSeek] = useState<any>(); // where we are in a song
@@ -51,7 +58,7 @@ function MusicPlayer() {
   // PLAYING / PAUSE
   const [playing, setPlaying] = useState(false); // play pause
   const [playSetter, setPlaySetter] = useState<any>(); // play setter if user presses play we set it here this sets playing
-  const [SPplaying, setSPplaying] = useState<any>()
+  const [SPplaying, setSPplaying] = useState<any>();
   // VOLUME
   const [volume, setVolume] = useState<any>(0);
   const [lastVolume, setLastVolume] = useState<any>();
@@ -61,60 +68,59 @@ function MusicPlayer() {
   const [songToPlay, setSongToPlay] = useState<any>();
 
   // SONG INFO
-  const songDetails = useSelector(selectSongDetails)
+  const songDetails = useSelector(selectSongDetails);
 
-  const [accessToken, setAccessToken] = useState<any>()
-  const [tokenExpires, setTokenExpires] = useState<any>()
+  const [accessToken, setAccessToken] = useState<any>();
+  const [tokenExpires, setTokenExpires] = useState<any>();
 
-  useEffect(()=>{
-    const oldV = getItem('volume')
-    if (oldV){
-      console.log('setting nold', volume);
-      
-      setVolume(parseFloat(oldV))
+  useEffect(() => {
+    const oldV = getItem("volume");
+    if (oldV) {
+      console.log("setting nold", volume);
+
+      setVolume(parseFloat(oldV));
     }
     // if (spref.current){
     //   console.log(spref.current);
-      
+
     // }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  useEffect(()=>{
-    if (spref.current){
+  useEffect(() => {
+    if (spref.current) {
       // console.log(spref.current);
-      
     }
-  },[spref])
+  }, [spref]);
 
-  const getTokenAndSet = useCallback(async()=>{    
-    await fetch('/api/refreshtoken?token=' + session.refreshToken).then(async (e)=>{
-      const body = await e.json()
-      setAccessToken(body.accessToken)
-      setTokenExpires(body.expiresAt)
-    })
-  }, [session])
+  const getTokenAndSet = useCallback(async () => {
+    await fetch("/api/refreshtoken?token=" + session.refreshToken).then(
+      async (e) => {
+        const body = await e.json();
+        setAccessToken(body.accessToken);
+        setTokenExpires(body.expiresAt);
+      }
+    );
+  }, [session]);
 
   // this is pretty bad fix for now
-  useEffect(()=>{
+  useEffect(() => {
     if (session) {
-      setAccessToken(session.access_token)
-      setTokenExpires(session.expiresAt)
-      if (isPast(new Date(tokenExpires * 1000))){
+      setAccessToken(session.access_token);
+      setTokenExpires(session.expiresAt);
+      if (isPast(new Date(tokenExpires * 1000))) {
         // get new token
-        getTokenAndSet()
+        getTokenAndSet();
         // signIn()
       }
     }
-  },[getTokenAndSet, session, tokenExpires])
+  }, [getTokenAndSet, session, tokenExpires]);
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (volume) setItem("volume", volume.toString());
 
-   if (volume) setItem('volume', volume.toString())
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[volume])
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [volume]);
 
   const seekSPFN = useCallback(
     async (position: any) => {
@@ -134,7 +140,13 @@ function MusicPlayer() {
 
   const nextSong = useCallback(() => {
     if (shuffle) {
-      dispatch(setToPlay(loadedSongsMapped[Math.floor(Math.random() * loadedSongsMapped.length)]));
+      dispatch(
+        setToPlay(
+          loadedSongsMapped[
+            Math.floor(Math.random() * loadedSongsMapped.length)
+          ]
+        )
+      );
       return;
     }
     if (loadedSongsMapped.length - 1 === toPlay) {
@@ -142,32 +154,36 @@ function MusicPlayer() {
       return;
     }
     // so we need to get next song url
-    const next = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) + 1]
-    if (next){
-      dispatch(setToPlay(next))
-    }else{
-      dispatch(setToPlay(loadedSongsMapped[0]))      
+    const next = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) + 1];
+    if (next) {
+      dispatch(setToPlay(next));
+    } else {
+      dispatch(setToPlay(loadedSongsMapped[0]));
     }
-    setSeek(0)
+    setSeek(0);
     // dispatch(setToPlay(toPlay !== null ? toPlay + 1 : 0));
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
   const prevSong = useCallback(() => {
     // TODO: save history of shuffle so you can go back
     if (shuffle) {
-      dispatch(setToPlay(loadedSongsMapped[Math.floor(Math.random() * loadedSongsMapped.length)]));
+      dispatch(
+        setToPlay(
+          loadedSongsMapped[
+            Math.floor(Math.random() * loadedSongsMapped.length)
+          ]
+        )
+      );
       return;
     }
 
-    const prev = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) - 1]
+    const prev = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) - 1];
     console.log(prev);
-    if (prev){
+    if (prev) {
       dispatch(setToPlay(prev));
-    }else{
+    } else {
       dispatch(setToPlay(loadedSongsMapped[loadedSongsMapped.length - 1]));
-
     }
-
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
   // VOLUME
@@ -181,16 +197,14 @@ function MusicPlayer() {
     const timeout = setTimeout(() => {
       if (spref.current && player === "spotify")
         setSeek(spref.current.state.progressMs / 1000);
-        // if (
-        //   spref.current &&
-        //   player === "spotify" &&
-        //   duration <= spref.current.state.progressMs / 1000
-        // ){
-        //   nextSong();
-        // }
+      // if (
+      //   spref.current &&
+      //   player === "spotify" &&
+      //   duration <= spref.current.state.progressMs / 1000
+      // ){
+      //   nextSong();
+      // }
     }, 1000);
-
-  
 
     return () => clearTimeout(timeout);
   }, [spref, seek, player, nextSong, duration]);
@@ -203,26 +217,23 @@ function MusicPlayer() {
       seekSPFN((seekset * 1000).toFixed(0));
   }, [seekset, player, scref, spref, session, seekSPFN]);
 
-
   const setLastSong = useCallback(() => {
-
     if (
       toPlay !== null &&
       loadedSongsMapped !== undefined &&
       playSetter &&
       spref.current !== undefined
-    ) {      
+    ) {
       if (toPlay.includes("soundcloud")) {
         setPlayer("soundcloud");
         setSongToPlay(toPlay);
-        dispatch(setSongPlaying(toPlay))
+        dispatch(setSongPlaying(toPlay));
       } else {
         spref.current.updateState({ isPlaying: true });
-        spref.current.updateState({needsUpdate: true})
+        spref.current.updateState({ needsUpdate: true });
         setPlayer("spotify");
         setSongToPlay([`spotify:track:${toPlay}`]);
-        dispatch(setSongPlaying(toPlay))
-
+        dispatch(setSongPlaying(toPlay));
       }
     }
     // onPlay we cache current song
@@ -230,41 +241,49 @@ function MusicPlayer() {
 
   useEffect(() => {
     if (playSetter && ready) {
-      setSeek(0)
+      setSeek(0);
       setLastSong();
       setPlaying(true);
-
-    }else if(playSetter){
+    } else if (playSetter) {
       // this helps with ppl clicking too fast after load we need to wait for ready to be set
-      toast(`could not play playSetter:${playSetter} ready:${ready}`)
+      toast(`could not play playSetter:${playSetter} ready:${ready}`);
     }
-    return () => {setPlaySetter(false)}
+    return () => {
+      setPlaySetter(false);
+    };
   }, [playSetter, ready, setLastSong]);
 
-
   useEffect(() => {
-    if (toPlay !== null) setPlaySetter(true)
+    if (toPlay !== null) setPlaySetter(true);
     return () => setPlaySetter(false);
   }, [setPlaySetter, toPlay]);
 
   useEffect(() => {
     if (scref.current && spref.current && SPready) {
-      dispatch(setPlayerReady(true))    
+      dispatch(setPlayerReady(true));
     }
   }, [SPready, dispatch]);
 
-  const getSCDetails = useCallback(async () => {    
-    console.log('getSCdetails');
-    
-    const player = scref.current.getInternalPlayer()
-    player.getCurrentSound(function(sound:any) {
-      if (!sound) return      
-        dispatch(setSongDetails({
-          'song': {title: sound.title, image: sound.artwork_url || "", uri: sound.permalink_url},
-          'artists': [{ name: sound.user.username, url: sound.user.permalink_url}]
-        }))
+  const getSCDetails = useCallback(async () => {
+    console.log("getSCdetails");
+
+    const player = scref.current.getInternalPlayer();
+    player.getCurrentSound(function (sound: any) {
+      if (!sound) return;
+      dispatch(
+        setSongDetails({
+          song: {
+            title: sound.title,
+            image: sound.artwork_url || "",
+            uri: sound.permalink_url,
+          },
+          artists: [
+            { name: sound.user.username, url: sound.user.permalink_url },
+          ],
+        })
+      );
     });
-  },[dispatch])
+  }, [dispatch]);
 
   const volumeSlider = useCallback(() => {
     return (
@@ -317,7 +336,7 @@ function MusicPlayer() {
             {/* <Button onClick={()=>dispatch(setToPlay(null))} icon="reset" className="!bg-neutral-800">test</Button> */}
             <Button
               minimal
-              icon={<Icon icon="random" size={12}/>}
+              icon={<Icon icon="random" size={12} />}
               active={shuffle}
               onClick={() => setShuffle(!shuffle)}
               className=" !rounded-full hover:!bg-neutral-700 duration-300"
@@ -338,7 +357,9 @@ function MusicPlayer() {
                 )
               }
               onClick={() => {
-                toPlay !== null ? setPlaying(!playing) : Toast?.show({message: "select a song to play"})
+                toPlay !== null
+                  ? setPlaying(!playing)
+                  : Toast?.show({ message: "select a song to play" });
               }}
               className="!bg-neutral-300 !rounded-full duration-100 hover:!scale-105"
             />
@@ -352,18 +373,23 @@ function MusicPlayer() {
             <Button
               minimal
               icon={
-                <Link href={songDetails && songDetails.song && songDetails.song.uri ? songDetails.song.uri: ""} className="!no-underline !text-neutral-200 hover:!underline">
-
-                <div>
-                  {player === "spotify" ? (
-                    <Spotify fill={"#1DB954"} height={15} width={15} />
-                  ) : (
-                    <Soundcloud fill={"#803711"} height={15} width={15} />
-                  )}
-                </div>
+                <Link
+                  href={
+                    songDetails && songDetails.song && songDetails.song.uri
+                      ? songDetails.song.uri
+                      : ""
+                  }
+                  className="!no-underline !text-neutral-200 hover:!underline"
+                >
+                  <div>
+                    {player === "spotify" ? (
+                      <Spotify fill={"#1DB954"} height={15} width={15} />
+                    ) : (
+                      <Soundcloud fill={"#803711"} height={15} width={15} />
+                    )}
+                  </div>
                 </Link>
               }
-              
               className="!rounded-full hover:!bg-neutral-700 duration-300 !p-0 !m-0"
             ></Button>
           </ButtonGroup>
@@ -403,10 +429,20 @@ function MusicPlayer() {
         </div>
       </div>
     );
-  }, [duration, nextSong, player, playing, prevSong, seek, shuffle, songDetails, toPlay]);
+  }, [
+    duration,
+    nextSong,
+    player,
+    playing,
+    prevSong,
+    seek,
+    shuffle,
+    songDetails,
+    toPlay,
+  ]);
 
-  if (!session) return <MusicPlayerNeedsLogin />
-  if (router.pathname !== "/") return <MusicPlayerCantPlayHere />
+  if (!session) return <MusicPlayerNeedsLogin />;
+  if (router.pathname !== "/") return <MusicPlayerCantPlayHere />;
   return (
     <>
       <div className="flex">
@@ -414,89 +450,120 @@ function MusicPlayer() {
           {/* <div>{JSON.stringify(songDetails)}</div> */}
           {songDetails && songDetails.song ? (
             <div className="flex gap-2 w-[10%]">
-              {songDetails.song.image === "" ?
-              ( <Image
-                src="/frog.png"
-                className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
-                alt="tets"
-                height={50}
-                width={50}
-              />):(<Image
-                className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
-                blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(50, 50))}`}
-                src={songDetails && songDetails.song.image} height={50} width={50}  alt={songDetails.song.title} />)}
-            
-            {/* {songDetails.song.image} */}
+              {songDetails.song.image === "" ? (
+                <Image
+                  src="/frog.png"
+                  className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
+                  alt="tets"
+                  height={50}
+                  width={50}
+                />
+              ) : (
+                <Image
+                  className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                    shimmer(50, 50)
+                  )}`}
+                  src={songDetails && songDetails.song.image}
+                  height={50}
+                  width={50}
+                  alt={songDetails.song.title}
+                />
+              )}
+
+              {/* {songDetails.song.image} */}
               <div className="justify-center flex flex-col">
-                <Link href={songDetails && songDetails.song.uri ? songDetails.song.uri: ""} className="!no-underline !text-neutral-200 hover:!underline">
-                  <div className="truncate font-bold">{songDetails.song.title}</div>
+                <Link
+                  href={
+                    songDetails && songDetails.song.uri
+                      ? songDetails.song.uri
+                      : ""
+                  }
+                  className="!no-underline !text-neutral-200 hover:!underline"
+                >
+                  <div className="truncate font-bold">
+                    {songDetails.song.title}
+                  </div>
                 </Link>
-              <div className="flex gap-1 text-xs">{songDetails.artists.map((e:any)=>{
-                
-                return (
-                <Link href={e.url || e.external_urls.spotify} className="!no-underline !text-neutral-400 hover:!underline">
-                <div className="truncate">{e.name}</div>
-                </Link>)
-              })}</div>
+                <div className="flex gap-1 text-xs">
+                  {songDetails.artists.map((e: any) => {
+                    return (
+                      <Link
+                        href={e.url || e.external_urls.spotify}
+                        className="!no-underline !text-neutral-400 hover:!underline"
+                      >
+                        <div className="truncate">{e.name}</div>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-            )
-             : (
-              <div className="gap-2 flex flex-col w-[10%]">
+          ) : (
+            <div className="gap-2 flex flex-col w-[10%]">
               <div></div>
               <div></div>
             </div>
-            )
-          }
+          )}
           {renderButtons()}
           {volumeSlider()}
         </div>
       </div>
       <div className="opacity-0 !-z-10 absolute bottom-0 left-0">
         <SpotifyPlayer
-        initialVolume={volume}
-        callback={async (e) => {
-          // we need a isPlaying state to check for nextsong
-          if (e.isActive && e.isPlaying){
-            setSPplaying(true)
-          }
-          if (e.isActive && !e.isPlaying){
-            setSPplaying(false)
-          }
-          if (e.isPlaying){        
-            dispatch(setSongDetails(
-             {
-                'song':{title: e.track.name, image: e.track.image, uri: e.track.uri},
-                'artists': e.track.artists
-              }
-            ))
-          }
-          // check when playing when not only do next song check then this is fucked!
-          if (e.status === "READY" && e.isActive && !e.isPlaying && seek !== 0 && SPplaying) {
-             // IS REALLY DONE?????
-            nextSong()
-          }          
-          if (e.status === "READY") setSPready(true);
-          setDuration(e.track.durationMs / 1000);
-          setSPcallback(e);
-        }}
-        autoPlay={true}
-        play={playing && player === "spotify"}
-        ref={spref as any}
-        syncExternalDevice={true}
-        token={session.accessToken}
-        uris={songToPlay}
-      />
+          initialVolume={volume}
+          callback={async (e) => {
+            // we need a isPlaying state to check for nextsong
+            if (e.isActive && e.isPlaying) {
+              setSPplaying(true);
+            }
+            if (e.isActive && !e.isPlaying) {
+              setSPplaying(false);
+            }
+            if (e.isPlaying) {
+              dispatch(
+                setSongDetails({
+                  song: {
+                    title: e.track.name,
+                    image: e.track.image,
+                    uri: e.track.uri,
+                  },
+                  artists: e.track.artists,
+                })
+              );
+            }
+            // check when playing when not only do next song check then this is fucked!
+            if (
+              e.status === "READY" &&
+              e.isActive &&
+              !e.isPlaying &&
+              seek !== 0 &&
+              SPplaying
+            ) {
+              // IS REALLY DONE?????
+              nextSong();
+            }
+            if (e.status === "READY") setSPready(true);
+            setDuration(e.track.durationMs / 1000);
+            setSPcallback(e);
+          }}
+          autoPlay={true}
+          play={playing && player === "spotify"}
+          ref={spref as any}
+          syncExternalDevice={true}
+          token={session.accessToken}
+          uris={songToPlay}
+        />
         <ReactPlayer
           muted={volume === 0}
           onProgress={(e) => !isHolding && setSeek(e.playedSeconds)}
           onEnded={() => nextSong()}
           onReady={(e) => {
-            setDuration(e.getDuration())
-            getSCDetails()
+            setDuration(e.getDuration());
+            getSCDetails();
           }}
           onStart={() => {
-            setVolume(volume)
+            setVolume(volume);
           }}
           ref={scref}
           playing={playing}

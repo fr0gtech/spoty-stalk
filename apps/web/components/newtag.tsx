@@ -1,9 +1,9 @@
-import { Tag } from "@blueprintjs/core"
+import { Tag } from "@blueprintjs/core";
 
-function NewTag(props:any){
-    return (
+function NewTag(props: any) {
+  return (
     <Tag
-        className="
+      className="
         !bg-gradient-to-r 
         from-blue-400 
         to-orange-500 
@@ -11,8 +11,10 @@ function NewTag(props:any){
         animate-gradient-x 
         font-bold h-[15px] 
         !text-[9px]"
-        intent="success">
-            NEW
-    </Tag>)
+      intent="success"
+    >
+      NEW
+    </Tag>
+  );
 }
-export default NewTag
+export default NewTag;

@@ -5,7 +5,7 @@ import { prisma } from "database";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let cursor = parseInt(req.query.c as any);
   let pageSize = parseInt(req.query.p as any);
-    
+
   if (pageSize > 50 || cursor === undefined || pageSize === undefined) {
     return res.status(404).json({
       error: "error",

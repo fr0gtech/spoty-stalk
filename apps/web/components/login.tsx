@@ -1,22 +1,21 @@
-import {useSession, signIn, signOut} from 'next-auth/react';
+import { useSession, signIn, signOut } from "next-auth/react";
 
-function LoginComp(){
+function LoginComp() {
+  const { data: session }: any = useSession();
 
-    const {data: session}:any = useSession();
-  
-    if (session) {
-      return (
-        <>
-          Signed in as {JSON.stringify(session.user.name)} <br />
-          <button onClick={() => signOut()}>Sign out</button>
-        </>
-      );
-    }
+  if (session) {
     return (
       <>
-        Not signed in <br />
-        <button onClick={() => signIn()}>Sign in</button>
+        Signed in as {JSON.stringify(session.user.name)} <br />
+        <button onClick={() => signOut()}>Sign out</button>
       </>
     );
+  }
+  return (
+    <>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </>
+  );
 }
-export default LoginComp
+export default LoginComp;

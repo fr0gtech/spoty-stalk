@@ -10,24 +10,29 @@ import {
   setToPlay,
 } from "../redux/settingSlice";
 import ReactPlayer from "react-player/soundcloud";
-import { Button, ButtonGroup, Divider, Icon, Slider, Tag } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Divider,
+  Icon,
+  Slider,
+  Tag,
+} from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { formatDistanceToNow, fromUnixTime, isPast, parseISO } from "date-fns";
 import MusicPlayerNeedsLogin from "./musicPlayerNeedsLogin";
 import Spotify from "../public/spotify.svg";
 import Soundcloud from "../public/soundcloud.svg";
 import { setRevalidateHeaders } from "next/dist/server/send-payload";
-import toast from 'react-simple-toasts';
-
-
+import toast from "react-simple-toasts";
 
 const emptyTrack = {
   artists: [] as any,
   durationMs: 0,
-  id: '',
-  image: '',
-  name: '',
-  uri: '',
+  id: "",
+  image: "",
+  name: "",
+  uri: "",
 };
 function MusicPlayer() {
   const dispatch = useDispatch();
@@ -189,11 +194,10 @@ function MusicPlayer() {
         setPlayer("soundcloud");
         setLastToPlay(loadedSongsMapped[toPlay][0]);
       } else {
-          spref.current.updateState({ isPlaying: true });
-          spref.current.updateState({needsUpdate: true})
-          setLastToPlay([loadedSongsMapped[toPlay]]);
-          setPlayer("spotify");
-
+        spref.current.updateState({ isPlaying: true });
+        spref.current.updateState({ needsUpdate: true });
+        setLastToPlay([loadedSongsMapped[toPlay]]);
+        setPlayer("spotify");
       }
     }
 
@@ -206,22 +210,22 @@ function MusicPlayer() {
       setLastSong();
       setPlaying(true);
       console.log("trigger setLastSong() from playSetter effect");
-
-    }else if(playSetter){
+    } else if (playSetter) {
       // this helps with ppl clicking too fast after load we need to wait for ready to be set
-      toast(`could not play playSetter:${playSetter} ready:${ready}`)
+      toast(`could not play playSetter:${playSetter} ready:${ready}`);
     }
-    return () => {setPlaySetter(false)}
+    return () => {
+      setPlaySetter(false);
+    };
   }, [playSetter, ready, setLastSong]);
 
   const expiredToken = useMemo(
     () => session && isPast(fromUnixTime(session.expiresAt)),
     [session]
   );
-    // if (session){
-    //   console.log(session.expiresAt,Date.now(), isPast(fromUnixTime(session.expiresAt)), formatDistanceToNow(session.expiresAt));
-    // }
-  
+  // if (session){
+  //   console.log(session.expiresAt,Date.now(), isPast(fromUnixTime(session.expiresAt)), formatDistanceToNow(session.expiresAt));
+  // }
 
   useEffect(() => {
     if (expiredToken) document.dispatchEvent(new Event("visibilitychange"));
@@ -256,9 +260,9 @@ function MusicPlayer() {
   }, [setPlaySetter, toPlay]);
 
   useEffect(() => {
-    console.log('scref spref', SPready);
+    console.log("scref spref", SPready);
 
-    if (scref.current && spref.current && SPready) setReady(true)
+    if (scref.current && spref.current && SPready) setReady(true);
     // return () => {
     //   setReady(false);
     // };
@@ -318,7 +322,7 @@ function MusicPlayer() {
             {/* <Button onClick={()=>dispatch(setToPlay(null))} icon="reset" className="!bg-neutral-800">test</Button> */}
             <Button
               minimal
-              icon={<Icon icon="random" size={12}/>}
+              icon={<Icon icon="random" size={12} />}
               active={shuffle}
               onClick={() => setShuffle(!shuffle)}
               className=" !rounded-full hover:!bg-neutral-700 duration-300"
@@ -359,7 +363,6 @@ function MusicPlayer() {
                   )}
                 </div>
               }
-              
               className="!rounded-full hover:!bg-neutral-700 duration-300 !p-0 !m-0"
             ></Button>
           </ButtonGroup>
@@ -415,14 +418,17 @@ function MusicPlayer() {
     if (player === "spotify" && SPcallback) {
       return (
         <div className="gap-1 flex flex-col w-[10%]">
-          <div className="truncate font-bold">{SPcallback.track.name || "loading..."}</div>
+          <div className="truncate font-bold">
+            {SPcallback.track.name || "loading..."}
+          </div>
           <div className="flex gap-2 text-xs">
             {SPcallback.track.artists.map((e: any) => e.name).join(", ")}
           </div>
         </div>
       );
     } else if (
-      loadedSongsMapped && loadedSongsMapped[toPlay] &&  
+      loadedSongsMapped &&
+      loadedSongsMapped[toPlay] &&
       Array.isArray(loadedSongsMapped[toPlay][2])
     ) {
       return (

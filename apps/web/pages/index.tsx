@@ -61,7 +61,7 @@ export const toBase64 = (str: string) =>
 export default function Index() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const ready = useSelector(selectPlayerReady)
+  const ready = useSelector(selectPlayerReady);
 
   const [lastVisit, setLastVisit] = useState<any>();
   const queryClient = useQueryClient();
@@ -169,189 +169,215 @@ export default function Index() {
       </Head>
       <Layout>
         <div className="h-[calc(100vh-40px)] min-h-[calc(100vh-40px)] justify-between flex flex-col gap-1">
+          <div className="overflow-scroll rounded">
+            <div className="gap-2 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-8 text-white rounded">
+              {!data &&
+                [...Array(100)].map(() => {
+                  return (
+                    <div className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]">
+                      <div className="flex items-center h-full p-2 gap-3">
+                        <div>
+                          <div className="h-[50px] w-[50px] bg-neutral-800 rounded"></div>
+                        </div>
+                        <div className=" flex gap-2 flex-col">
+                          <div className="w-[80px] h-[15px] bg-neutral-800"></div>
+                          <div className="w-[80px] h-[15px] bg-neutral-800"></div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              {data &&
+                data.pages.map((page: any, pageIndex: any) => {
+                  if (page.data.length === 0) return <Nodata />;
+                  return (
+                    <React.Fragment key={page.nextCursor}>
+                      {page.data.map((song: any, songIndex: any) => {
+                        if (
+                          song.playlists[0] &&
+                          song.playlists[0].name.includes("Discover Weekly") &&
+                          !showDiscoverWeekly
+                        )
+                          return;
 
-        <div className="overflow-scroll rounded">
-          <div className="gap-2 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-8 text-white rounded">
-            {!data && [...Array(100)].map(()=>{
-              return  <div className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]">
-                <div className="flex items-center h-full p-2 gap-3">
-                  <div>
-                    <div className="h-[50px] w-[50px] bg-neutral-800 rounded"></div>
-                  </div>
-                  <div className=" flex gap-2 flex-col">
-                    <div className="w-[80px] h-[15px] bg-neutral-800"></div>
-                    <div className="w-[80px] h-[15px] bg-neutral-800"></div>
+                        let isPlaying = false;
+                        song.source === "soundcloud"
+                          ? (isPlaying = songPlaying === song.externalUrl)
+                          : (isPlaying = songPlaying === song.sid);
 
-                  </div>
-                </div>
-              </div>
-            }) 
-              
-            }
-            {data &&
-              data.pages.map((page: any, pageIndex: any) => {
-                if (page.data.length === 0) return <Nodata />;
-                return (
-                  <React.Fragment key={page.nextCursor}>
-                    {page.data.map((song: any, songIndex: any) => {
-                      if (song.playlists[0] && song.playlists[0].name.includes('Discover Weekly') && !showDiscoverWeekly) return;
+                        // if (song.source === "soundcloud") {
+                        return (
+                          // <div className={!ready ? "opacity-0 duration-200" : "opacity-100 duration-500"}>
 
-                      let isPlaying = false;
-                      song.source === "soundcloud"
-                        ? (isPlaying = songPlaying === song.externalUrl)
-                        : (isPlaying = songPlaying === song.sid);
-
-                      // if (song.source === "soundcloud") {
-                      return (
-                        // <div className={!ready ? "opacity-0 duration-200" : "opacity-100 duration-500"}>
-
-                        <div
-                        key={song.sid}
-                          className={
-                            isPlaying
-                              ? "grow w-full " + "duration-300 relative transition-all rounded animate-border inline-block from-neutral-300 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
-                              : "grow w-full " + "duration-300 relative transition-all rounded animate-border inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
-                          }
-                        >
-                          {!ready && session &&  <div className="absolute bg-neutral-900 opacity-50 z-10 w-full h-full flex justify-center items-center rounded"></div>}
                           <div
+                            key={song.sid}
                             className={
                               isPlaying
-                                ? "bg-neutral-700 rounded p-2 h-fit shadow-md cursor-pointer"
-                                : "bg-neutral-800 rounded p-2 h-fit cursor-pointer shadow-md border-neutral-800"
-                            }
-                            onClick={() =>{
-                              ready &&
-                                dispatch(
-                                  setToPlay(
-                                    song.source === "soundcloud"
-                                      ? song.externalUrl
-                                      : song.sid
-                                  )
-                                )
-                              }
+                                ? "grow w-full " +
+                                  "duration-300 relative transition-all rounded animate-border inline-block from-neutral-300 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
+                                : "grow w-full " +
+                                  "duration-300 relative transition-all rounded animate-border inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
                             }
                           >
-                            <div className="flex gap-3">
-                              <div className="absolute bg-neutral-800 mx-auto">
-                              {song.source === "soundcloud" && !session && <PreviewSC id={song.sid} /> }
-                              {song.source === "spotify" && !session && <Preview song={song} /> }
-                              </div>
-                              {song && song.images[0] && song.images[0].url ? (
-                                <Image
-                                  placeholder="blur"
-                                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                    shimmer(50, 50)
-                                  )}`}
-                                  className="rounded shadow-md"
-                                  src={song.images[0].url}
-                                  width={50}
-                                  height={50}
-                                  alt="idk"
-                                />
-                              ) : song.images.url ? (
-                                <Image
-                                  placeholder="blur"
-                                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                    shimmer(50, 50)
-                                  )}`}
-                                  className="rounded shadow-md"
-                                  src={song.images.url}
-                                  width={50}
-                                  height={50}
-                                  alt="idk"
-                                />
-                              ) : (
-                                <Image
-                                  src="/frog.png"
-                                  className="rounded bg-neutral-900 h-[50px] w-[50px]"
-                                  alt="tets"
-                                  height={50}
-                                  width={50}
-                                />
-                              )}
-
-                              <div className="w-[calc(100%-60px)]">
-                                <div className="font-bold flex items-center justify-between gap-2">
-                                  <span title={song.name} className="truncate">
-                                    {
-                                      song.name
-                                        .replace(/\(([^)]+)\)/, "")
-                                        .split("-")[0]
-                                    }
-                                  </span>
-                                  {song.source === "spotify" ? (
-                                    <div className="w-[11px] opacity-30">
-                                      <Spotify
-                                        fill={"#1DB954"}
-                                        width={11}
-                                        height={11}
-                                      />
-                                    </div>
-                                  ) : (
-                                    <div className="w-[11px] opacity-60">
-                                      <Soundcloud
-                                        fill={"#803711"}
-                                        width={11}
-                                        height={11}
-                                      />
-                                    </div>
+                            {!ready && session && (
+                              <div className="absolute bg-neutral-900 opacity-50 z-10 w-full h-full flex justify-center items-center rounded"></div>
+                            )}
+                            <div
+                              className={
+                                isPlaying
+                                  ? "bg-neutral-700 rounded p-2 h-fit shadow-md cursor-pointer"
+                                  : "bg-neutral-800 rounded p-2 h-fit cursor-pointer shadow-md border-neutral-800"
+                              }
+                              onClick={() => {
+                                ready &&
+                                  dispatch(
+                                    setToPlay(
+                                      song.source === "soundcloud"
+                                        ? song.externalUrl
+                                        : song.sid
+                                    )
+                                  );
+                              }}
+                            >
+                              <div className="flex gap-3">
+                                <div className="absolute bg-neutral-800 mx-auto">
+                                  {song.source === "soundcloud" && !session && (
+                                    <PreviewSC id={song.sid} />
+                                  )}
+                                  {song.source === "spotify" && !session && (
+                                    <Preview song={song} />
                                   )}
                                 </div>
-                                <div
-                                  title={song.artists
-                                    .map((e: any) => e.name)
-                                    .join(", ")}
-                                  className="text-xs opacity-70 truncate"
-                                >
-                                  {song.artists
-                                    .map((e: any) => e.name)
-                                    .join(", ")}
-                                </div>
-                                <div className="truncate text-[11px] opacity-50">
-                                  <div className="flex truncate gap-[2px] items-center">
-                                    <div className="truncate" title={song.playlists[0] && song.playlists[0].name}>
-                                      {formatDistance(
-                                        new Date(song.addedAt),
-                                        new Date(),
-                                        {
-                                          addSuffix: true,
-                                        }
-                                      )}
-                                      {song.playlists[0] && <Link href={song.playlists[0].externalUrl} className="!text-neutral-300">
-                                      {" "}{song.playlists[0].name}
-                                      </Link>
+                                {song &&
+                                song.images[0] &&
+                                song.images[0].url ? (
+                                  <Image
+                                    placeholder="blur"
+                                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                                      shimmer(50, 50)
+                                    )}`}
+                                    className="rounded shadow-md"
+                                    src={song.images[0].url}
+                                    width={50}
+                                    height={50}
+                                    alt="idk"
+                                  />
+                                ) : song.images.url ? (
+                                  <Image
+                                    placeholder="blur"
+                                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                                      shimmer(50, 50)
+                                    )}`}
+                                    className="rounded shadow-md"
+                                    src={song.images.url}
+                                    width={50}
+                                    height={50}
+                                    alt="idk"
+                                  />
+                                ) : (
+                                  <Image
+                                    src="/frog.png"
+                                    className="rounded bg-neutral-900 h-[50px] w-[50px]"
+                                    alt="tets"
+                                    height={50}
+                                    width={50}
+                                  />
+                                )}
+
+                                <div className="w-[calc(100%-60px)]">
+                                  <div className="font-bold flex items-center justify-between gap-2">
+                                    <span
+                                      title={song.name}
+                                      className="truncate"
+                                    >
+                                      {
+                                        song.name
+                                          .replace(/\(([^)]+)\)/, "")
+                                          .split("-")[0]
                                       }
+                                    </span>
+                                    {song.source === "spotify" ? (
+                                      <div className="w-[11px] opacity-30">
+                                        <Spotify
+                                          fill={"#1DB954"}
+                                          width={11}
+                                          height={11}
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="w-[11px] opacity-60">
+                                        <Soundcloud
+                                          fill={"#803711"}
+                                          width={11}
+                                          height={11}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div
+                                    title={song.artists
+                                      .map((e: any) => e.name)
+                                      .join(", ")}
+                                    className="text-xs opacity-70 truncate"
+                                  >
+                                    {song.artists
+                                      .map((e: any) => e.name)
+                                      .join(", ")}
+                                  </div>
+                                  <div className="truncate text-[11px] opacity-50">
+                                    <div className="flex truncate gap-[2px] items-center">
+                                      <div
+                                        className="truncate"
+                                        title={
+                                          song.playlists[0] &&
+                                          song.playlists[0].name
+                                        }
+                                      >
+                                        {formatDistance(
+                                          new Date(song.addedAt),
+                                          new Date(),
+                                          {
+                                            addSuffix: true,
+                                          }
+                                        )}
+                                        {song.playlists[0] && (
+                                          <Link
+                                            href={song.playlists[0].externalUrl}
+                                            className="!text-neutral-300"
+                                          >
+                                            {" "}
+                                            {song.playlists[0].name}
+                                          </Link>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </React.Fragment>
-                );
-              })}
-            {data && data.pages && data.pages[0].data.length !== 0 && (
-              <Button
-                loading={isFetching}
-                disabled={!hasNextPage || isFetching}
-                onClick={() => fetchNextPage()}
-                className="m-[2px] rounded !bg-neutral-800"
-                elementRef={ref}
-                minimal
-                fill
-              >
-                {isFetching ? "Loading..." : "Load More"}
-              </Button>
-            )}
+                        );
+                      })}
+                    </React.Fragment>
+                  );
+                })}
+              {data && data.pages && data.pages[0].data.length !== 0 && (
+                <Button
+                  loading={isFetching}
+                  disabled={!hasNextPage || isFetching}
+                  onClick={() => fetchNextPage()}
+                  className="m-[2px] rounded !bg-neutral-800"
+                  elementRef={ref}
+                  minimal
+                  fill
+                >
+                  {isFetching ? "Loading..." : "Load More"}
+                </Button>
+              )}
+            </div>
           </div>
+          <MusicPlayer />
         </div>
-        <MusicPlayer/>
-        </div>
-
       </Layout>
     </>
   );

@@ -1,9 +1,9 @@
-import {  spotifyApi } from "../app";
+import { spotifyApi } from "../app";
 import { differenceBy } from "../helpers";
 import { prisma } from "database";
 import { log } from "../logger";
 
-const logger = log.child({name: 'spotifyPlaylist'})
+const logger = log.child({ name: "spotifyPlaylist" });
 
 export const changedPlaylists = async (playlists: any) => {
   const weHave = await prisma.playlist.findMany({
@@ -67,7 +67,7 @@ export const getAllPlaylists = async (userId: string) => {
 
 export const savePlaylist = async (playlist: any) => {
   logger.info(`saving playlist ${playlist.name}`);
-  // maybe check snapshot id here to check if we need to do anything for this playlist  
+  // maybe check snapshot id here to check if we need to do anything for this playlist
   return await prisma.playlist
     .upsert({
       where: { sid: playlist.id },
@@ -79,7 +79,6 @@ export const savePlaylist = async (playlist: any) => {
         images: playlist.images as any,
         lastSnapShotId: playlist.snapshot_id,
         tracks: playlist.tracks.total,
-
       },
       update: { lastSnapShotId: playlist.snapshot_id },
     })
@@ -88,13 +87,13 @@ export const savePlaylist = async (playlist: any) => {
   // snapshot_id is very helpful and should only change on change?
   // we check when we last did scan and filter out what we need to add
 };
-export const getSongsFromPlaylistOnDB = async (playlist:any) => {  
+export const getSongsFromPlaylistOnDB = async (playlist: any) => {
   return await prisma.playlist.findFirst({
-    where:{
-      sid: playlist.id
+    where: {
+      sid: playlist.id,
     },
-    select:{
-      songs:true
-    }
-  })  
-}
+    select: {
+      songs: true,
+    },
+  });
+};

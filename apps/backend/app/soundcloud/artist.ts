@@ -1,18 +1,21 @@
-
 import { log } from "../logger";
 import { prisma } from "database";
 import { Prisma } from "@prisma/client";
 
-const logger = log.child({name: 'soundcloudArtist'})
+const logger = log.child({ name: "soundcloudArtist" });
 
 export const saveArtistSC = async (song: any) => {
-    if (song.track === undefined) return // if liked thing has no track      
-    // logger.debug(
-    //   `trying to save artist: ${song.track.user.username}`
-    // );
-    return await prisma.artist.upsert({
+  if (song.track === undefined) return; // if liked thing has no track
+  // logger.debug(
+  //   `trying to save artist: ${song.track.user.username}`
+  // );
+  return await prisma.artist
+    .upsert({
       where: {
-        name_platform: { name: song.track.user.username, platform: "soundcloud" }
+        name_platform: {
+          name: song.track.user.username,
+          platform: "soundcloud",
+        },
       },
       create: {
         sid: song.track.user.id.toString(),
@@ -20,8 +23,10 @@ export const saveArtistSC = async (song: any) => {
         externalUrl: song.track.user.permalink_url,
         platform: "soundcloud",
       },
-      update: {}
-    }).then((e) => e).catch((e) => {
+      update: {},
+    })
+    .then((e) => e)
+    .catch((e) => {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner
         if (e.code === "P2002") {
@@ -30,8 +35,8 @@ export const saveArtistSC = async (song: any) => {
           // );
           return {
             name: song.track.user.username,
-            platform: "soundcloud"
-          }
+            platform: "soundcloud",
+          };
         } else {
           logger.error(e);
           logger.info(song);
@@ -41,4 +46,4 @@ export const saveArtistSC = async (song: any) => {
         logger.info(song);
       }
     });
-  }
+};

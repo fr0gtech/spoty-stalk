@@ -5,9 +5,9 @@ import { prisma } from "database";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let cursor = parseInt(req.query.c as any);
   let pageSize = parseInt(req.query.p as any);
-  let spotify = JSON.parse(req.query.sp as any)
-  let soundcloud = JSON.parse(req.query.sc as any)
-    
+  let spotify = JSON.parse(req.query.sp as any);
+  let soundcloud = JSON.parse(req.query.sc as any);
+
   if (pageSize > 100 || cursor === undefined || pageSize === undefined) {
     return res.status(404).json({
       error: "error",
@@ -22,16 +22,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         name: "desc",
       },
     ],
-    where:{
-      OR:[
+    where: {
+      OR: [
         {
-          source: spotify ? "spotify" : ""
+          source: spotify ? "spotify" : "",
         },
         {
-          source: soundcloud ? "soundcloud" : ""
-        }
-      ]
-      },
+          source: soundcloud ? "soundcloud" : "",
+        },
+      ],
+    },
     select: {
       sid: true,
       images: true,
