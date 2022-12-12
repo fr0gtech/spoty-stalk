@@ -71,7 +71,7 @@ function MusicPlayer() {
 
   // Set initial vars for refreshing token
   useEffect(() => {
-    if (session){
+    if (session) {
       setAccessToken(session.accessToken);
       setTokenExpires(session.expiresAt);
     }
@@ -94,14 +94,14 @@ function MusicPlayer() {
   // Load saved volume from localstorage
   useEffect(() => {
     const oldV = getItem("volume");
-    if (oldV) setVolume(parseFloat(oldV));
+    setVolume(parseFloat(oldV || "0.1"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Save volume to localstorage
   useEffect(() => {
     if (volume) setItem("volume", volume.toString());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [volume]);
 
   // VOLUME
@@ -134,7 +134,7 @@ function MusicPlayer() {
       dispatch(
         setToPlay(
           loadedSongsMapped[
-            Math.floor(Math.random() * loadedSongsMapped.length)
+          Math.floor(Math.random() * loadedSongsMapped.length)
           ]
         )
       );
@@ -147,8 +147,8 @@ function MusicPlayer() {
 
     const next = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) + 1];
     next
-    ? dispatch(setToPlay(next))
-    : dispatch(setToPlay(loadedSongsMapped[0]));
+      ? dispatch(setToPlay(next))
+      : dispatch(setToPlay(loadedSongsMapped[0]));
 
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
@@ -158,16 +158,16 @@ function MusicPlayer() {
       dispatch(
         setToPlay(
           loadedSongsMapped[
-            Math.floor(Math.random() * loadedSongsMapped.length)
+          Math.floor(Math.random() * loadedSongsMapped.length)
           ]
         )
       );
       return;
     }
     const prev = loadedSongsMapped[loadedSongsMapped.indexOf(toPlay) - 1];
-    prev 
-    ? dispatch(setToPlay(prev))
-    : dispatch(setToPlay(loadedSongsMapped[loadedSongsMapped.length - 1]));
+    prev
+      ? dispatch(setToPlay(prev))
+      : dispatch(setToPlay(loadedSongsMapped[loadedSongsMapped.length - 1]));
 
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
@@ -187,7 +187,7 @@ function MusicPlayer() {
       scref.current.seekTo(seekset, "seconds");
     if (spref.current && seekset && player === "spotify")
       seekSPFN((seekset * 1000).toFixed(0));
-      return ()=> setSeekset(0)
+    return () => setSeekset(0)
   }, [seekset, player, scref, spref, session, seekSPFN]);
 
   // song to play
@@ -219,7 +219,7 @@ function MusicPlayer() {
       setLastSong();
       setPlaying(true);
     } else if (playSetter) {
-      Toast?.show({message: "no ready"})
+      Toast?.show({ message: "no ready" })
     }
     return () => setPlaySetter(false);
   }, [playSetter, ready, setLastSong]);
@@ -248,7 +248,7 @@ function MusicPlayer() {
             uri: sound.permalink_url,
           },
           artists: [
-            { name: sound.user.username, url: sound.user.permalink_url },
+            { name: sound.user.username, uri: sound.user.permalink_url },
           ],
         })
       );
@@ -281,8 +281,8 @@ function MusicPlayer() {
             volume > 0.5
               ? "volume-up"
               : volume === 0
-              ? "volume-off"
-              : "volume-down"
+                ? "volume-off"
+                : "volume-down"
           }
         />
         <Slider
@@ -352,11 +352,11 @@ function MusicPlayer() {
                   className="!no-underline !text-neutral-200 hover:!underline"
                 >
                   <div>
-                    {player === "spotify" ? (
-                      <Spotify fill={"#1DB954"} height={15} width={15} />
-                    ) : (
-                      <Soundcloud fill={"#803711"} height={15} width={15} />
-                    )}
+                    {player === "spotify" &&
+                      <Spotify fill={"#1DB954"} height={21} width={21} />}
+                    {player === "soundcloud" &&
+                      <Soundcloud fill={"#803711"} height={21} width={21} />
+                    }
                   </div>
                 </Link>
               }
@@ -381,7 +381,7 @@ function MusicPlayer() {
               showTrackFill={true}
               intent="primary"
               onRelease={(e) => {
-                setSeekset(e);                
+                setSeekset(e);
                 setIsHolding(false);
               }}
               min={0}
@@ -423,14 +423,14 @@ function MusicPlayer() {
               {songDetails.song.image === "" ? (
                 <Image
                   src="/frog.png"
-                  className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
+                  className="bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
                   alt="tets"
                   height={50}
                   width={50}
                 />
               ) : (
                 <Image
-                  className="rounded bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
+                  className="bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
                   blurDataURL={`data:image/svg+xml;base64,${toBase64(
                     shimmer(50, 50)
                   )}`}
@@ -456,11 +456,11 @@ function MusicPlayer() {
                   </div>
                 </Link>
                 <div className="flex gap-1 text-xs">
-                  {songDetails.artists.map((e: any, i:any) => {
+                  {songDetails.artists.map((e: any, i: any) => {
                     return (
                       <Link
                         key={i}
-                        href={e.url || e.external_urls.spotify}
+                        href={e.uri}
                         className="!no-underline !text-neutral-400 hover:!underline"
                       >
                         <div className="truncate">{e.name}</div>
@@ -478,12 +478,12 @@ function MusicPlayer() {
           )}
           {renderButtons()}
           <div className="hidden md:flex">
-          {volumeSlider()}
+            {volumeSlider()}
           </div>
         </div>
       </div>
       <div
-      className="opacity-0 !-z-10 absolute bottom-0 left-0"
+        className="opacity-0 !-z-10 absolute bottom-0 left-0"
       >
         <SpotifyPlayer
           initialVolume={volume}

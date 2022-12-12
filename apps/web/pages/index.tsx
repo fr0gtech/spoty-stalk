@@ -258,7 +258,7 @@ export default function Index() {
                                       blurDataURL={`data:image/svg+xml;base64,${toBase64(
                                         shimmer(50, 50)
                                       )}`}
-                                      className="rounded shadow-md"
+                                      className="shadow-md"
                                       src={song.images[0].url}
                                       width={50}
                                       height={50}
@@ -276,7 +276,7 @@ export default function Index() {
                                     blurDataURL={`data:image/svg+xml;base64,${toBase64(
                                       shimmer(50, 50)
                                     )}`}
-                                    className="rounded shadow-md"
+                                    className="shadow-md"
                                     src={song.images.url}
                                     width={50}
                                     height={50}
@@ -286,7 +286,7 @@ export default function Index() {
                                   <div className="relative">
                                     <Image
                                       src="/frog.png"
-                                      className="rounded bg-neutral-900 h-[50px] w-[50px]"
+                                      className="bg-neutral-900 h-[50px] w-[50px]"
                                       alt="tets"
                                       height={50}
                                       width={50}
@@ -311,23 +311,23 @@ export default function Index() {
                                           .split("-")[0]
                                       }
                                     </span>
-                                    {song.source === "spotify" ? (
-                                      <div className="w-[11px] opacity-30">
+                                    {/* {song.source === "spotify" ? (
+                                      <div className="opacity-30">
                                         <Spotify
                                           fill={"#1DB954"}
-                                          width={11}
-                                          height={11}
+                                          width={21}
+                                          height={21}
                                         />
                                       </div>
                                     ) : (
-                                      <div className="w-[11px] opacity-60">
+                                      <div className="opacity-60">
                                         <Soundcloud
                                           fill={"#803711"}
-                                          width={11}
-                                          height={11}
+                                          width={21}
+                                          height={21}
                                         />
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                   <div
                                     title={song.artists
@@ -339,7 +339,7 @@ export default function Index() {
                                       .map((e: any) => e.name)
                                       .join(", ")}
                                   </div>
-                                  <div className="truncate text-[11px] opacity-50">
+                                  <div className="truncate text-[11px] text-neutral-400">
                                     <div className="flex truncate gap-[2px] items-center">
                                       <div
                                         className="truncate"

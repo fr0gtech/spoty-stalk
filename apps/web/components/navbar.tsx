@@ -130,7 +130,7 @@ function Navbar(props: any) {
         </div>
       </div>
       <div className="text-xs opacity-50 hidden md:block ">{`last scan ${lastScanState}`}</div>
-      <div className="flex">
+      {/* <div className="flex">
         <div id="spcheck" className="text-xs">
           <Checkbox
             inline
@@ -158,7 +158,7 @@ function Navbar(props: any) {
             }}
           />
         </div>
-      </div>
+      </div> */}
       <Settings />
     </nav>
   );
