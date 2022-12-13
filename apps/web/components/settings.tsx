@@ -12,10 +12,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Spotify from "../public/spotify.svg";
 import Share from "../public/share.svg";
 import {
+  selectHideTimestamp,
   selectOpenInApp,
   selectShowDiscoverWeekly,
   selectShowSoundCloud,
   selectShowSpotify,
+  setHideTimestamp,
   setOpenInApp,
   setShowDiscoverWeekly,
   setShowSoundCloud,
@@ -32,6 +34,7 @@ function Settings() {
 
   const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
   const openInapp = useSelector(selectOpenInApp);
+  const hideTimestamp = useSelector(selectHideTimestamp)
   const showSpotify = useSelector(selectShowSpotify);
   const showSoundclud = useSelector(selectShowSoundCloud);
   return (
@@ -109,25 +112,17 @@ function Settings() {
               defaultChecked={openInapp}
               className="!m-0 p-0 flex items-center"
               onChange={() => dispatch(setOpenInApp(!openInapp))}
-              labelElement={
-                <span className="m-0 p-0">
-                  {openInapp ? (
-                    <Spotify
-                      fill={"#1DB954"}
-                      className={" inline-block -mt-[5px]"}
-                      height={16}
-                      width={16}
-                    />
-                  ) : (
-                    <Share
-                      fill={"#ffffff"}
-                      className={"inline-block -mt-[5px]"}
-                      height={14}
-                      width={16}
-                    />
-                  )}
-                </span>
-              }
+            
+            ></Switch>
+          </FormGroup>
+          <FormGroup
+            label="Hide timestamp row (cleaner ui)"
+          >
+            <Switch
+              defaultChecked={hideTimestamp}
+              className="!m-0 p-0 flex items-center"
+              onChange={() => dispatch(setHideTimestamp(!hideTimestamp))}
+
             ></Switch>
           </FormGroup>
           <div className="flex gap-2 items-center opacity-40 hover:opacity-100 duration-150">

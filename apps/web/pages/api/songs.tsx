@@ -41,6 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       name: true,
       source: true,
       addedAt: true,
+      album: true,
       artists: true,
       playlists: {
         select: {

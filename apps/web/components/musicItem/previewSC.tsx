@@ -1,4 +1,4 @@
-import { Button } from "@blueprintjs/core";
+import { Button, Tag } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import Image from "next/image";
 import ReactAudioPlayer from "react-audio-player";
@@ -20,7 +20,22 @@ function PreviewSC(props: any) {
           </>
         }
       >
-        <Button minimal small icon="play" />
+         <Tag
+                                  className="
+                                    !w-[50px]
+                                    !h-[15px]
+                                    !min-h-[15px]
+                                    !p-0
+                                    text-center
+                                    font-bold
+                                    !text-[9px]
+                                    !bg-neutral-600
+                                    uppercase
+                                    "
+                                  intent="success"
+                                >
+                                  Preview
+                                </Tag>
       </Popover2>
     </div>
   );

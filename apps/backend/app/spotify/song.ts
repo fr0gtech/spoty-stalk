@@ -26,7 +26,6 @@ export const getSongsFromPlaylist = async (playlist: any) => {
 export const saveSong = async (song: any, artists: any, playlist: any) => {
   // leaks and removed or whatever songs can get here with out and id, we do not handle this for now.
   if (!song.track.id) return;
-
   const ar = artists
     .map((e: any) => {
       if (e) {
@@ -54,10 +53,12 @@ export const saveSong = async (song: any, artists: any, playlist: any) => {
         name: song.track.name,
         source: "spotify",
         addedAt: song.added_at,
-        images: song.track.album.images,
+        album: {id:song.track.album.id, name: song.track.album.name,},
+        images: {...song.track.album.images},
         externalUrl: song.track.external_urls.spotify,
         previewUrl: song.track.preview_url,
         durationMs: song.track.duration_ms,
+        disabled: song.track.available_markets.length === 0,
         playlists: {
           connect: [{ sid: playlist.id }],
         },

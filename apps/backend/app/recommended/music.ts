@@ -29,7 +29,7 @@ export const findMusicPosts = (e: any) => {
       parsedUrl[Object.keys(parsedUrl)[0]] as string
     );
     if (!e.media.oembed.title.includes("by")) {
-      console.log(e.media.oembed);
+      // console.log(e.media.oembed);
     }
 
     return {

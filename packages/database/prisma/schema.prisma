@@ -54,9 +54,9 @@ model Song {
   name        String
   externalUrl String?
   images      Json
-
+  album       Json?
   source String
-
+  disabled  Boolean?
   previewUrl String?
   durationMs Int
   playlists  Playlist[]

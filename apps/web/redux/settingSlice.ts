@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./store";
-import { HYDRATE } from "next-redux-wrapper";
-import { subDays } from "date-fns";
-import { getCookie } from "cookies-next";
+
 
 // Type for our state
 export interface SettingState {
   showSpotify: boolean;
   showSoundCloud: boolean;
   showDiscoverWeekly: boolean;
+  hideTimestamp: boolean;
   openInApp: boolean;
   lastVisit: any;
   toPlay: any | null;
@@ -25,6 +24,7 @@ const initialState: SettingState = {
   showSpotify: true,
   showSoundCloud: true,
   showDiscoverWeekly: false,
+  hideTimestamp: false,
   openInApp: true,
   lastVisit: [], // arry of object of pages to track
   toPlay: null,
@@ -41,6 +41,9 @@ export const settingSlice = createSlice({
   name: "setting",
   initialState,
   reducers: {
+    setHideTimestamp(state, action) {
+      state.hideTimestamp = action.payload;
+    },
     setPlayerReady(state, action) {
       state.playerReady = action.payload;
     },
@@ -81,6 +84,7 @@ export const settingSlice = createSlice({
 });
 
 export const {
+  setHideTimestamp,
   setPlayerReady,
   setSongDetails,
   setSongPlaying,
@@ -110,5 +114,6 @@ export const selectPlayer = (state: AppState) => state.setting.player;
 export const selectSongPlaying = (state: AppState) => state.setting.songPlaying;
 export const selectSongDetails = (state: AppState) => state.setting.songDetails;
 export const selectPlayerReady = (state: AppState) => state.setting.playerReady;
+export const selectHideTimestamp = (state: AppState) => state.setting.hideTimestamp;
 
 export default settingSlice.reducer;

@@ -13,12 +13,7 @@ import {
   setToPlay,
 } from "../../redux/settingSlice";
 import ReactPlayer from "react-player/soundcloud";
-import {
-  Button,
-  ButtonGroup,
-  Icon,
-  Slider,
-} from "@blueprintjs/core";
+import { Button, ButtonGroup, Icon, Slider } from "@blueprintjs/core";
 import { isPast } from "date-fns";
 import MusicPlayerNeedsLogin from "./needsLogin";
 import Spotify from "../../public/spotify.svg";
@@ -66,30 +61,31 @@ function MusicPlayer() {
   // SONG INFO
   const songDetails = useSelector(selectSongDetails);
 
-  const [accessToken, setAccessToken] = useState<any>();
+  const [accessToken, setAccessToken] = useState<any>("");
   const [tokenExpires, setTokenExpires] = useState<any>();
 
   // Set initial vars for refreshing token
-  useEffect(() => {
-    if (session) {
-      setAccessToken(session.accessToken);
-      setTokenExpires(session.expiresAt);
-    }
+
+  const get = useCallback(async () => {
+    await fetch("/api/refreshtoken?token=" + session.refreshToken).then(
+      async (e) => {
+        const body = await e.json();
+        setAccessToken(body.accessToken);
+        setTokenExpires(body.expiresAt);
+      }
+    );
   }, [session]);
 
-  // Refresh token when needed FIXME
   useEffect(() => {
-    const get = async () => {
-      await fetch("/api/refreshtoken?token=" + session.refreshToken).then(
-        async (e) => {
-          const body = await e.json();
-          setAccessToken(body.accessToken);
-          setTokenExpires(body.expiresAt);
-        }
-      );
+    if (session) {
+      setTokenExpires(session.expiresAt);
+      if (isPast(new Date(session.expiresAt * 1000))) {
+        get();
+      } else {
+        setAccessToken(session.accessToken);
+      }
     }
-    if (session && isPast(new Date(tokenExpires * 1000))) get()
-  }, [session, tokenExpires]);
+  }, [get, session]);
 
   // Load saved volume from localstorage
   useEffect(() => {
@@ -109,7 +105,6 @@ function MusicPlayer() {
     if (volume !== undefined && spref.current && player === "spotify")
       spref.current.setVolume(volume);
   }, [volume, spref, player]);
-
 
   // Seek in
   const seekSPFN = useCallback(
@@ -134,7 +129,7 @@ function MusicPlayer() {
       dispatch(
         setToPlay(
           loadedSongsMapped[
-          Math.floor(Math.random() * loadedSongsMapped.length)
+            Math.floor(Math.random() * loadedSongsMapped.length)
           ]
         )
       );
@@ -149,7 +144,6 @@ function MusicPlayer() {
     next
       ? dispatch(setToPlay(next))
       : dispatch(setToPlay(loadedSongsMapped[0]));
-
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
 
   // Prev song function
@@ -158,7 +152,7 @@ function MusicPlayer() {
       dispatch(
         setToPlay(
           loadedSongsMapped[
-          Math.floor(Math.random() * loadedSongsMapped.length)
+            Math.floor(Math.random() * loadedSongsMapped.length)
           ]
         )
       );
@@ -168,15 +162,13 @@ function MusicPlayer() {
     prev
       ? dispatch(setToPlay(prev))
       : dispatch(setToPlay(loadedSongsMapped[loadedSongsMapped.length - 1]));
-
   }, [dispatch, loadedSongsMapped, shuffle, toPlay]);
-
-
 
   // spotify seek position setter
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (spref.current && player === "spotify") setSeek(spref.current.state.progressMs / 1000);
+      if (spref.current && player === "spotify")
+        setSeek(spref.current.state.progressMs / 1000);
     }, 1000);
     return () => clearTimeout(timeout);
   }, [spref, seek, player, nextSong, duration]);
@@ -187,7 +179,7 @@ function MusicPlayer() {
       scref.current.seekTo(seekset, "seconds");
     if (spref.current && seekset && player === "spotify")
       seekSPFN((seekset * 1000).toFixed(0));
-    return () => setSeekset(0)
+    return () => setSeekset(0);
   }, [seekset, player, scref, spref, session, seekSPFN]);
 
   // song to play
@@ -196,7 +188,8 @@ function MusicPlayer() {
       toPlay !== null &&
       loadedSongsMapped !== undefined &&
       playSetter &&
-      spref.current !== undefined && spref.current !== null
+      spref.current !== undefined &&
+      spref.current !== null
     ) {
       if (toPlay.includes("soundcloud")) {
         setPlayer("soundcloud");
@@ -212,14 +205,14 @@ function MusicPlayer() {
     }
   }, [dispatch, loadedSongsMapped, playSetter, toPlay]);
 
-  // play setter 
+  // play setter
   useEffect(() => {
     if (playSetter && ready) {
-      setSeek(0)
+      setSeek(0);
       setLastSong();
       setPlaying(true);
     } else if (playSetter) {
-      Toast?.show({ message: "no ready" })
+      Toast?.show({ message: "no ready" });
     }
     return () => setPlaySetter(false);
   }, [playSetter, ready, setLastSong]);
@@ -232,7 +225,8 @@ function MusicPlayer() {
 
   // global for SPready
   useEffect(() => {
-    if (scref.current && spref.current && SPready) dispatch(setPlayerReady(true));
+    if (scref.current && spref.current && SPready)
+      dispatch(setPlayerReady(true));
   }, [SPready, dispatch]);
 
   // get soundcloud song details
@@ -281,8 +275,8 @@ function MusicPlayer() {
             volume > 0.5
               ? "volume-up"
               : volume === 0
-                ? "volume-off"
-                : "volume-down"
+              ? "volume-off"
+              : "volume-down"
           }
         />
         <Slider
@@ -339,29 +333,25 @@ function MusicPlayer() {
               className="!rounded-full hover:!bg-neutral-700 duration-300"
               onClick={() => nextSong()}
             />
-
-            <Button
-              minimal
-              icon={
-                <Link
-                  href={
-                    songDetails && songDetails.song && songDetails.song.uri
-                      ? songDetails.song.uri
-                      : ""
-                  }
-                  className="!no-underline !text-neutral-200 hover:!underline"
-                >
-                  <div>
-                    {player === "spotify" &&
-                      <Spotify fill={"#1DB954"} height={21} width={21} />}
-                    {player === "soundcloud" &&
-                      <Soundcloud fill={"#803711"} height={21} width={21} />
-                    }
-                  </div>
-                </Link>
-              }
-              className="!rounded-full hover:!bg-neutral-700 duration-300 !p-0 !m-0"
-            ></Button>
+            <div className="flex items-center">
+              <Link
+                href={
+                  songDetails && songDetails.song && songDetails.song.uri
+                    ? songDetails.song.uri
+                    : ""
+                }
+                className="!no-underline !text-neutral-200 hover:!underline"
+              >
+                <div>
+                  {player === "spotify" && (
+                    <Spotify fill={"#1DB954"} height={21} width={21} />
+                  )}
+                  {player === "soundcloud" && (
+                    <Soundcloud fill={"#803711"} height={21} width={21} />
+                  )}
+                </div>
+              </Link>
+            </div>
           </ButtonGroup>
         </div>
         <div>
@@ -477,14 +467,10 @@ function MusicPlayer() {
             </div>
           )}
           {renderButtons()}
-          <div className="hidden md:flex">
-            {volumeSlider()}
-          </div>
+          <div className="hidden md:flex">{volumeSlider()}</div>
         </div>
       </div>
-      <div
-        className="opacity-0 !-z-10 absolute bottom-0 left-0"
-      >
+      <div className="opacity-0 !-z-10 absolute bottom-0 left-0">
         <SpotifyPlayer
           initialVolume={volume}
           callback={async (e) => {
@@ -495,7 +481,7 @@ function MusicPlayer() {
             if (e.isActive && !e.isPlaying) {
               setSPplaying(false);
             }
-            if (e.isPlaying) {
+            if (e.isPlaying) {              
               dispatch(
                 setSongDetails({
                   song: {
@@ -513,7 +499,8 @@ function MusicPlayer() {
               e.isActive &&
               !e.isPlaying &&
               seek !== 0 &&
-              SPplaying
+              SPplaying && 
+              playing
             ) {
               // IS REALLY DONE?????
               nextSong();
@@ -527,7 +514,11 @@ function MusicPlayer() {
           ref={spref as any}
           syncExternalDevice={true}
           token={accessToken}
-          uris={songToPlay && songToPlay.includes('soundcloud') ? ["spotify:track:xxxxxxxxxxxxxxxxxxxxxx"] : songToPlay}
+          uris={
+            songToPlay && songToPlay.includes("soundcloud")
+              ? ["spotify:track:xxxxxxxxxxxxxxxxxxxxxx"]
+              : songToPlay
+          }
         />
         <ReactPlayer
           muted={volume === 0}

@@ -22,7 +22,7 @@ const run = async () => {
   }
   syncSpotify();
   syncSoundCloud();
-  syncReddit();
+  // syncReddit();
   scanInfo();
 };
 
