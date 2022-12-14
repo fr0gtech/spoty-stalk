@@ -20,7 +20,7 @@ import {
  */
 
 const logger = log.child({ name: "spotify" });
-
+let fullRun:boolean;
 export const getToken = async () => {
   logger.info("getToken - Trying to get access token");
   try {
@@ -45,6 +45,7 @@ export const syncSpotify = async () => {
   playlists.forEach(async (playlist: SpotifyApi.PlaylistObjectSimplified) => {
     const onSpoty = await getSongsFromPlaylist(playlist);
     const onDB = await getSongsFromPlaylistOnDB(playlist);
+    if (!onDB) fullRun = true
     const { del, add } = getSongsDiff(onSpoty, onDB);
     logger.info(
       `${playlist.name} songs to delete: ${del?.length} songs to add: ${add?.length}`
@@ -53,7 +54,7 @@ export const syncSpotify = async () => {
     await savePlaylist(playlist);
     add.forEach(async (song: any) => {
       await saveArtist(song).then(async (artists) => {
-        await saveSong(song, artists, playlist);
+        await saveSong(song, artists, playlist, fullRun);
       });
     });
     del.forEach(async (song: any) => deleteSong(song));

@@ -2,13 +2,14 @@ import { log } from "../logger";
 import { prisma } from "database";
 import { Prisma } from "@prisma/client";
 import { exit } from "process";
+import { tweetSongSoundcloud } from "../notify";
 
 const logger = log.child({ name: "soundcloudSong" });
 
-export const saveSongSC = async (song: any, artist: any) => {
+export const saveSongSC = async (song: any, artist: any, fullRun:boolean) => {
   if (song.track === undefined || song.track.title === undefined) return; // if liked thing has no track
   // logger.debug(`running saveSongSC: ${song.track.title || undefined} - ${artist.name}`)
-
+  if (!fullRun) tweetSongSoundcloud(song, artist)
   return await prisma.song
     .upsert({
       where: { sid: song.track.id.toString() },

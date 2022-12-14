@@ -3,6 +3,7 @@ import { prisma } from "database";
 import { exit } from "process";
 import { spotifyApi } from "../app";
 import { log } from "../logger";
+import { tweetSongSpotify } from "../notify";
 
 const logger = log.child({ name: "spotifySong" });
 
@@ -23,7 +24,7 @@ export const getSongsFromPlaylist = async (playlist: any) => {
   return data;
 };
 
-export const saveSong = async (song: any, artists: any, playlist: any) => {
+export const saveSong = async (song: any, artists: any, playlist: any, fullRun: boolean) => {
   // leaks and removed or whatever songs can get here with out and id, we do not handle this for now.
   if (!song.track.id) return;
   const ar = artists
@@ -40,6 +41,7 @@ export const saveSong = async (song: any, artists: any, playlist: any) => {
     logger.error({ song, artists });
     exit();
   }
+  if (!fullRun) tweetSongSpotify(song, artists, playlist)
   await prisma.song
     .upsert({
       where: { sid: song.track.id },

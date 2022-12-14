@@ -84,7 +84,7 @@ export const syncSoundCloud = async () => {
     const allLikes = await getAllLikes();
     allLikes.forEach(async (song: any) => {
       const artist = await saveArtistSC(song);
-      const savedsong = await saveSongSC(song, artist);
+      await saveSongSC(song, artist, true);
     });
   } else {
     logger.info("saveLikes got last like getting all before");
@@ -94,7 +94,7 @@ export const syncSoundCloud = async () => {
     const newLikes = await getLikesTo(llDB);
     newLikes.forEach(async (song: any) => {
       const artist = await saveArtistSC(song);
-      const savedsong = await saveSongSC(song, artist);
+      const savedsong = await saveSongSC(song, artist, false);
     });
   }
 };

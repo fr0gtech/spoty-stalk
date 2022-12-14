@@ -25,12 +25,11 @@ const getMetaData = async () => {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       }
     )
-    .then((e) => e.data.metadata);
+    .then((e) => e.data.metadata).catch((e)=>console.log('error'));
 };
 
 const getAll = async function () {
   logger.info("getting all soundcloud or spotify links");
-  const total = (await getMetaData()).total_results;
 
   const pageSize = 250;
   let allPosts: RecommendedItem[] = [];
@@ -38,8 +37,7 @@ const getAll = async function () {
 
   let url = new URL("https://api.pushshift.io/reddit/search/submission/");
   url.searchParams.append("subreddit", process.env.SUBREDDIT as string);
-  url.searchParams.append("sort", "desc");
-  url.searchParams.append("sort_type", "created_utc");
+  url.searchParams.append("sort", "created_utc");
   url.searchParams.append("size", pageSize.toString());
 
   while (lastL === pageSize) {
@@ -47,7 +45,9 @@ const getAll = async function () {
       .get(url.toString(), {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       })
-      .then((e) => e.data.data);
+      .then((e) => e.data.data).catch((e)=>{
+        console.log(e.data, url)
+      });
     post.forEach((e: any) => {
       if (e.media && e.media.oembed) {
         const artist = findMusicPosts(e);
@@ -79,15 +79,14 @@ const getLast = async (lastDB: any) => {
   let toReturn: any = [];
   let url = new URL("https://api.pushshift.io/reddit/search/submission/");
   url.searchParams.append("subreddit", process.env.SUBREDDIT as string);
-  url.searchParams.append("sort", "desc");
-  url.searchParams.append("sort_type", "created_utc");
+  url.searchParams.append("sort", "created_utc");
   url.searchParams.append("size", pageSize.toString());
   while (lastL === pageSize) {
     const post = await axios
       .get(url.toString(), {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       })
-      .then((e) => e.data.data);
+      .then((e) => e.data.data).catch((e)=>console.log('error'));
     const last = post.some((e: any) => {
       if (e) url.searchParams.set("before", e.created_utc);
       if (e && e.media && e.media.oembed) {
