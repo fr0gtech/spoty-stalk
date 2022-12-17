@@ -10,13 +10,6 @@ export interface SettingState {
   hideTimestamp: boolean;
   openInApp: boolean;
   lastVisit: any;
-  toPlay: any | null;
-  songPlaying: any;
-  loadedSongs: any;
-  spotifySongs: any;
-  player: string;
-  songDetails: any;
-  playerReady: boolean;
 }
 
 // Initial state
@@ -27,13 +20,6 @@ const initialState: SettingState = {
   hideTimestamp: false,
   openInApp: true,
   lastVisit: [], // arry of object of pages to track
-  toPlay: null,
-  songPlaying: null,
-  loadedSongs: [],
-  spotifySongs: [],
-  player: "",
-  songDetails: null,
-  playerReady: false,
 };
 
 // Actual Slice
@@ -43,27 +29,6 @@ export const settingSlice = createSlice({
   reducers: {
     setHideTimestamp(state, action) {
       state.hideTimestamp = action.payload;
-    },
-    setPlayerReady(state, action) {
-      state.playerReady = action.payload;
-    },
-    setSongDetails(state, action) {
-      state.songDetails = action.payload;
-    },
-    setSongPlaying(state, action) {
-      state.songPlaying = action.payload;
-    },
-    setPlayer(state, action) {
-      state.player = action.payload;
-    },
-    setSpotifySongs(state, action) {
-      state.spotifySongs = action.payload;
-    },
-    setLoadedSongs(state, action) {
-      state.loadedSongs = action.payload;
-    },
-    setToPlay(state, action) {
-      state.toPlay = action.payload;
     },
     setLastVisit(state, action) {
       state.lastVisit = [...state.lastVisit, action.payload];
@@ -85,13 +50,6 @@ export const settingSlice = createSlice({
 
 export const {
   setHideTimestamp,
-  setPlayerReady,
-  setSongDetails,
-  setSongPlaying,
-  setPlayer,
-  setSpotifySongs,
-  setLoadedSongs,
-  setToPlay,
   setLastVisit,
   setShowSpotify,
   setShowSoundCloud,
@@ -105,15 +63,9 @@ export const selectShowSoundCloud = (state: AppState) =>
 export const selectShowDiscoverWeekly = (state: AppState) =>
   state.setting.showDiscoverWeekly;
 export const selectOpenInApp = (state: AppState) => state.setting.openInApp;
+
 export const selectLastVisit = (state: AppState) => state.setting.lastVisit;
-export const selectToPlay = (state: AppState) => state.setting.toPlay;
-export const selectLoadedSongs = (state: AppState) => state.setting.loadedSongs;
-export const selectSpotifySongs = (state: AppState) =>
-  state.setting.spotifySongs;
-export const selectPlayer = (state: AppState) => state.setting.player;
-export const selectSongPlaying = (state: AppState) => state.setting.songPlaying;
-export const selectSongDetails = (state: AppState) => state.setting.songDetails;
-export const selectPlayerReady = (state: AppState) => state.setting.playerReady;
+
 export const selectHideTimestamp = (state: AppState) => state.setting.hideTimestamp;
 
 export default settingSlice.reducer;

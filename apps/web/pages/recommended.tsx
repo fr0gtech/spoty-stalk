@@ -25,8 +25,6 @@ import {
 } from "../redux/settingSlice";
 import Nodata from "../components/musicItem/nodata";
 import NewTag from "../components/musicItem/newtag";
-import SoundcloudItem from "../components/musicItem/soundcloudItem";
-import SpotifyItem from "../components/musicItem/spotifyItem";
 import PreviewSC from "../components/musicItem/previewSC";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -39,11 +37,7 @@ const pageSize = 50;
 
 export default function Recommended() {
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
   const openInApp = useSelector(selectOpenInApp);
-  const showSpotify = useSelector(selectShowSpotify);
-  const showSoundcloud = useSelector(selectShowSoundCloud);
   const [lastVisit, setLastVisit] = useState<any>();
 
   const { ref, inView } = useInView();

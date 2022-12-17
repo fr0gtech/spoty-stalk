@@ -15,15 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectHideTimestamp,
   selectOpenInApp,
-  selectPlayerReady,
   selectShowDiscoverWeekly,
   selectShowSoundCloud,
   selectShowSpotify,
-  selectSongPlaying,
-  selectToPlay,
-  setLoadedSongs,
-  setSpotifySongs,
-  setToPlay,
+
 } from "../redux/settingSlice";
 import Nodata from "../components/musicItem/nodata";
 import { useRouter } from "next/router";
@@ -38,6 +33,7 @@ import { useSession } from "next-auth/react";
 import MusicPlayer from "../components/musicPlayer";
 import Link from "next/link";
 import NewTag from "../components/musicItem/newtag";
+import { selectReady, selectSongToPlay, setLoadedSongs, setSongToPlay } from "../redux/playerSlice";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 100;
@@ -63,7 +59,7 @@ export const toBase64 = (str: string) =>
 export default function Index() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const ready = useSelector(selectPlayerReady);
+  const ready = useSelector(selectReady);
 
   const [lastVisit, setLastVisit] = useState<any>();
   const queryClient = useQueryClient();
@@ -72,9 +68,9 @@ export default function Index() {
   const showSpotify = useSelector(selectShowSpotify);
   const showSoundcloud = useSelector(selectShowSoundCloud);
   const hideTimestamp = useSelector(selectHideTimestamp)
-
-  const toPlay = useSelector(selectToPlay);
-  const songPlaying = useSelector(selectSongPlaying);
+  const hideDiscoverWeekly = useSelector(selectShowDiscoverWeekly)
+  const toPlay = useSelector(selectSongToPlay);
+  const songPlaying = toPlay
   const { ref, inView } = useInView();
   const { data: session, status }: any = useSession();
 
@@ -129,19 +125,22 @@ export default function Index() {
         if (page) {
           return page.data.map((song: any) => {
             if (song.source === "spotify") {
+              if (!hideDiscoverWeekly && song.playlists[0].name === "Discover Weekly"){
+                return undefined
+              }
               return `${song.sid}`;
             } else {
               return song.externalUrl;
             }
           });
         }
-      });
+      }).filter(Boolean)
     }
-  }, [data]);
-
+  }, [data, hideDiscoverWeekly]);
+  
   // create player var
 
-  useEffect(() => {
+  useEffect(() => {    
     dispatch(setLoadedSongs(loadedSongsMapped));
   }, [dispatch, loadedSongsMapped]);
   // if (!data) return <LoadingComp />;
@@ -174,7 +173,7 @@ export default function Index() {
       <Layout>
         <div className="h-[calc(100vh-40px)] min-h-[calc(100vh-40px)] justify-between flex flex-col gap-1">
           <div className="overflow-scroll rounded">
-            <div className="gap-2 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 text-white rounded">
+            <div className="gap-1 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-5 text-white rounded">
               {!data &&
                 [...Array(100)].map((value: any, i: any) => {
                   return (
@@ -235,7 +234,7 @@ export default function Index() {
                               onClick={() => {
                                 ready &&
                                   dispatch(
-                                    setToPlay(
+                                    setSongToPlay(
                                       song.source === "soundcloud"
                                         ? song.externalUrl
                                         : song.sid
@@ -243,7 +242,7 @@ export default function Index() {
                                   );
                               }}
                             >
-                              <div className="flex gap-3 ">
+                              <div className="gap-2 grid grid-flow-row-dense grid-cols-6 auto-rows-max">
                              
                                 {song &&
                                   song.images[0] &&
@@ -281,36 +280,19 @@ export default function Index() {
                                     />
                                 )}
 
-                                <div className="w-[calc(100%-60px)]">
+                                <div className="col-span-4">
                                   <div className="font-bold flex items-center justify-between gap-2">
                                     <span
                                       title={song.name}
-                                      className="truncate"
+                                      className="truncate max-w-[100%]"
                                     >
                                       {
                                         song.name
-                                          .replace(/\(([^)]+)\)/, "")
-                                          .split("-")[0]
                                       }
                                     </span>
-                                    {/* {song.source === "spotify" ? (
-                                      <div className="opacity-30">
-                                        <Spotify
-                                          fill={"#1DB954"}
-                                          width={21}
-                                          height={21}
-                                        />
-                                      </div>
-                                    ) : (
-                                      <div className="opacity-60">
-                                        <Soundcloud
-                                          fill={"#803711"}
-                                          width={21}
-                                          height={21}
-                                        />
-                                      </div>
-                                    )} */}
+
                                   </div>
+
                                   <div
                                     title={song.artists
                                       .map((e: any) => e.name)
@@ -326,6 +308,16 @@ export default function Index() {
                                   </div>
 
                                 </div>
+                                <div className="col-span-1 flex justify-center">
+                                <Link href={song.externalUrl} className="p-[12px] pr-[0px]">
+                                    {song.source === "spotify" ?
+                                    (
+                                    <Spotify className="!fill-[#ffffff] w-[22px] h-[22px]" fill="#ffffff" height={22} width={22} />
+                                    ):(
+                                      <Soundcloud fill="#ffffff" height={21} width={21} />
+                                    )}
+                                  </Link>
+                                </div>
                               </div>
                               {/* <div className="absolute bg-neutral-800 mx-auto !z-10">
                                   {song.source === "soundcloud" && !session && (
@@ -337,6 +329,7 @@ export default function Index() {
                                 </div> */}
                                 {!hideTimestamp && <div className="truncate text-[11px] text-neutral-700">
                                 <div className="flex truncate gap-1 items-center">
+                               
                                 {song.source === "soundcloud" && !session && (
                                     <PreviewSC id={song.sid} />
                                   )}
@@ -345,7 +338,7 @@ export default function Index() {
                                   )}
                                   {isBefore(new Date(lastVisit), new Date(song.addedAt)) && <NewTag />}
                                   
-                                  
+
                                   <div
                                     className="truncate text-right w-full"
                                     title={
@@ -353,6 +346,7 @@ export default function Index() {
                                       song.playlists[0].name
                                     }
                                   >
+
                                     {formatDistance(
                                       new Date(song.addedAt),
                                       new Date(),
@@ -370,7 +364,7 @@ export default function Index() {
                                       </Link>
                                     )}
                                   </div>
-                                   
+                                 
                                 </div>
                               </div>
                             }
@@ -381,6 +375,7 @@ export default function Index() {
                     </React.Fragment>
                   );
                 })}
+                
               {data && data.pages && data.pages[0].data.length !== 0 && (
                 <Button
                   loading={isFetching}
@@ -396,7 +391,7 @@ export default function Index() {
               )}
             </div>
           </div>
-          <MusicPlayer />
+          <MusicPlayer/>
         </div>
       </Layout>
     </>

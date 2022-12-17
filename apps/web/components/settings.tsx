@@ -54,6 +54,16 @@ function Settings() {
                 onClick={() => signOut()}
               />
             )}
+            {!session && (
+              <Button
+                small
+                title="Log In"
+                minimal
+                intent="success"
+                icon="log-in"
+                onClick={() => signIn('spotify')}
+              />
+            )}
           </div>
           <FormGroup label="Sources">
             <Checkbox
@@ -115,7 +125,7 @@ function Settings() {
             
             ></Switch>
           </FormGroup>
-          <FormGroup
+          {/* <FormGroup
             label="Hide timestamp row (cleaner ui)"
           >
             <Switch
@@ -124,7 +134,7 @@ function Settings() {
               onChange={() => dispatch(setHideTimestamp(!hideTimestamp))}
 
             ></Switch>
-          </FormGroup>
+          </FormGroup> */}
           <div className="flex gap-2 items-center opacity-40 hover:opacity-100 duration-150">
             <div className="text-xs truncate">do you want to contribute?</div>
             <div className="grow">
