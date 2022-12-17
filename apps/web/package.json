@@ -35,6 +35,7 @@
     "react-redux": "^8.0.5",
     "react-simple-toasts": "^2.3.2",
     "react-spotify-web-playback": "^0.10.0",
+    "react-spotify-web-playback-sdk": "^3.0.1",
     "reactronica": "^0.8.1-canary.0",
     "sass": "^1.56.1",
     "smooth-scrollbar": "^8.8.1",
