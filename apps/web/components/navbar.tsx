@@ -1,16 +1,10 @@
-import {
-  Tag,
-  Button,
-  Icon,
-  ButtonGroup,
-  Checkbox,
-} from "@blueprintjs/core";
+import { Tag, Button, Icon, ButtonGroup, Checkbox } from "@blueprintjs/core";
 import { MenuItem2, Popover2 } from "@blueprintjs/popover2";
 import PlaylistComp from "./playlist";
 import Link from "next/link";
 import useSWR from "swr";
 import { fetcher } from "../pages";
-import {  formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import Settings from "./settings";
 import { useRouter } from "next/router";
 import LoginComp from "./login";
@@ -50,10 +44,7 @@ function Navbar(props: any) {
     <nav className="flex items-center sm:gap-3 mx-[2px] mb-1 justify-between border-b-1 border-neutral-700">
       <div className="flex sm:gap-3 items-center relative">
         <div className="flex items-center gap-3">
-          <ButtonGroup
-            minimal
-            className="navbuttons gap-1 items-center "
-          >
+          <ButtonGroup minimal className="navbuttons gap-1 items-center ">
             <Link href="/" className="!text-white !no-underline">
               <Button
                 small
@@ -112,18 +103,21 @@ function Navbar(props: any) {
               </Button>
             </Link>
             <div className="hidden sm:block">
-
-            <PlaylistComp
-              className="!bg-neutral-800 "
-              openInApp={props.openInApp}
-            />
+              <PlaylistComp
+                className="!bg-neutral-800 "
+                openInApp={props.openInApp}
+              />
             </div>
           </ButtonGroup>
           {/* <LoginComp/> */}
 
           <div className="hidden gap-2 text-xs md:flex opacity-70 items-center">
             <span>by</span>
-            <Link target="_blank" href={"https://frogtech.dev"} className="!text-white">
+            <Link
+              target="_blank"
+              href={"https://frogtech.dev"}
+              className="!text-white"
+            >
               frogtech
             </Link>
           </div>

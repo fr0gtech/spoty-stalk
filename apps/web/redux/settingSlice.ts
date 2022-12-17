@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./store";
 
-
 // Type for our state
 export interface SettingState {
   showSpotify: boolean;
@@ -66,6 +65,7 @@ export const selectOpenInApp = (state: AppState) => state.setting.openInApp;
 
 export const selectLastVisit = (state: AppState) => state.setting.lastVisit;
 
-export const selectHideTimestamp = (state: AppState) => state.setting.hideTimestamp;
+export const selectHideTimestamp = (state: AppState) =>
+  state.setting.hideTimestamp;
 
 export default settingSlice.reducer;

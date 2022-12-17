@@ -34,7 +34,7 @@ function Settings() {
 
   const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
   const openInapp = useSelector(selectOpenInApp);
-  const hideTimestamp = useSelector(selectHideTimestamp)
+  const hideTimestamp = useSelector(selectHideTimestamp);
   const showSpotify = useSelector(selectShowSpotify);
   const showSoundclud = useSelector(selectShowSoundCloud);
   return (
@@ -61,7 +61,7 @@ function Settings() {
                 minimal
                 intent="success"
                 icon="log-in"
-                onClick={() => signIn('spotify')}
+                onClick={() => signIn("spotify")}
               />
             )}
           </div>
@@ -122,7 +122,6 @@ function Settings() {
               defaultChecked={openInapp}
               className="!m-0 p-0 flex items-center"
               onChange={() => dispatch(setOpenInApp(!openInapp))}
-            
             ></Switch>
           </FormGroup>
           {/* <FormGroup

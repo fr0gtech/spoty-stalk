@@ -24,7 +24,12 @@ export const getSongsFromPlaylist = async (playlist: any) => {
   return data;
 };
 
-export const saveSong = async (song: any, artists: any, playlist: any, fullRun: boolean) => {
+export const saveSong = async (
+  song: any,
+  artists: any,
+  playlist: any,
+  fullRun: boolean
+) => {
   // leaks and removed or whatever songs can get here with out and id, we do not handle this for now.
   if (!song.track.id) return;
   const ar = artists
@@ -41,7 +46,7 @@ export const saveSong = async (song: any, artists: any, playlist: any, fullRun: 
     logger.error({ song, artists });
     exit();
   }
-  if (!fullRun) tweetSongSpotify(song, artists, playlist)
+  if (!fullRun) tweetSongSpotify(song, artists, playlist);
   await prisma.song
     .upsert({
       where: { sid: song.track.id },
@@ -55,8 +60,8 @@ export const saveSong = async (song: any, artists: any, playlist: any, fullRun: 
         name: song.track.name,
         source: "spotify",
         addedAt: song.added_at,
-        album: {id:song.track.album.id, name: song.track.album.name,},
-        images: {...song.track.album.images},
+        album: { id: song.track.album.id, name: song.track.album.name },
+        images: { ...song.track.album.images },
         externalUrl: song.track.external_urls.spotify,
         previewUrl: song.track.preview_url,
         durationMs: song.track.duration_ms,

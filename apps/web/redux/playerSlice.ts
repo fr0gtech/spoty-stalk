@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./store";
 
-
 // Type for our state
 export interface PlayerState {
   play: boolean;
@@ -18,13 +17,12 @@ export interface PlayerState {
   seekTo: number | null;
   isSeeking: boolean;
 
-
   songInfo: {
-    song: {title: string, image: string, uri: string}
-    artists: [{name: string, uri: string}]
-  }
+    song: { title: string; image: string; uri: string };
+    artists: [{ name: string; uri: string }];
+  };
   songToPlay: string;
-  loadedSongs: Array<string>,
+  loadedSongs: Array<string>;
   ready: boolean;
   type: string | null;
   playerInstance: any;
@@ -37,7 +35,7 @@ const initialState: PlayerState = {
   prev: false,
   playSetter: false,
 
-  shuffle:false,
+  shuffle: false,
   volume: 0,
   lastVolume: 0,
 
@@ -47,14 +45,14 @@ const initialState: PlayerState = {
   isSeeking: false,
 
   songInfo: {
-    song: {title: "", image: "", uri: ""},
-    artists: [{name: "", uri:""}]
+    song: { title: "", image: "", uri: "" },
+    artists: [{ name: "", uri: "" }],
   },
   songToPlay: "",
   loadedSongs: [],
   ready: false,
   type: null,
-  playerInstance: null
+  playerInstance: null,
 };
 
 // Actual Slice
@@ -88,10 +86,10 @@ export const playerSlice = createSlice({
     },
     setDurationMS(state, action) {
       state.durationMS = action.payload;
-    }, 
+    },
     setSeekTo(state, action) {
       state.seekTo = action.payload;
-    }, 
+    },
     setIsSeeking(state, action) {
       state.isSeeking = action.payload;
     },
@@ -112,7 +110,7 @@ export const playerSlice = createSlice({
     },
     setPlayerInstance(state, action) {
       state.playerInstance = action.payload;
-    }, 
+    },
   },
 });
 
@@ -133,7 +131,7 @@ export const {
   setSongInfo,
   setReady,
   setType,
-  setPlayerInstance
+  setPlayerInstance,
 } = playerSlice.actions;
 
 export const selectPlaySetter = (state: AppState) => state.player.playSetter;
@@ -152,8 +150,7 @@ export const selectType = (state: AppState) => state.player.type;
 export const selectReady = (state: AppState) => state.player.ready;
 export const selectLoadedSongs = (state: AppState) => state.player.loadedSongs;
 
-export const selectPlayerInstance = (state: AppState) => state.player.playerInstance;
-
-
+export const selectPlayerInstance = (state: AppState) =>
+  state.player.playerInstance;
 
 export default playerSlice.reducer;

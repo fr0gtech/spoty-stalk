@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { settingSlice } from "./settingSlice";
-import {playerSlice} from "./playerSlice";
+import { playerSlice } from "./playerSlice";
 
 import { createWrapper } from "next-redux-wrapper";
 
@@ -12,9 +12,9 @@ const makeStore = () =>
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
   });
 
 const store = makeStore();

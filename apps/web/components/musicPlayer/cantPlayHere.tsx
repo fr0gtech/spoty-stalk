@@ -5,7 +5,7 @@ function MusicPlayerCantPlayHere() {
   const router = useRouter();
   return (
     <div className="flex">
-    <div className="flex h-[68px] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
+      <div className="flex h-[68px] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
         <h4 className="text-md text-center flex items-center">
           Player does not work on recommended page. (it could){" "}
           <Button

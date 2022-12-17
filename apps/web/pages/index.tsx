@@ -18,7 +18,6 @@ import {
   selectShowDiscoverWeekly,
   selectShowSoundCloud,
   selectShowSpotify,
-
 } from "../redux/settingSlice";
 import Nodata from "../components/musicItem/nodata";
 import { useRouter } from "next/router";
@@ -33,7 +32,12 @@ import { useSession } from "next-auth/react";
 import MusicPlayer from "../components/musicPlayer";
 import Link from "next/link";
 import NewTag from "../components/musicItem/newtag";
-import { selectReady, selectSongToPlay, setLoadedSongs, setSongToPlay } from "../redux/playerSlice";
+import {
+  selectReady,
+  selectSongToPlay,
+  setLoadedSongs,
+  setSongToPlay,
+} from "../redux/playerSlice";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const pageSize = 100;
@@ -67,10 +71,10 @@ export default function Index() {
   const openInApp = useSelector(selectOpenInApp);
   const showSpotify = useSelector(selectShowSpotify);
   const showSoundcloud = useSelector(selectShowSoundCloud);
-  const hideTimestamp = useSelector(selectHideTimestamp)
-  const hideDiscoverWeekly = useSelector(selectShowDiscoverWeekly)
+  const hideTimestamp = useSelector(selectHideTimestamp);
+  const hideDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
   const toPlay = useSelector(selectSongToPlay);
-  const songPlaying = toPlay
+  const songPlaying = toPlay;
   const { ref, inView } = useInView();
   const { data: session, status }: any = useSession();
 
@@ -82,13 +86,13 @@ export default function Index() {
       async ({ pageParam = 0 }) => {
         const res = await axios.get(
           "/api/songs?c=" +
-          pageParam +
-          "&p=" +
-          pageSize +
-          "&sp=" +
-          showSpotify +
-          "&sc=" +
-          showSoundcloud
+            pageParam +
+            "&p=" +
+            pageSize +
+            "&sp=" +
+            showSpotify +
+            "&sc=" +
+            showSoundcloud
         );
         return res.data;
       },
@@ -121,26 +125,31 @@ export default function Index() {
 
   const loadedSongsMapped = useMemo(() => {
     if (data) {
-      return data.pages.flatMap((page: any) => {
-        if (page) {
-          return page.data.map((song: any) => {
-            if (song.source === "spotify") {
-              if (!hideDiscoverWeekly && song.playlists[0].name === "Discover Weekly"){
-                return undefined
+      return data.pages
+        .flatMap((page: any) => {
+          if (page) {
+            return page.data.map((song: any) => {
+              if (song.source === "spotify") {
+                if (
+                  !hideDiscoverWeekly &&
+                  song.playlists[0].name === "Discover Weekly"
+                ) {
+                  return undefined;
+                }
+                return `${song.sid}`;
+              } else {
+                return song.externalUrl;
               }
-              return `${song.sid}`;
-            } else {
-              return song.externalUrl;
-            }
-          });
-        }
-      }).filter(Boolean)
+            });
+          }
+        })
+        .filter(Boolean);
     }
   }, [data, hideDiscoverWeekly]);
-  
+
   // create player var
 
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(setLoadedSongs(loadedSongsMapped));
   }, [dispatch, loadedSongsMapped]);
   // if (!data) return <LoadingComp />;
@@ -177,7 +186,10 @@ export default function Index() {
               {!data &&
                 [...Array(100)].map((value: any, i: any) => {
                   return (
-                    <div key={i} className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]">
+                    <div
+                      key={i}
+                      className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]"
+                    >
                       <div className="flex items-center h-full p-2 gap-3">
                         <div>
                           <div className="h-[50px] w-[50px] bg-neutral-800 rounded"></div>
@@ -217,9 +229,9 @@ export default function Index() {
                             className={
                               isPlaying
                                 ? "grow w-full " +
-                                "duration-300 relative transition-all rounded animate-border inline-block from-neutral-300 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
+                                  "duration-300 relative transition-all rounded animate-border inline-block from-neutral-300 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
                                 : "grow w-full " +
-                                "duration-300 relative transition-all rounded animate-border inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
+                                  "duration-300 relative transition-all rounded animate-border inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
                             }
                           >
                             {!ready && session && (
@@ -243,21 +255,20 @@ export default function Index() {
                               }}
                             >
                               <div className="gap-2 grid grid-flow-row-dense grid-cols-6 auto-rows-max">
-                             
                                 {song &&
-                                  song.images[0] &&
-                                  song.images[0].url ? (
-                                    <Image
-                                      placeholder="blur"
-                                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                        shimmer(50, 50)
-                                      )}`}
-                                      className="shadow-md"
-                                      src={song.images[0].url}
-                                      width={50}
-                                      height={50}
-                                      alt="idk"
-                                    />
+                                song.images[0] &&
+                                song.images[0].url ? (
+                                  <Image
+                                    placeholder="blur"
+                                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                                      shimmer(50, 50)
+                                    )}`}
+                                    className="shadow-md"
+                                    src={song.images[0].url}
+                                    width={50}
+                                    height={50}
+                                    alt="idk"
+                                  />
                                 ) : song.images.url ? (
                                   <Image
                                     placeholder="blur"
@@ -271,13 +282,13 @@ export default function Index() {
                                     alt="idk"
                                   />
                                 ) : (
-                                    <Image
-                                      src="/frog.png"
-                                      className="bg-neutral-900 h-[50px] w-[50px]"
-                                      alt="tets"
-                                      height={50}
-                                      width={50}
-                                    />
+                                  <Image
+                                    src="/frog.png"
+                                    className="bg-neutral-900 h-[50px] w-[50px]"
+                                    alt="tets"
+                                    height={50}
+                                    width={50}
+                                  />
                                 )}
 
                                 <div className="col-span-4">
@@ -286,11 +297,8 @@ export default function Index() {
                                       title={song.name}
                                       className="truncate max-w-[100%]"
                                     >
-                                      {
-                                        song.name
-                                      }
+                                      {song.name}
                                     </span>
-
                                   </div>
 
                                   <div
@@ -303,18 +311,31 @@ export default function Index() {
                                       .map((e: any) => e.name)
                                       .join(", ")}
                                   </div>
-                                  <div title={song.album && song.album.name} className="text-[11px] text-neutral-500 truncate">
+                                  <div
+                                    title={song.album && song.album.name}
+                                    className="text-[11px] text-neutral-500 truncate"
+                                  >
                                     {song.album ? song.album.name : "Yo pls"}
                                   </div>
-
                                 </div>
                                 <div className="col-span-1 flex justify-center">
-                                <Link href={song.externalUrl} className="p-[12px] pr-[0px]">
-                                    {song.source === "spotify" ?
-                                    (
-                                    <Spotify className="!fill-[#ffffff] w-[22px] h-[22px]" fill="#ffffff" height={22} width={22} />
-                                    ):(
-                                      <Soundcloud fill="#ffffff" height={21} width={21} />
+                                  <Link
+                                    href={song.externalUrl}
+                                    className="p-[12px] pr-[0px]"
+                                  >
+                                    {song.source === "spotify" ? (
+                                      <Spotify
+                                        className="!fill-[#ffffff] w-[22px] h-[22px]"
+                                        fill="#ffffff"
+                                        height={22}
+                                        width={22}
+                                      />
+                                    ) : (
+                                      <Soundcloud
+                                        fill="#ffffff"
+                                        height={21}
+                                        width={21}
+                                      />
                                     )}
                                   </Link>
                                 </div>
@@ -327,47 +348,46 @@ export default function Index() {
                                     <Preview song={song} />
                                   )}
                                 </div> */}
-                                {!hideTimestamp && <div className="truncate text-[11px] text-neutral-700">
-                                <div className="flex truncate gap-1 items-center">
-                               
-                                {song.source === "soundcloud" && !session && (
-                                    <PreviewSC id={song.sid} />
-                                  )}
-                                  {song.source === "spotify" && !session && (
-                                    <Preview song={song} />
-                                  )}
-                                  {isBefore(new Date(lastVisit), new Date(song.addedAt)) && <NewTag />}
-                                  
+                              {!hideTimestamp && (
+                                <div className="truncate text-[11px] text-neutral-700">
+                                  <div className="flex truncate gap-1 items-center">
+                                    {song.source === "soundcloud" &&
+                                      !session && <PreviewSC id={song.sid} />}
+                                    {song.source === "spotify" && !session && (
+                                      <Preview song={song} />
+                                    )}
+                                    {isBefore(
+                                      new Date(lastVisit),
+                                      new Date(song.addedAt)
+                                    ) && <NewTag />}
 
-                                  <div
-                                    className="truncate text-right w-full"
-                                    title={
-                                      song.playlists[0] &&
-                                      song.playlists[0].name
-                                    }
-                                  >
-
-                                    {formatDistance(
-                                      new Date(song.addedAt),
-                                      new Date(),
-                                      {
-                                        addSuffix: true,
+                                    <div
+                                      className="truncate text-right w-full"
+                                      title={
+                                        song.playlists[0] &&
+                                        song.playlists[0].name
                                       }
-                                    )}
-                                    {song.playlists[0] && (
-                                      <Link
-                                        href={song.playlists[0].externalUrl}
-                                        className="!text-neutral-500"
-                                      >
-                                        {" "}
-                                        {song.playlists[0].name}
-                                      </Link>
-                                    )}
+                                    >
+                                      {formatDistance(
+                                        new Date(song.addedAt),
+                                        new Date(),
+                                        {
+                                          addSuffix: true,
+                                        }
+                                      )}
+                                      {song.playlists[0] && (
+                                        <Link
+                                          href={song.playlists[0].externalUrl}
+                                          className="!text-neutral-500"
+                                        >
+                                          {" "}
+                                          {song.playlists[0].name}
+                                        </Link>
+                                      )}
+                                    </div>
                                   </div>
-                                 
                                 </div>
-                              </div>
-                            }
+                              )}
                             </div>
                           </div>
                         );
@@ -375,7 +395,7 @@ export default function Index() {
                     </React.Fragment>
                   );
                 })}
-                
+
               {data && data.pages && data.pages[0].data.length !== 0 && (
                 <Button
                   loading={isFetching}
@@ -391,7 +411,7 @@ export default function Index() {
               )}
             </div>
           </div>
-          <MusicPlayer/>
+          <MusicPlayer />
         </div>
       </Layout>
     </>

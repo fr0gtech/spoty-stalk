@@ -20,8 +20,8 @@ function PreviewSC(props: any) {
           </>
         }
       >
-         <Tag
-                                  className="
+        <Tag
+          className="
                                     !w-[50px]
                                     !h-[15px]
                                     !min-h-[15px]
@@ -32,10 +32,10 @@ function PreviewSC(props: any) {
                                     !bg-neutral-600
                                     uppercase
                                     "
-                                  intent="success"
-                                >
-                                  Preview
-                                </Tag>
+          intent="success"
+        >
+          Preview
+        </Tag>
       </Popover2>
     </div>
   );

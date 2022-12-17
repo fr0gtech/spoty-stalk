@@ -25,7 +25,8 @@ const getMetaData = async () => {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       }
     )
-    .then((e) => e.data.metadata).catch((e)=>console.log('error'));
+    .then((e) => e.data.metadata)
+    .catch((e) => console.log("error"));
 };
 
 const getAll = async function () {
@@ -45,8 +46,9 @@ const getAll = async function () {
       .get(url.toString(), {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       })
-      .then((e) => e.data.data).catch((e)=>{
-        console.log(e.data, url)
+      .then((e) => e.data.data)
+      .catch((e) => {
+        console.log(e.data, url);
       });
     post.forEach((e: any) => {
       if (e.media && e.media.oembed) {
@@ -86,7 +88,8 @@ const getLast = async (lastDB: any) => {
       .get(url.toString(), {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       })
-      .then((e) => e.data.data).catch((e)=>console.log('error'));
+      .then((e) => e.data.data)
+      .catch((e) => console.log("error"));
     const last = post.some((e: any) => {
       if (e) url.searchParams.set("before", e.created_utc);
       if (e && e.media && e.media.oembed) {

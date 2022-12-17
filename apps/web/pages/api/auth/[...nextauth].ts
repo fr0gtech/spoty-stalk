@@ -55,7 +55,6 @@ export default NextAuth({
         //   token.expiresAt = newToken.expiresAt;
         //   token.accessToken = newToken.accessToken;
         // }
-
       }
 
       return token;

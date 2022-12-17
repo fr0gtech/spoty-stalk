@@ -2,8 +2,8 @@
 
 ![Peek 2022-12-11 16-42](https://user-images.githubusercontent.com/119510346/206913382-e2271999-ebd2-491b-9fce-c06a6c7b1efa.gif)
 
- Stalk soundcloud likes and spotify public playlist adds. Featuring cross-platform music-player in browser.
- Can shuffle over all spotify and soundcloud likes at the same time.
+Stalk soundcloud likes and spotify public playlist adds. Featuring cross-platform music-player in browser.
+Can shuffle over all spotify and soundcloud likes at the same time.
 
 ## Notes
 

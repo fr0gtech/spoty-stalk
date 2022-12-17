@@ -19,12 +19,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       grant_type: "refresh_token",
       refresh_token: token,
     }),
-  }).then((e) => e.json()).catch((e)=>{
-    console.log(e);
-    
-  });
+  })
+    .then((e) => e.json())
+    .catch((e) => {
+      console.log(e);
+    });
   console.log(response);
-  
+
   res.status(200).json({
     accessToken: response.access_token,
     expiresAt: Date.now() / 1000 + response.expires_in,
