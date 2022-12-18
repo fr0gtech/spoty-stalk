@@ -182,7 +182,7 @@ export default function Index() {
       <Layout>
         <div className="h-[calc(100vh-40px)] min-h-[calc(100vh-40px)] justify-between flex flex-col gap-1">
           <div className="overflow-scroll rounded">
-            <div className="gap-1 grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-5 text-white rounded">
+            <div className="gap-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 text-white rounded">
               {!data &&
                 [...Array(100)].map((value: any, i: any) => {
                   return (

@@ -50,13 +50,13 @@ const getAll = async function () {
       .catch((e) => {
         console.log(e.data, url);
       });
-    post.forEach((e: any) => {
+    post.forEach((e: any) => {      
       if (e.media && e.media.oembed) {
         const artist = findMusicPosts(e);
         if (artist) allPosts.push(artist);
       }
     });
-    // logger.info(`${allPosts.length}/${total} ${url}`)
+    logger.info(`${allPosts.length} ${url}`)
     url.searchParams.set("before", post[post.length - 1].created_utc);
     lastL = post.length;
   }

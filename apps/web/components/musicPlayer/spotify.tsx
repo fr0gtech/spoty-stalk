@@ -43,7 +43,7 @@ function SpotifyPlayer(props: { token: string }) {
   const playerType = useSelector(selectType);
   const progressMS = useSelector(selectProgressMS);
   const seekTo = useSelector(selectSeekTo);
-
+    const [is_playing, setIsPlaying] = useState<any>()
   const play = useCallback(() => {
     player._options.getOAuthToken((access_token: any) => {
       fetch(
@@ -110,16 +110,16 @@ function SpotifyPlayer(props: { token: string }) {
   }, [player, seekTo]);
 
   useEffect(() => {
-    if (!player) return;
     const timeout = setTimeout(() => {
-      player.getCurrentState().then((state: any) => {
-        if (!state) return;
+        setIsPlaying(Date.now())        
+      player.getCurrentState().then((state: any) => {        
+        if (!state) return
         dispatch(setProgressMS(state.position));
         if (state.position > state.duration - 1000) dispatch(setNext(true)); // bad hack for next song
       });
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [dispatch, isPlaying, player, progressMS]);
+  }, [dispatch, player, is_playing, isPlaying]);
 
   const setVol = useCallback(async () => {
     await player.setVolume(volume);

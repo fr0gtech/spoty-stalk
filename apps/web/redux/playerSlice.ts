@@ -16,6 +16,7 @@ export interface PlayerState {
   durationMS: number;
   seekTo: number | null;
   isSeeking: boolean;
+  lastSongs: any;
 
   songInfo: {
     song: { title: string; image: string; uri: string };
@@ -48,6 +49,7 @@ const initialState: PlayerState = {
     song: { title: "", image: "", uri: "" },
     artists: [{ name: "", uri: "" }],
   },
+  lastSongs: [],
   songToPlay: "",
   loadedSongs: [],
   ready: false,
@@ -93,6 +95,9 @@ export const playerSlice = createSlice({
     setIsSeeking(state, action) {
       state.isSeeking = action.payload;
     },
+    setLastSongs(state, action) {
+      state.lastSongs = action.payload;
+    },
     setSongInfo(state, action) {
       state.songInfo = action.payload;
     },
@@ -127,6 +132,7 @@ export const {
   setDurationMS,
   setSeekTo,
   setLoadedSongs,
+  setLastSongs,
   setIsSeeking,
   setSongInfo,
   setReady,
@@ -140,6 +146,7 @@ export const selectNext = (state: AppState) => state.player.next;
 export const selectPrev = (state: AppState) => state.player.prev;
 export const selectShuffle = (state: AppState) => state.player.shuffle;
 export const selectVolume = (state: AppState) => state.player.volume;
+export const selectLastSong = (state: AppState) => state.player.lastSongs;
 export const selectSongToPlay = (state: AppState) => state.player.songToPlay;
 export const selectLastVolume = (state: AppState) => state.player.lastVolume;
 export const selectProgressMS = (state: AppState) => state.player.progressMS;
