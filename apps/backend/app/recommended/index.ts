@@ -32,7 +32,7 @@ const getMetaData = async () => {
 const getAll = async function () {
   logger.info("getting all soundcloud or spotify links");
 
-  const pageSize = 250;
+  const pageSize = 500;
   let allPosts: RecommendedItem[] = [];
   let lastL = pageSize;
 
@@ -50,6 +50,7 @@ const getAll = async function () {
       .catch((e) => {
         console.log(e.data, url);
       });
+      if (!post) return allPosts
     post.forEach((e: any) => {      
       if (e.media && e.media.oembed) {
         const artist = findMusicPosts(e);
@@ -60,7 +61,7 @@ const getAll = async function () {
     url.searchParams.set("before", post[post.length - 1].created_utc);
     lastL = post.length;
   }
-
+  logger.info(`got ${allPosts.length} posts`)
   return allPosts;
 };
 const getLastDB = async () => {
@@ -76,7 +77,7 @@ const getLastDB = async () => {
     .then((e) => e);
 };
 const getLast = async (lastDB: any) => {
-  const pageSize = 250;
+  const pageSize = 10;
   let lastL = pageSize;
   let toReturn: any = [];
   let url = new URL("https://api.pushshift.io/reddit/search/submission/");
@@ -90,6 +91,7 @@ const getLast = async (lastDB: any) => {
       })
       .then((e) => e.data.data)
       .catch((e) => console.log("error"));
+      if (!post) return toReturn
     const last = post.some((e: any) => {
       if (e) url.searchParams.set("before", e.created_utc);
       if (e && e.media && e.media.oembed) {
