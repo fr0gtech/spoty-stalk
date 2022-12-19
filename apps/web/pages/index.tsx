@@ -74,7 +74,9 @@ export default function Index() {
           "&sp=" +
           showSpotify +
           "&sc=" +
-          showSoundcloud
+          showSoundcloud +
+          "&dw=" +
+          showDiscoverWeekly
         );
         return res.data;
       },
@@ -99,11 +101,6 @@ export default function Index() {
     }
   }, [fetchNextPage, inView]);
 
-  const topartistsname = useMemo(() => {
-    if (topartists) {
-      return topartists.data.map((artist: any) => artist.name);
-    }
-  }, [topartists]);
 
   const loadedSongsMapped = useMemo(() => {
     if (data) {
@@ -112,12 +109,6 @@ export default function Index() {
           if (page) {
             return page.data.map((song: any) => {
               if (song.source === "spotify") {
-                if (
-                  !hideDiscoverWeekly &&
-                  song.playlists[0].name === "Discover Weekly"
-                ) {
-                  return undefined;
-                }
                 return `${song.sid}`;
               } else {
                 return song.externalUrl;
@@ -127,7 +118,7 @@ export default function Index() {
         })
         .filter(Boolean);
     }
-  }, [data, hideDiscoverWeekly]);
+  }, [data]);
 
   // create player var
 
@@ -197,12 +188,12 @@ export default function Index() {
                   return (
                     <React.Fragment key={page.nextCursor}>
                       {page.data.map((song: any, songIndex: any) => {
-                        if (
-                          song.playlists[0] &&
-                          song.playlists[0].name.includes("Discover Weekly") &&
-                          !showDiscoverWeekly
-                        )
-                          return;
+                        // if (
+                        //   song.playlists[0] &&
+                        //   song.playlists[0].name.includes("Discover Weekly") &&
+                        //   !showDiscoverWeekly
+                        // )
+                        //   return;
 
                         let isPlaying = false;
                         song.source === "soundcloud"
@@ -351,7 +342,7 @@ export default function Index() {
                                     className="!text-neutral-200 !no-underline text-[14px]"
                                   >
                                     {song.source === "spotify" ? (
-                                      <div className="flex w-[250px] rounded-full justify-start items-center ">
+                                      <div className="flex w-[200px] rounded-full justify-start items-center ">
                                         <div className="p-[15px]">
                                           <Spotify
                                             className="!fill-[#ffffff] w-[22px] h-[22px]"
@@ -367,7 +358,7 @@ export default function Index() {
 
                                       </div>
                                     ) : (
-                                      <div className="flex w-[250px] rounded-full justify-start items-center">
+                                      <div className="flex w-[200px] rounded-full justify-start items-center">
                                         <div className="p-[15px]">
                                           <Soundcloud
                                             fill="#ffffff"
