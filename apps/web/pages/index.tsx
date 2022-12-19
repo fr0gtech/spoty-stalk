@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { useInView } from "react-intersection-observer";
 import axios from "axios";
-import { Button, Tag } from "@blueprintjs/core";
+import { Button, Icon, Spinner, Tag } from "@blueprintjs/core";
 import { formatDistance, isBefore, subDays } from "date-fns";
 import { setCookie, getCookie } from "cookies-next";
 import Image from "next/image";
@@ -40,25 +40,7 @@ import {
 } from "../redux/playerSlice";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const pageSize = 100;
-export const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#333" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-export const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
+const pageSize = 10;
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -86,13 +68,13 @@ export default function Index() {
       async ({ pageParam = 0 }) => {
         const res = await axios.get(
           "/api/songs?c=" +
-            pageParam +
-            "&p=" +
-            pageSize +
-            "&sp=" +
-            showSpotify +
-            "&sc=" +
-            showSoundcloud
+          pageParam +
+          "&p=" +
+          pageSize +
+          "&sp=" +
+          showSpotify +
+          "&sc=" +
+          showSoundcloud
         );
         return res.data;
       },
@@ -153,7 +135,14 @@ export default function Index() {
     dispatch(setLoadedSongs(loadedSongsMapped));
   }, [dispatch, loadedSongsMapped]);
   // if (!data) return <LoadingComp />;
+  useEffect(() => {
+    window.addEventListener('keydown', (e) => {
+      if (e.keyCode === 32 && e.target === document.body) {
+        e.preventDefault();
+      }
+    });
 
+  }, [])
   return (
     <>
       <Head>
@@ -228,10 +217,10 @@ export default function Index() {
                             key={song.sid}
                             className={
                               isPlaying
-                                ? "grow w-full " +
-                                  "duration-300 relative transition-all rounded animate-border inline-block from-neutral-300 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
-                                : "grow w-full " +
-                                  "duration-300 relative transition-all rounded animate-border inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
+                                ? "grow w-full col-span-12 " +
+                                "duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
+                                : "grow w-full col-span-12 " +
+                                "duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
                             }
                           >
                             {!ready && session && (
@@ -240,7 +229,7 @@ export default function Index() {
                             <div
                               className={
                                 isPlaying
-                                  ? "flex flex-col gap-1 bg-neutral-700 rounded p-2 h-fit shadow-md cursor-pointer"
+                                  ? "flex flex-col gap-1 bg-neutral-800/70 rounded p-2 h-fit shadow-md cursor-pointer"
                                   : "flex flex-col gap-1 bg-neutral-800 rounded p-2 h-fit cursor-pointer shadow-md border-neutral-800"
                               }
                               onClick={() => {
@@ -254,88 +243,145 @@ export default function Index() {
                                   );
                               }}
                             >
-                              <div className="gap-2 grid grid-flow-row-dense grid-cols-6 auto-rows-max">
-                                {song &&
-                                song.images[0] &&
-                                song.images[0].url ? (
-                                  <Image
-                                    placeholder="blur"
-                                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                      shimmer(50, 50)
-                                    )}`}
-                                    className="shadow-md"
-                                    src={song.images[0].url}
-                                    width={50}
-                                    height={50}
-                                    alt="idk"
-                                  />
-                                ) : song.images.url ? (
-                                  <Image
-                                    placeholder="blur"
-                                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                                      shimmer(50, 50)
-                                    )}`}
-                                    className="shadow-md h-[50px] w-[50px]"
-                                    src={song.images.url}
-                                    width={50}
-                                    height={50}
-                                    alt="idk"
-                                  />
-                                ) : (
-                                  <Image
-                                    src="/frog.png"
-                                    className="bg-neutral-900 h-[50px] w-[50px]"
-                                    alt="tets"
-                                    height={50}
-                                    width={50}
-                                  />
-                                )}
-
-                                <div className="col-span-4">
-                                  <div className="font-bold flex items-center justify-between gap-2">
-                                    <span
-                                      title={song.name}
-                                      className="truncate max-w-[100%]"
-                                    >
-                                      {song.name}
-                                    </span>
-                                  </div>
-
-                                  <div
-                                    title={song.artists
-                                      .map((e: any) => e.name)
-                                      .join(", ")}
-                                    className="text-xs text-neutral-400 truncate"
-                                  >
-                                    {song.artists
-                                      .map((e: any) => e.name)
-                                      .join(", ")}
-                                  </div>
-                                  <div
-                                    title={song.album && song.album.name}
-                                    className="text-[11px] text-neutral-500 truncate"
-                                  >
-                                    {song.album ? song.album.name : "Yo pls"}
-                                  </div>
-                                </div>
-                                <div className="col-span-1 flex justify-center">
-                                  <Link
-                                    href={song.externalUrl}
-                                    className="p-[12px] pr-[0px]"
-                                  >
-                                    {song.source === "spotify" ? (
-                                      <Spotify
-                                        className="!fill-[#ffffff] w-[22px] h-[22px]"
-                                        fill="#ffffff"
-                                        height={22}
-                                        width={22}
+                              <div className="flex justify-between">
+                                <div className="flex justify-between w-[50%] items-center">
+                                  <div className="flex gap-5">
+                                    {song &&
+                                      song.images[0] &&
+                                      song.images[0].url ? (
+                                      <Image
+                                        className="shadow-md"
+                                        src={song.images[0].url}
+                                        width={50}
+                                        height={50}
+                                        alt="idk"
+                                      />
+                                    ) : song.images.url ? (
+                                      <Image
+                                        className="shadow-md h-[50px] w-[50px]"
+                                        src={song.images.url}
+                                        width={50}
+                                        height={50}
+                                        alt="idk"
                                       />
                                     ) : (
-                                      <Soundcloud
-                                        fill="#ffffff"
-                                        height={21}
-                                        width={21}
+                                      <Image
+                                        src="/frog.png"
+                                        className="bg-neutral-900 h-[50px] w-[50px]"
+                                        alt="tets"
+                                        height={50}
+                                        width={50}
                                       />
+                                    )}
+
+                                    <div className="col-span-4">
+                                      <div className="font-bold flex items-center justify-between gap-2">
+                                        <span
+                                          title={song.name}
+                                          className="truncate max-w-[100%]"
+                                        >
+                                          {song.name}
+                                        </span>
+                                      </div>
+
+                                      <div
+                                        title={song.artists
+                                          .map((e: any) => e.name)
+                                          .join(", ")}
+                                        className="text-xs text-neutral-400 truncate"
+                                      >
+                                        {song.artists
+                                          .map((e: any) => e.name)
+                                          .join(", ")}
+                                      </div>
+                                      <div
+                                        title={song.album && song.album.name}
+                                        className="text-[11px] text-neutral-500 truncate"
+                                      >
+                                        {song.album ? song.album.name : "Yo pls"}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {!hideTimestamp && (
+                                    <div className="truncate w-[20%] text-neutral-400">
+                                      <div className="flex truncate gap-1 items-center">
+                                        {song.source === "soundcloud" &&
+                                          !session && <PreviewSC id={song.sid} />}
+                                        {song.source === "spotify" && !session && (
+                                          <Preview song={song} />
+                                        )}
+                                        {isBefore(
+                                          new Date(lastVisit),
+                                          new Date(song.addedAt)
+                                        ) && <NewTag />}
+
+                                        <div
+                                          className="truncate w-full"
+                                          title={
+                                            song.playlists[0] &&
+                                            song.playlists[0].name
+                                          }
+                                        >
+                                          {formatDistance(
+                                            new Date(song.addedAt),
+                                            new Date(),
+                                            {
+                                              addSuffix: true,
+                                            }
+                                          )}
+                                          {song.playlists[0] && (
+                                            <Link
+                                              href={song.playlists[0].externalUrl}
+                                              className="!text-neutral-400"
+                                            >
+                                              {" "}
+                                              {song.playlists[0].name}
+                                            </Link>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="flex justify-center ">
+                                  <Link
+                                    href={song.externalUrl}
+                                    className="!text-neutral-200 !no-underline text-[14px]"
+                                  >
+                                    {song.source === "spotify" ? (
+                                      <div className="flex w-[250px] rounded-full justify-start items-center ">
+                                        <div className="p-[15px]">
+                                          <Spotify
+                                            className="!fill-[#ffffff] w-[22px] h-[22px]"
+                                            fill="#ffffff"
+                                            height={22}
+                                            width={22}
+                                          />
+                                        </div>
+                                        <div className="uppercase font-bold">
+
+                                          Open Spotify
+                                        </div>
+
+                                      </div>
+                                    ) : (
+                                      <div className="flex w-[250px] rounded-full justify-start items-center">
+                                        <div className="p-[15px]">
+                                          <Soundcloud
+                                            fill="#ffffff"
+                                            height={21}
+                                            width={21}
+                                          />
+                                        </div>
+                                        <div className="uppercase font-bold">
+
+                                          Open Soundcloud
+                                        </div>
+
+                                      </div>
+
                                     )}
                                   </Link>
                                 </div>
@@ -348,46 +394,7 @@ export default function Index() {
                                     <Preview song={song} />
                                   )}
                                 </div> */}
-                              {!hideTimestamp && (
-                                <div className="truncate text-[11px] text-neutral-700">
-                                  <div className="flex truncate gap-1 items-center">
-                                    {song.source === "soundcloud" &&
-                                      !session && <PreviewSC id={song.sid} />}
-                                    {song.source === "spotify" && !session && (
-                                      <Preview song={song} />
-                                    )}
-                                    {isBefore(
-                                      new Date(lastVisit),
-                                      new Date(song.addedAt)
-                                    ) && <NewTag />}
 
-                                    <div
-                                      className="truncate text-right w-full"
-                                      title={
-                                        song.playlists[0] &&
-                                        song.playlists[0].name
-                                      }
-                                    >
-                                      {formatDistance(
-                                        new Date(song.addedAt),
-                                        new Date(),
-                                        {
-                                          addSuffix: true,
-                                        }
-                                      )}
-                                      {song.playlists[0] && (
-                                        <Link
-                                          href={song.playlists[0].externalUrl}
-                                          className="!text-neutral-500"
-                                        >
-                                          {" "}
-                                          {song.playlists[0].name}
-                                        </Link>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           </div>
                         );
@@ -395,20 +402,59 @@ export default function Index() {
                     </React.Fragment>
                   );
                 })}
-
               {data && data.pages && data.pages[0].data.length !== 0 && (
+                <div
+                  className={
+                    "grow col-span-12 mx-[2px] duration-300 relative transition-all rounded"
+                  }
+                >
+
+                  <div
+                    className={
+                      "flex gap-3 bg-neutral-800 rounded cursor-pointer shadow-md border-neutral-800"
+                    } >
+                    {/* <div className="flex flex-col justify-center items-center bg-neutral-700/50 hover:bg-neutral-700 rounded w-fit p-3">
+                      <div className="p-[12px]">
+                        <Spotify
+                          className="!fill-[#ffffff] w-[22px] h-[22px]"
+                          fill="#ffffff"
+                          height={22}
+                          width={22}
+                        />
+                      </div>
+                      <div className="uppercase font-bold">Open Spotify</div>
+                    </div> */}
                 <Button
                   loading={isFetching}
                   disabled={!hasNextPage || isFetching}
                   onClick={() => fetchNextPage()}
-                  className="m-[2px] rounded !bg-neutral-800"
+                  className="!p-4"
+                  elementRef={ref}
+                  icon="more"
+                  minimal
+                  fill
+                >
+                  {isFetching ? "Loading..." : "Load More"}
+                </Button>
+     
+                    
+                  </div>
+                </div>
+              )}
+
+              {/* {data && data.pages && data.pages[0].data.length !== 0 && (
+                <Button
+                  loading={isFetching}
+                  disabled={!hasNextPage || isFetching}
+                  onClick={() => fetchNextPage()}
+                  className="m-[2px] !px-[10px] w-full col-span-12 rounded-xl h-[60px] !bg-neutral-800"
                   elementRef={ref}
                   minimal
                   fill
                 >
                   {isFetching ? "Loading..." : "Load More"}
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
           <MusicPlayer />

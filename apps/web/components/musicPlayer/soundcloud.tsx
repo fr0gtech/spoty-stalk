@@ -5,6 +5,7 @@ import {
   selectPlay,
   selectSeekTo,
   selectSongToPlay,
+  selectType,
   selectVolume,
   setDurationMS,
   setNext,
@@ -24,6 +25,7 @@ function SoundCloudPlayerComp() {
   const volume = useSelector(selectVolume);
   const [is_paused, setPaused] = useState(false);
   const seekTo = useSelector(selectSeekTo);
+  const playerType = useSelector(selectType);
 
   useEffect(() => {
     if (!toPlay) return;
@@ -71,8 +73,10 @@ function SoundCloudPlayerComp() {
           getSCDetails();
           dispatch(setDurationMS(e.getDuration() * 1000));
         }}
-        onProgress={(state) =>
+        onProgress={(state) =>{
+          if (playerType !== "soundcloud") return
           dispatch(setProgressMS(state.playedSeconds * 1000))
+        }
         }
         onEnded={() => dispatch(setNext(true))}
         volume={volume}

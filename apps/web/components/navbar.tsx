@@ -58,7 +58,7 @@ function Navbar(props: any) {
               </Button>
             </Link>
 
-            <Link href="/recommended">
+            {/* <Link href="/recommended">
               <Button
                 small
                 className="!bg-neutral-800"
@@ -102,13 +102,13 @@ function Navbar(props: any) {
               >
                 Recommended
               </Button>
-            </Link>
-            <div className="hidden sm:block">
+            </Link> */}
+            {/* <div className="hidden sm:block">
               <PlaylistComp
                 className="!bg-neutral-800 "
                 openInApp={props.openInApp}
               />
-            </div>
+            </div> */}
           </ButtonGroup>
           {/* <LoginComp/> */}
 

@@ -110,6 +110,7 @@ function SpotifyPlayer(props: { token: string }) {
   }, [player, seekTo]);
 
   useEffect(() => {
+    if (playerType !== "spotify") return
     const timeout = setTimeout(() => {
         setIsPlaying(Date.now())        
       player.getCurrentState().then((state: any) => {        
@@ -119,7 +120,7 @@ function SpotifyPlayer(props: { token: string }) {
       });
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [dispatch, player, is_playing, isPlaying]);
+  }, [dispatch, player, is_playing, isPlaying, playerType]);
 
   const setVol = useCallback(async () => {
     await player.setVolume(volume);

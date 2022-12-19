@@ -1,11 +1,10 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SoundCloudPlayerComp from "./soundcloud";
 import SpotifyPlayer from "./spotify";
 import Image from "next/image";
-import { shimmer, toBase64 } from "../../pages";
 import { isPast } from "date-fns";
 import Buttons from "./buttons";
 import Volume from "./volume";
@@ -18,8 +17,11 @@ import {
   selectNext,
   setVolume,
   setNext,
+  setPlay,
+  selectPlay,
 } from "../../redux/playerSlice";
 import MusicPlayerNeedsLogin from "./needsLogin";
+import { useHotkeys } from "@blueprintjs/core";
 
 function MusicPlayer() {
   const dispatch = useDispatch();
@@ -32,6 +34,8 @@ function MusicPlayer() {
   const songToPlay = useSelector(selectSongToPlay);
   const volume = useSelector(selectVolume);
   const next = useSelector(selectNext);
+  const play = useSelector(selectPlay);
+
   useEffect(() => {
     const oldV = getItem("volume");
     dispatch(setVolume(parseFloat(oldV || "0.1")));
@@ -72,10 +76,22 @@ function MusicPlayer() {
     }
   }, [get, session]);
 
+    const setPlayCall = useCallback(()=>{
+       dispatch(setPlay(!play || false));
+    },[dispatch, play])
+    const hotkeys:any = useMemo(() => [
+        {
+            combo: "SPACE",
+            global: true,
+            label: "Refresh data",
+            onKeyDown: () => setPlayCall(),
+        },
+    ], [setPlayCall]);
+        const { handleKeyDown, handleKeyUp } = useHotkeys(hotkeys);
   if (!session) return <MusicPlayerNeedsLogin />;
   return (
     <>
-      <div className="flex">
+      <div className="flex" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}>
         <div className="flex md:gap-[20%] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
           {/* <div>{JSON.stringify(songDetails)}</div> */}
           {songDetails && songDetails.song ? (
@@ -91,9 +107,6 @@ function MusicPlayer() {
               ) : (
                 <Image
                   className="bg-neutral-900 h-[50px] w-[50px] shadow-md shadow-neutral-900/100"
-                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                    shimmer(50, 50)
-                  )}`}
                   src={songDetails && songDetails.song.image}
                   height={50}
                   width={50}

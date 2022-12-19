@@ -3,7 +3,7 @@
 @tailwind utilities;
   body, html{
   background-color: #171717;
-  font-size: 18px;
+  font-size: 16px;
   }
   #scslider .bp4-slider-handle{
     background: #494949 !important;
