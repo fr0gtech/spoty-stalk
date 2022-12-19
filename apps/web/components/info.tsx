@@ -45,44 +45,61 @@ function Info() {
           <div className="flex justify-between items-start">
             <h3 className="text-xl mb-2 font-bold">Info</h3>
           </div>
-          <p className="text-base">We stalk spotify playlist adds and soundcloud likes. <br />
-            New songs will also be posted on <Link href="https://twitter.com/ingPOKE">@inkPOKE</Link> on twitter </p>
+          <p className="text-base">
+            We stalk spotify playlist adds and soundcloud likes. <br />
+            New songs will also be posted on{" "}
+            <Link href="https://twitter.com/ingPOKE">@inkPOKE</Link> on twitter{" "}
+          </p>
 
           <div className="flex justify-between items-start">
             <h3 className="text-xl mb-2 font-bold">Why</h3>
           </div>
-          <p className="text-base">This should help to find new music across platforms. </p>
+          <p className="text-base">
+            This should help to find new music across platforms.{" "}
+          </p>
 
           <div className="flex justify-between items-start">
             <h3 className="text-xl mb-2 font-bold">How</h3>
           </div>
-          <p className="text-base">Check out <Link
-            href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USER as string
+          <p className="text-base">
+            Check out{" "}
+            <Link
+              href={`https://github.com/${
+                process.env.NEXT_PUBLIC_GITHUB_USER as string
               }/${process.env.NEXT_PUBLIC_GITHUB_REPO}`}
-          >
-            <Button
-              small
-              className="!bg-neutral-800 truncate"
-              icon={<Github height={16} width={16} fill={"#fff"} />}
             >
-              spoty-stalk
-            </Button>
-          </Link> and consider contributing </p>
+              <Button
+                small
+                className="!bg-neutral-800 truncate"
+                icon={<Github height={16} width={16} fill={"#fff"} />}
+              >
+                spoty-stalk
+              </Button>
+            </Link>{" "}
+            and consider contributing{" "}
+          </p>
           <div className="flex justify-between items-start">
-            <h3 className="text-xl mb-2 font-bold">Can i use this with my music?</h3>
+            <h3 className="text-xl mb-2 font-bold">
+              Can i use this with my music?
+            </h3>
           </div>
-          <p className="text-base">This page no! But you can selfhost <Link
-            href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USER as string
+          <p className="text-base">
+            This page no! But you can selfhost{" "}
+            <Link
+              href={`https://github.com/${
+                process.env.NEXT_PUBLIC_GITHUB_USER as string
               }/${process.env.NEXT_PUBLIC_GITHUB_REPO}`}
-          >
-            <Button
-              small
-              className="!bg-neutral-800 truncate"
-              icon={<Github height={16} width={16} fill={"#fff"} />}
             >
-              spoty-stalk
-            </Button>
-          </Link> and host this app for whoever you want. </p>
+              <Button
+                small
+                className="!bg-neutral-800 truncate"
+                icon={<Github height={16} width={16} fill={"#fff"} />}
+              >
+                spoty-stalk
+              </Button>
+            </Link>{" "}
+            and host this app for whoever you want.{" "}
+          </p>
           {/* <FormGroup
             label="Hide timestamp row (cleaner ui)"
           >
@@ -93,7 +110,6 @@ function Info() {
 
             ></Switch>
           </FormGroup> */}
-
         </div>
       }
     >

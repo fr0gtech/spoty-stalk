@@ -35,7 +35,6 @@ function Buttons(props: any) {
   const songToPlay = useSelector(selectSongToPlay);
   const { nextSong, prevSong } = useMusicControls();
 
-
   if (!loadedSongsMapped) return <div>loading</div>;
   return (
     <div className="flex flex-col justify-center gap-1 grow">

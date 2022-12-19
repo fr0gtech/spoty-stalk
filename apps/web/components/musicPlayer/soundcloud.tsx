@@ -73,11 +73,10 @@ function SoundCloudPlayerComp() {
           getSCDetails();
           dispatch(setDurationMS(e.getDuration() * 1000));
         }}
-        onProgress={(state) =>{
-          if (playerType !== "soundcloud") return
-          dispatch(setProgressMS(state.playedSeconds * 1000))
-        }
-        }
+        onProgress={(state) => {
+          if (playerType !== "soundcloud") return;
+          dispatch(setProgressMS(state.playedSeconds * 1000));
+        }}
         onEnded={() => dispatch(setNext(true))}
         volume={volume}
         autoPlay={play}

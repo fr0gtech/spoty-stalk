@@ -14,25 +14,20 @@ export const useMusicControls = () => {
   const shuffle = useSelector(selectShuffle);
   const loadedSongsMapped = useSelector(selectLoadedSongs);
   const songToPlay = useSelector(selectSongToPlay);
-  const lastSongs  = useSelector(selectLastSong)
+  const lastSongs = useSelector(selectLastSong);
 
-  const nextShuffle = useCallback(()=>{
+  const nextShuffle = useCallback(() => {
     if (shuffle) {
-      const newSong = loadedSongsMapped[
-        Math.floor(Math.random() * loadedSongsMapped.length)
-      ]
-      dispatch(
-        setSongToPlay(
-          newSong
-        )
-      );
+      const newSong =
+        loadedSongsMapped[Math.floor(Math.random() * loadedSongsMapped.length)];
+      dispatch(setSongToPlay(newSong));
       return;
     }
-  },[dispatch, loadedSongsMapped, shuffle])
+  }, [dispatch, loadedSongsMapped, shuffle]);
 
   const prevSong = useCallback(() => {
     if (shuffle) {
-      nextShuffle()
+      nextShuffle();
       return;
     }
     const prev = loadedSongsMapped[loadedSongsMapped.indexOf(songToPlay) - 1];
@@ -44,9 +39,8 @@ export const useMusicControls = () => {
   }, [dispatch, loadedSongsMapped, nextShuffle, shuffle, songToPlay]);
 
   const nextSong = useCallback(() => {
-
     if (shuffle) {
-      nextShuffle()
+      nextShuffle();
       return;
     }
 
@@ -55,8 +49,6 @@ export const useMusicControls = () => {
     next
       ? dispatch(setSongToPlay(next))
       : dispatch(setSongToPlay(loadedSongsMapped[0]));
-    
-
   }, [shuffle, loadedSongsMapped, songToPlay, dispatch, nextShuffle]);
 
   return { nextSong, prevSong };

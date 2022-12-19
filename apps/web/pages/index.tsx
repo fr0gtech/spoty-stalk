@@ -3,11 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { useInView } from "react-intersection-observer";
 import axios from "axios";
-import { Button, Icon, Spinner, Tag } from "@blueprintjs/core";
-import { formatDistance, isBefore, subDays } from "date-fns";
+import { Button } from "@blueprintjs/core";
+import { formatDistance, isBefore } from "date-fns";
 import { setCookie, getCookie } from "cookies-next";
 import Image from "next/image";
-import LoadingComp from "../components/loading";
 import React from "react";
 import Navbar from "../components/navbar";
 import Head from "next/head";
@@ -24,8 +23,6 @@ import { useRouter } from "next/router";
 import Layout from "../components/layout";
 import Spotify from "../public/spotify.svg";
 import Soundcloud from "../public/soundcloud.svg";
-import dynamic from "next/dynamic";
-import { Toast } from "../components/toaster";
 import PreviewSC from "../components/musicItem/previewSC";
 import Preview from "../components/musicItem/preview";
 import { useSession } from "next-auth/react";
@@ -33,7 +30,9 @@ import MusicPlayer from "../components/musicPlayer";
 import Link from "next/link";
 import NewTag from "../components/musicItem/newtag";
 import {
+  selectPlay,
   selectReady,
+  selectSongInfo,
   selectSongToPlay,
   setLoadedSongs,
   setSongToPlay,
@@ -48,35 +47,34 @@ export default function Index() {
   const ready = useSelector(selectReady);
 
   const [lastVisit, setLastVisit] = useState<any>();
-  const queryClient = useQueryClient();
   const showDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
-  const openInApp = useSelector(selectOpenInApp);
   const showSpotify = useSelector(selectShowSpotify);
   const showSoundcloud = useSelector(selectShowSoundCloud);
   const hideTimestamp = useSelector(selectHideTimestamp);
-  const hideDiscoverWeekly = useSelector(selectShowDiscoverWeekly);
   const toPlay = useSelector(selectSongToPlay);
   const songPlaying = toPlay;
   const { ref, inView } = useInView();
   const { data: session, status }: any = useSession();
-
+  const songDetails = useSelector(selectSongInfo);
+  const isPlaying = useSelector(selectPlay);
+  const [pageTitle, setTitle] = useState<any>();
+  const [fullPageTitle, setFullTitle] = useState<any>();
   // const [hideDiscoverWeekly, setHideDiscoverWeekly] = useState<any>(true)
-  const { data: topartists, error: pl_error } = useSWR(`/api/artists`, fetcher);
   const { data, fetchNextPage, hasNextPage, isFetching }: any =
     useInfiniteQuery(
       ["songs"],
       async ({ pageParam = 0 }) => {
         const res = await axios.get(
           "/api/songs?c=" +
-          pageParam +
-          "&p=" +
-          pageSize +
-          "&sp=" +
-          showSpotify +
-          "&sc=" +
-          showSoundcloud +
-          "&dw=" +
-          showDiscoverWeekly
+            pageParam +
+            "&p=" +
+            pageSize +
+            "&sp=" +
+            showSpotify +
+            "&sc=" +
+            showSoundcloud +
+            "&dw=" +
+            showDiscoverWeekly
         );
         return res.data;
       },
@@ -100,7 +98,6 @@ export default function Index() {
       fetchNextPage();
     }
   }, [fetchNextPage, inView]);
-
 
   const loadedSongsMapped = useMemo(() => {
     if (data) {
@@ -127,17 +124,46 @@ export default function Index() {
   }, [dispatch, loadedSongsMapped]);
   // if (!data) return <LoadingComp />;
   useEffect(() => {
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener("keydown", (e) => {
       if (e.keyCode === 32 && e.target === document.body) {
         e.preventDefault();
       }
     });
+  }, []);
 
-  }, [])
+  useEffect(() => {
+    setTitle(undefined);
+  }, [songDetails.song.title]);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    const timeOut = setTimeout(() => {
+      if (pageTitle) {
+        setTitle(pageTitle.slice(1));
+      } else {
+        setFullTitle(
+          `${songDetails.song.title} by ${songDetails.artists[0].name}`
+        );
+        setTitle(`${songDetails.song.title} by ${songDetails.artists[0].name}`);
+      }
+    }, 400);
+    return () => clearTimeout(timeOut);
+  }, [
+    fullPageTitle,
+    isPlaying,
+    pageTitle,
+    songDetails.artists,
+    songDetails.song.title,
+  ]);
+
+  const title = `${isPlaying ? "⏸️" : "▶️"} ${
+    pageTitle ? pageTitle : "Home"
+  } - frogTech.dev`;
   return (
     <>
       <Head>
-        <title>Home - frogTech.dev</title>
+        <title>{title}</title>
+        <link id="favicon" rel="icon" href="/favicon.ico" />
         <meta name="description" content="Music discovery app for frogs" />
         <meta property="og:url" content="https://pokeing.frogtech.dev" />
         <meta property="og:title" content="Home - frogTech.dev" />
@@ -157,27 +183,31 @@ export default function Index() {
           name="twitter:image"
           content="https://pokeing.frogtech.dev/social.png"
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
         <div className="h-[calc(100vh-40px)] min-h-[calc(100vh-40px)] justify-between flex flex-col gap-1">
           <div className="overflow-scroll rounded">
             <div className="gap-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 text-white rounded">
               {!data &&
-                [...Array(100)].map((value: any, i: any) => {
+                [...Array(10)].map((value: any, i: any) => {
                   return (
                     <div
                       key={i}
-                      className="w-full h-[72px] bg-neutral-800 bg-opacity-70 rounded p-[2px]"
+                      className="grow w-full col-span-12 duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
                     >
-                      <div className="flex items-center h-full p-2 gap-3">
-                        <div>
-                          <div className="h-[50px] w-[50px] bg-neutral-800 rounded"></div>
+                      <div className=" bg-neutral-800 rounded justify-between flex items-center h-full p-2 gap-3">
+                        <div className="flex gap-2">
+                          <div>
+                            <div className="h-[50px] w-[50px] bg-neutral-700 rounded"></div>
+                          </div>
+                          <div className=" flex gap-2 flex-col">
+                            <div className="w-[80px] h-[15px] bg-neutral-700"></div>
+                            <div className="w-[80px] h-[15px] bg-neutral-700"></div>
+                          </div>
+                          <div></div>
                         </div>
-                        <div className=" flex gap-2 flex-col">
-                          <div className="w-[80px] h-[15px] bg-neutral-800"></div>
-                          <div className="w-[80px] h-[15px] bg-neutral-800"></div>
-                        </div>
+                        <div className="w-[80px] h-[15px] bg-neutral-700"></div>
+                        <div className="w-[80px] h-[15px] bg-neutral-700"></div>
                       </div>
                     </div>
                   );
@@ -188,30 +218,19 @@ export default function Index() {
                   return (
                     <React.Fragment key={page.nextCursor}>
                       {page.data.map((song: any, songIndex: any) => {
-                        // if (
-                        //   song.playlists[0] &&
-                        //   song.playlists[0].name.includes("Discover Weekly") &&
-                        //   !showDiscoverWeekly
-                        // )
-                        //   return;
-
                         let isPlaying = false;
                         song.source === "soundcloud"
                           ? (isPlaying = songPlaying === song.externalUrl)
                           : (isPlaying = songPlaying === song.sid);
-
-                        // if (song.source === "soundcloud") {
                         return (
-                          // <div className={!ready ? "opacity-0 duration-200" : "opacity-100 duration-500"}>
-
                           <div
                             key={song.sid}
                             className={
                               isPlaying
                                 ? "grow w-full col-span-12 " +
-                                "duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
+                                  "duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] bg-gradient-to-r"
                                 : "grow w-full col-span-12 " +
-                                "duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
+                                  "duration-300 relative transition-all rounded inline-block from-neutral-600 via-neutral-900 to-neutral-700 bg-[length:400%_400%] p-[2px] hover:bg-gradient-to-r"
                             }
                           >
                             {!ready && session && (
@@ -238,8 +257,8 @@ export default function Index() {
                                 <div className="flex justify-between w-[50%] items-center">
                                   <div className="flex gap-5">
                                     {song &&
-                                      song.images[0] &&
-                                      song.images[0].url ? (
+                                    song.images[0] &&
+                                    song.images[0].url ? (
                                       <Image
                                         className="shadow-md"
                                         src={song.images[0].url}
@@ -289,7 +308,9 @@ export default function Index() {
                                         title={song.album && song.album.name}
                                         className="text-[11px] text-neutral-500 truncate"
                                       >
-                                        {song.album ? song.album.name : "Yo pls"}
+                                        {song.album
+                                          ? song.album.name
+                                          : "Yo pls"}
                                       </div>
                                     </div>
                                   </div>
@@ -298,10 +319,11 @@ export default function Index() {
                                     <div className="truncate w-[20%] text-neutral-400">
                                       <div className="flex truncate gap-1 items-center">
                                         {song.source === "soundcloud" &&
-                                          !session && <PreviewSC id={song.sid} />}
-                                        {song.source === "spotify" && !session && (
-                                          <Preview song={song} />
-                                        )}
+                                          !session && (
+                                            <PreviewSC id={song.sid} />
+                                          )}
+                                        {song.source === "spotify" &&
+                                          !session && <Preview song={song} />}
                                         {isBefore(
                                           new Date(lastVisit),
                                           new Date(song.addedAt)
@@ -323,7 +345,9 @@ export default function Index() {
                                           )}
                                           {song.playlists[0] && (
                                             <Link
-                                              href={song.playlists[0].externalUrl}
+                                              href={
+                                                song.playlists[0].externalUrl
+                                              }
                                               className="!text-neutral-400"
                                             >
                                               {" "}
@@ -352,10 +376,8 @@ export default function Index() {
                                           />
                                         </div>
                                         <div className="uppercase font-bold">
-
                                           Open Spotify
                                         </div>
-
                                       </div>
                                     ) : (
                                       <div className="flex w-[200px] rounded-full justify-start items-center">
@@ -367,12 +389,9 @@ export default function Index() {
                                           />
                                         </div>
                                         <div className="uppercase font-bold">
-
                                           Open Soundcloud
                                         </div>
-
                                       </div>
-
                                     )}
                                   </Link>
                                 </div>
@@ -385,7 +404,6 @@ export default function Index() {
                                     <Preview song={song} />
                                   )}
                                 </div> */}
-
                             </div>
                           </div>
                         );
@@ -399,11 +417,11 @@ export default function Index() {
                     "grow col-span-12 mx-[2px] duration-300 relative transition-all rounded"
                   }
                 >
-
                   <div
                     className={
                       "flex gap-3 bg-neutral-800 rounded cursor-pointer shadow-md border-neutral-800"
-                    } >
+                    }
+                  >
                     {/* <div className="flex flex-col justify-center items-center bg-neutral-700/50 hover:bg-neutral-700 rounded w-fit p-3">
                       <div className="p-[12px]">
                         <Spotify
@@ -415,20 +433,18 @@ export default function Index() {
                       </div>
                       <div className="uppercase font-bold">Open Spotify</div>
                     </div> */}
-                <Button
-                  loading={isFetching}
-                  disabled={!hasNextPage || isFetching}
-                  onClick={() => fetchNextPage()}
-                  className="!p-4"
-                  elementRef={ref}
-                  icon="more"
-                  minimal
-                  fill
-                >
-                  {isFetching ? "Loading..." : "Load More"}
-                </Button>
-     
-                    
+                    <Button
+                      loading={isFetching}
+                      disabled={!hasNextPage || isFetching}
+                      onClick={() => fetchNextPage()}
+                      className="!p-4"
+                      elementRef={ref}
+                      icon="more"
+                      minimal
+                      fill
+                    >
+                      {isFetching ? "Loading..." : "Load More"}
+                    </Button>
                   </div>
                 </div>
               )}

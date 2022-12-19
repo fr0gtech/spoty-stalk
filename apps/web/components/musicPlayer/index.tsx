@@ -76,22 +76,25 @@ function MusicPlayer() {
     }
   }, [get, session]);
 
-    const setPlayCall = useCallback(()=>{
-       dispatch(setPlay(!play || false));
-    },[dispatch, play])
-    const hotkeys:any = useMemo(() => [
-        {
-            combo: "SPACE",
-            global: true,
-            label: "Refresh data",
-            onKeyDown: () => setPlayCall(),
-        },
-    ], [setPlayCall]);
-        const { handleKeyDown, handleKeyUp } = useHotkeys(hotkeys);
+  const setPlayCall = useCallback(() => {
+    dispatch(setPlay(!play || false));
+  }, [dispatch, play]);
+  const hotkeys: any = useMemo(
+    () => [
+      {
+        combo: "SPACE",
+        global: true,
+        label: "Refresh data",
+        onKeyDown: () => setPlayCall(),
+      },
+    ],
+    [setPlayCall]
+  );
+  const { handleKeyDown, handleKeyUp } = useHotkeys(hotkeys);
   if (!session) return <MusicPlayerNeedsLogin />;
   return (
     <>
-      <div className="flex" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}>
+      <div className="flex" onKeyDown={handleKeyDown}>
         <div className="flex md:gap-[20%] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-between ml-[2px] mr-[2px]">
           {/* <div>{JSON.stringify(songDetails)}</div> */}
           {songDetails && songDetails.song ? (

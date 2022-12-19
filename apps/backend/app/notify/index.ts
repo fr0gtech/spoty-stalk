@@ -4,7 +4,7 @@ export const tweetSongSpotify = async (
   artists: any,
   playlist: any
 ) => {
-  if(!process.env.IFTTT) return
+  if (!process.env.IFTTT) return;
   await axios.post(
     `https://maker.ifttt.com/trigger/new_song_spotify/with/key/${process.env.IFTTT}`,
     {
@@ -18,7 +18,7 @@ export const tweetSongSpotify = async (
 };
 
 export const tweetSongSoundcloud = async (song: any, artist: any) => {
-  if(!process.env.IFTTT) return
+  if (!process.env.IFTTT) return;
   await axios.post(
     `https://maker.ifttt.com/trigger/new_song_soundcloud/with/key/${process.env.IFTTT}`,
     {

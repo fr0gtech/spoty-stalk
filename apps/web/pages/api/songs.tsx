@@ -8,7 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let spotify = JSON.parse(req.query.sp as any);
   let soundcloud = JSON.parse(req.query.sc as any);
   let discoverWeekly = JSON.parse(req.query.dw as any);
-  
+
   if (pageSize > 100 || cursor === undefined || pageSize === undefined) {
     return res.status(404).json({
       error: "error",
@@ -24,12 +24,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     ],
     where: {
-        playlists: {
-          every: {
-            name: { not: discoverWeekly ? undefined : "Discover Weekly" }
+      playlists: {
+        every: {
+          name: { not: discoverWeekly ? undefined : "Discover Weekly" },
           // { name:{not: "Discover Weekly"}}
-      }
-    },
+        },
+      },
       OR: [
         {
           source: spotify ? "spotify" : "",
@@ -37,7 +37,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         {
           source: soundcloud ? "soundcloud" : "",
         },
-      ]
+      ],
     },
     select: {
       sid: true,

@@ -122,7 +122,6 @@ function Navbar(props: any) {
               frogtech
             </Link>
           </div>
-          
         </div>
       </div>
       <div className="text-xs opacity-50 hidden md:block ">{`last scan ${lastScanState}`}</div>
@@ -156,8 +155,8 @@ function Navbar(props: any) {
         </div>
       </div> */}
       <div>
-      <Info />
-      <Settings />
+        <Info />
+        <Settings />
       </div>
     </nav>
   );

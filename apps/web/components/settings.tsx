@@ -99,13 +99,13 @@ function Settings() {
           >
             <Switch
               defaultChecked={!showDiscoverWeekly}
-              onChange={() =>
-               { queryClient.removeQueries({
+              onChange={() => {
+                queryClient.removeQueries({
                   queryKey: ["songs"],
                   type: "active",
                 });
-                dispatch(setShowDiscoverWeekly(!showDiscoverWeekly))}
-              }
+                dispatch(setShowDiscoverWeekly(!showDiscoverWeekly));
+              }}
               labelElement={
                 <span className="m-0 p-0">
                   <Icon icon="signal-search" />
