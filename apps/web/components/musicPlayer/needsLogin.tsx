@@ -5,11 +5,10 @@ import Spotify from "../../public/spotify.svg";
 function MusicPlayerNeedsLogin() {
   return (
     <div className="flex">
-      <div className="flex h-[68.5px] shadow-xl items-center bg-neutral-800 p-2 rounded w-full  justify-center gap-10 ml-[2px] mr-[2px]">
-        <h4 className="text-md text-center flex items-center opacity-50">
+      <div className="flex h-[68.5px] shadow-xl items-center bg-neutral-800 p-2 rounded w-full justify-center gap-10 ml-[2px] mr-[2px]">
+        <h4 className="text-md text-center flex items-center">
           Login with
           <Button
-            disabled
             onClick={() => signIn("spotify")}
             className="mx-3 !bg-neutral-800"
             small
@@ -24,14 +23,14 @@ function MusicPlayerNeedsLogin() {
           </Button>
           to play full songs
         </h4>
-        <div className="w-fit">
+        {/* <div className="w-fit">
           <Callout
             onClick={(e) => e.shiftKey && signIn("spotify")}
             intent="warning"
           >
             Waiting for spotify to approve this app
           </Callout>
-        </div>
+        </div> */}
       </div>
     </div>
   );
