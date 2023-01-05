@@ -15,7 +15,7 @@ We use [puppeteer](https://pptr.dev/) check out how to configure it for your sys
 - Install postgresql and create an empty database
 - Install pino pretty for nice logs (optional)
 
-### fill out .env
+### .env
 
 The .env is pretty important for the backend to run having something missing will make the app fail.
 The only exemption is IFTTT variable if you leave it blank the backend wont tweet new songs.
@@ -42,14 +42,14 @@ IFTTT=
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/spotystalk"
 ```
 
-### setup a spotify app
+### Spotify app
 
 Setup an app add the cliend id and secret to the env and add a redirect url in ur spotify app settings
 
 `http://localhost:3000/api/callback/spotify`
 
 
-### build prisma
+### Prisma
 
 This should do all prisma things for you
 `cd packages/database && yarn db:clean:build`
@@ -62,7 +62,7 @@ backend:
 frontend:
 `cd apps/web && next start`
 
-### prod
+### Production
 
 there are some pm2:start script you can use but these are not the best. the app has no logging or anything for prod.
 
