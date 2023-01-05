@@ -139,7 +139,7 @@ function SpotifyPlayer(props: { token: string }) {
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       const spotifyPlayer = new window.Spotify.Player({
-        name: "Web Playback SDK!!!",
+        name: process.env.NEXT_PUBLIC_TITLE || "spoty-stalk",
         getOAuthToken: (cb) => {
           cb(props.token);
         },
