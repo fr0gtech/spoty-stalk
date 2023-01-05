@@ -7,6 +7,8 @@ Can shuffle over all spotify and soundcloud likes at the same time.
 
 ## Installation
 
+`yarn` - installs all dependancies for the monorepo
+
 We use [puppeteer](https://pptr.dev/) check out how to configure it for your system. [here](https://github.com/puppeteer/puppeteer/issues/3443) an issue talking about running puppeteer headlessly.
 
 - Postgres and prisma are used together for data management.
