@@ -113,7 +113,7 @@ function Navbar(props: any) {
           {/* <LoginComp/> */}
 
           <div className="hidden gap-2 text-xs md:flex opacity-70 items-center">
-            <span>by</span>
+            <span>join</span>
             <Link
               target="_blank"
               href={"https://frogtech.dev"}
