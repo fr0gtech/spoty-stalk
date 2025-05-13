@@ -44,6 +44,7 @@ export const syncSpotify = async () => {
 
   // only update changed playlists from above
   for(const e in playlists){
+    console.log("saving playlist " + playlists[e].name);
     
     const onSpoty = await getSongsFromPlaylist(playlists[e]);
     const onDB = await getSongsFromPlaylistOnDB(playlists[e]);
