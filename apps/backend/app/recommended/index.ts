@@ -46,7 +46,10 @@ const getAll = async function () {
       .get(url.toString(), {
         headers: { "Accept-Encoding": "text/html; charset=UTF-8" },
       })
-      .then((e) => e.data.data)
+      .then((e) => {
+        console.log(e);
+        
+        return e.data.data})
       .catch((e) => {
         console.log(e.data, url);
       });

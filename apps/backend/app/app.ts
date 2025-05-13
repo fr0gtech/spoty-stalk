@@ -9,6 +9,12 @@ import cron from "node-cron";
 import path from "path";
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
+console.log({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+});
+
+
 export const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -22,12 +28,12 @@ const run = async () => {
   }
   syncSpotify();
   syncSoundCloud();
-  syncReddit();
+  // syncReddit();
   scanInfo();
 };
 
 run();
 
-cron.schedule("* * * * *", () => {
+cron.schedule("*/30 * * * *", () => {
   run();
 });

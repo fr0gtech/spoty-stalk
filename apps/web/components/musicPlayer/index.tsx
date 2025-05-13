@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +9,7 @@ import Buttons from "./buttons";
 import Volume from "./volume";
 import useStorage from "../../hooks/useSessionStorage";
 import { useMusicControls } from "./functions";
+import { useSession } from 'next-auth/react'
 import {
   selectSongInfo,
   selectSongToPlay,
