@@ -47,6 +47,9 @@ export const syncSpotify = async () => {
     
     const onSpoty = await getSongsFromPlaylist(playlists[e]);
     const onDB = await getSongsFromPlaylistOnDB(playlists[e]);
+    logger.info(
+      `${onSpoty.length} songs to onspoty: ${onDB?.songs.length} songs on db`
+    );
     console.log(onSpoty, onDB);
     
     if (!onDB) fullRun = true;
