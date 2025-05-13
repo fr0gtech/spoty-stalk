@@ -1,5 +1,5 @@
 import { spotifyApi } from "../app";
-import { differenceBy } from "../helpers";
+import { differenceBy, sleep } from "../helpers";
 import { prisma } from "database";
 import { log } from "../logger";
 
@@ -59,6 +59,7 @@ export const getAllPlaylists = async (userId: string) => {
         data.push(...d.body.items);
       });
     }
+    sleep(5000)
   }
   logger.info(`getAllPlaylists - Got ${data.length}/${last.total} playlists`);
 
