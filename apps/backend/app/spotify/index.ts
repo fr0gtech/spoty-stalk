@@ -1,4 +1,5 @@
 import { spotifyApi } from "../app";
+import { sleep } from "../helpers";
 import { log } from "../logger";
 import { saveArtist } from "./artist";
 import {
@@ -58,5 +59,6 @@ export const syncSpotify = async () => {
       });
     });
     del.forEach(async (song: any) => deleteSong(song));
+    sleep(5000)
   });
 };
