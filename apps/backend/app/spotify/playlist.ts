@@ -59,7 +59,7 @@ export const getAllPlaylists = async (userId: string) => {
         data.push(...d.body.items);
       });
     }
-    await sleep(1000)
+    await sleep(5000)
   }
   logger.info(`getAllPlaylists - Got ${data.length}/${last.total} playlists`);
 
