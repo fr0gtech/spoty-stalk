@@ -28,8 +28,9 @@ export let client_id: any;
  */
 export const getSoundCloudClientId = async () => {
   const browser = await puppeteer.launch({
-    pipe: true,
-    headless: true
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath: '/usr/bin/chromium-browser'
   });
   const page = await browser.newPage();
   await page.goto("https://soundcloud.com/discover"); // idk if this is needed at all
