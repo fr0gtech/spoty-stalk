@@ -17,7 +17,7 @@ export const getSongsFromPlaylist = async (playlist: any) => {
     await spotifyApi
       .getPlaylistTracks(playlist.id, {
         offset: 0 + data.length,
-        limit: 10,
+        limit: 50,
         fields: "items",
       })
       .then((e) => {
