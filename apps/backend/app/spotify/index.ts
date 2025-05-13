@@ -59,6 +59,6 @@ export const syncSpotify = async () => {
       });
     });
     del.forEach(async (song: any) => deleteSong(song));
-    sleep(5000)
+    await sleep(5000)
   });
 };
