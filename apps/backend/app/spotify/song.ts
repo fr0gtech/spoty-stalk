@@ -12,6 +12,8 @@ export const getSongsFromPlaylist = async (playlist: any) => {
   let data: any = [];
   let total = playlist.tracks.total;
   while (data.length !== total) {
+    console.log("gettings songs " + data.length);
+    
     await spotifyApi
       .getPlaylistTracks(playlist.id, {
         offset: 0 + data.length,
