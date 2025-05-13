@@ -43,22 +43,24 @@ export const syncSpotify = async () => {
   const playlists = await changedPlaylists(userPlaylists);
 
   // only update changed playlists from above
-  playlists.forEach(async (playlist: SpotifyApi.PlaylistObjectSimplified) => {
-    const onSpoty = await getSongsFromPlaylist(playlist);
-    const onDB = await getSongsFromPlaylistOnDB(playlist);
+  for(const e in playlists){
+
+    const onSpoty = await getSongsFromPlaylist(playlists[e]);
+    const onDB = await getSongsFromPlaylistOnDB(playlists[e]);
     if (!onDB) fullRun = true;
     const { del, add } = getSongsDiff(onSpoty, onDB);
     logger.info(
-      `${playlist.name} songs to delete: ${del?.length} songs to add: ${add?.length}`
+      `${playlists[e].name} songs to delete: ${del?.length} songs to add: ${add?.length}`
     );
 
-    await savePlaylist(playlist);
+    await savePlaylist(playlists[e]);
     add.forEach(async (song: any) => {
       await saveArtist(song).then(async (artists) => {
-        await saveSong(song, artists, playlist, fullRun);
+        await saveSong(song, artists, playlists[e], fullRun);
       });
     });
     del.forEach(async (song: any) => deleteSong(song));
     await sleep(5000)
-  });
+  }
+
 };
