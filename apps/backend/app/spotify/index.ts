@@ -44,10 +44,11 @@ export const syncSpotify = async () => {
 
   // only update changed playlists from above
   for(const e in playlists){
-    console.log(e, playlists);
     
     const onSpoty = await getSongsFromPlaylist(playlists[e]);
     const onDB = await getSongsFromPlaylistOnDB(playlists[e]);
+    console.log(onSpoty, onDB);
+    
     if (!onDB) fullRun = true;
     const { del, add } = getSongsDiff(onSpoty, onDB);
     logger.info(
