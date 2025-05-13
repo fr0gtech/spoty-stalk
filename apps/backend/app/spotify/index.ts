@@ -56,11 +56,12 @@ export const syncSpotify = async () => {
     await savePlaylist(playlists[e]);
     add.forEach(async (song: any) => {
       await saveArtist(song).then(async (artists) => {
+        console.log("saving song " + song + " _ " + artists);
+        
         await saveSong(song, artists, playlists[e], fullRun);
       });
     });
     del.forEach(async (song: any) => deleteSong(song));
-    await sleep(5000)
   }
 
 };

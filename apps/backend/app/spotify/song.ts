@@ -4,6 +4,7 @@ import { exit } from "process";
 import { spotifyApi } from "../app";
 import { log } from "../logger";
 import { tweetSongSpotify } from "../notify";
+import { sleep } from "../helpers";
 
 const logger = log.child({ name: "spotifySong" });
 
@@ -20,6 +21,7 @@ export const getSongsFromPlaylist = async (playlist: any) => {
       .then((e) => {
         data.push(...e.body.items);
       });
+      await sleep(2000)
   }
   return data;
 };
