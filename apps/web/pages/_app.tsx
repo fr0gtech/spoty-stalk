@@ -1,4 +1,4 @@
-import "public/globals.css";
+import "../public/globals.css";
 import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
