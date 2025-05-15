@@ -112,13 +112,13 @@ export const deleteSong = async (song: any) => {
 };
 export const getSongsDiff = (onSpoty: any, onDB: any) => {
   const mapsop = onSpoty.map((e: any) => e.track.id);
-  const mapsod = onDB?.songs.map((e: any) => e.sid);
+  const mapsod = onDB?.map((e: any) => e.sid);
 
   const del =
     mapsod
       ?.filter((x: any) => !mapsop?.includes(x))
       .map((id2find: any) => {
-        return onDB?.songs.find((e: any) => {
+        return onDB?.find((e: any) => {
           return e.sid === id2find;
         });
       }) || [];

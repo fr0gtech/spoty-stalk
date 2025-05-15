@@ -53,7 +53,7 @@ export const syncSpotify = async () => {
     );
     
     if (!onDB) fullRun = true;
-    const { del, add } = getSongsDiff(onSpoty, onDB?.songs ? onDB : []);
+    const { del, add } = getSongsDiff(onSpoty, onDB?.songs ? onDB.songs : []);
     
     logger.info(
       `${playlists[e].name} songs to delete: ${del?.length} songs to add: ${add?.length}`
