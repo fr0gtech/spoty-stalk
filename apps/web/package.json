@@ -21,6 +21,7 @@
     "cookies-next": "^2.1.1",
     "date-fns": "^2.29.3",
     "next": "^15.3.2",
+    "next-auth": "^4.24.11",
     "next-redux-wrapper": "^8.0.0",
     "overlayscrollbars": "^2.0.1",
     "overlayscrollbars-react": "^0.5.0",

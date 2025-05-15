@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node app/app.ts | pino-pretty",
     "backend:run": "ts-node app/app.ts | pino-pretty",
-    "pm2:start": "pm2 start npm --name 'backend' -- start"
+    "pm2:start": "pm2 start npm --name 'spotybackend' -- start"
   },
   "dependencies": {
     "@prisma/client": "^4.6.1",
