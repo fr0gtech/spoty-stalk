@@ -2,10 +2,13 @@ import { spotifyApi } from "../app";
 import { differenceBy, sleep } from "../helpers";
 import { prisma } from "database";
 import { log } from "../logger";
-
+export type UserPlaylist = {
+    data: SpotifyApi.PlaylistObjectSimplified[];
+    total: any;
+}
 const logger = log.child({ name: "spotifyPlaylist" });
 
-export const changedPlaylists = async (playlists: any) => {
+export const changedPlaylists = async (playlists: UserPlaylist) => {
   const weHave = await prisma.playlist.findMany({
     select: {
       sid: true,
@@ -13,7 +16,7 @@ export const changedPlaylists = async (playlists: any) => {
       lastSnapShotId: true,
     },
   });
-  const userHas = playlists.data.map((playlist: any) => {
+  const userHas = playlists.data.map((playlist) => {
     return {
       sid: playlist.id,
       name: playlist.name,
@@ -21,8 +24,8 @@ export const changedPlaylists = async (playlists: any) => {
     };
   });
   const diffed = differenceBy(userHas, weHave, "lastSnapShotId");
-  const changed = diffed.map((diffed: any) =>
-    playlists.data.find((e: any) => {
+  const changed = diffed.map((diffed: { sid: any; }) =>
+    playlists.data.find((e) => {
       if (e.id === diffed.sid) return e;
     })
   );

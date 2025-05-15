@@ -9,7 +9,7 @@ import { sleep } from "../helpers";
 const logger = log.child({ name: "spotifySong" });
 
 export const getSongsFromPlaylist = async (playlist: any) => {
-  let data: any = [];
+  let data: SpotifyApi.PlaylistTrackObject[] = [];
   let total = playlist.tracks.total;
   while (data.length !== total) {
     console.log("gettings songs " + data.length);
@@ -112,8 +112,8 @@ export const deleteSong = async (song: any) => {
     },
   });
 };
-export const getSongsDiff = (onSpoty: any, onDB: any) => {
-  const mapsop = onSpoty.filter((e:any)=>e.track.id).map((e: any) => e.track.id);
+export const getSongsDiff = (onSpoty: SpotifyApi.PlaylistTrackObject[], onDB: any) => {
+  const mapsop = onSpoty.map((e: any) => e.track.id).filter((e)=>e);
   const mapsod = onDB?.map((e: any) => e.sid);
 
   const del =
