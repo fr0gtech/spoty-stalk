@@ -60,12 +60,8 @@ export const syncSpotify = async () => {
     );
 
     await savePlaylist(playlists[e]);
-    console.log(add);
-    
     add.forEach(async (song: any) => {
       await saveArtist(song).then(async (artists) => {
-        console.log("saving song " + song + " _ " + artists);
-        
         await saveSong(song, artists, playlists[e], fullRun);
       });
     });

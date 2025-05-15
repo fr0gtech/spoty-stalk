@@ -68,6 +68,10 @@ export const getAllPlaylists = async (userId: string) => {
 
 export const savePlaylist = async (playlist: any) => {
   logger.info(`saving playlist ${playlist.name}`);
+  console.log(playlist);
+  console.log(playlist.id);
+  
+  
   // maybe check snapshot id here to check if we need to do anything for this playlist
   return await prisma.playlist
     .upsert({
@@ -77,7 +81,7 @@ export const savePlaylist = async (playlist: any) => {
         name: playlist.name,
         description: playlist.description,
         externalUrl: playlist.external_urls.spotify,
-        images: playlist.images as any,
+        images: playlist.images ? playlist.images : "",
         lastSnapShotId: playlist.snapshot_id,
         tracks: playlist.tracks.total,
       },
