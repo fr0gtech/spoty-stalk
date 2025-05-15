@@ -46,10 +46,11 @@ export const saveSong = async (
     .filter(Boolean);
 
   if (ar.length === 0) {
+    return
     logger.error({ song, artists });
     exit();
   }
-  if (!fullRun) tweetSongSpotify(song, artists, playlist);
+  // if (!fullRun) tweetSongSpotify(song, artists, playlist);
   await prisma.song
     .upsert({
       where: { sid: song.track.id },

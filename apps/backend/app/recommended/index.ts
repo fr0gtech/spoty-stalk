@@ -26,7 +26,6 @@ const getMetaData = async () => {
       }
     )
     .then((e) => e.data.metadata)
-    .catch((e) => console.log("error"));
 };
 
 const getAll = async function () {

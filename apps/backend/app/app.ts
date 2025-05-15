@@ -21,7 +21,7 @@ const run = async () => {
     return;
   }
   syncSpotify();
-  syncSoundCloud();
+  // syncSoundCloud();
   // syncReddit();
   scanInfo();
 };

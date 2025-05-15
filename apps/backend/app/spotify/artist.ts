@@ -6,11 +6,12 @@ const logger = log.child({ name: "spotifyArtist" });
 
 export const saveArtist = async (song: any) => {
   if (song.track.artists === undefined) {
-    console.log(song);
     return;
   }
+  
   return await Promise.all(
-    song.track.artists.map(async (artist: any) => {
+    song.track.artists.filter((e:any)=>e).map(async (artist: any) => {
+      if (typeof artist.name === "string") {
       return await prisma.artist
         .upsert({
           where: {
@@ -46,6 +47,7 @@ export const saveArtist = async (song: any) => {
             exit();
           }
         });
+      }
     })
   );
 };
