@@ -23,6 +23,7 @@ export const getSongsFromPlaylist = async (playlist: any) => {
       .then((e) => {
         data.push(...e.body.items);
       });
+      await sleep(1000)
   }
   return data;
 };
