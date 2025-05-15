@@ -113,7 +113,7 @@ export const deleteSong = async (song: any) => {
   });
 };
 export const getSongsDiff = (onSpoty: SpotifyApi.PlaylistTrackObject[], onDB: any) => {
-  const mapsop = onSpoty.map((e: any) => e.track ? e.track.id: null).filter((e)=>e);
+  const mapsop = onSpoty.map((e: any) => e.track ? e.track.id : null).filter((e)=>e);
   const mapsod = onDB?.map((e: any) => e.sid);
 
   const del =
@@ -128,8 +128,8 @@ export const getSongsDiff = (onSpoty: SpotifyApi.PlaylistTrackObject[], onDB: an
     mapsop
       ?.filter((x: any) => !mapsod?.includes(x))
       .map((id2find: any) => {
-        return onSpoty.find((e: any) => {
-          return e.track.id === id2find;
+        return mapsop.find((e: any) => {
+          return e === id2find;
         });
       }) || [];
 
